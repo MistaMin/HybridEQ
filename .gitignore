@@ -1,0 +1,9 @@
+build/
+build2/
+build3/
+dist/
+*.dmg
+*.pkg
+.DS_Store
+*.xcodeproj
+*.xcworkspace
