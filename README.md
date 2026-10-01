@@ -27,7 +27,12 @@ Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, or
 
 ## License
 
-HybridEQ's own source code is released under the [MIT License](LICENSE).
+The compiled HybridEQ binaries distributed via GitHub Releases (the
+installer, the DMG, and the plug-ins/standalone app inside it) are
+**freeware** — free to use, for any purpose, at no cost.
+
+Separately, HybridEQ's own source code in this repository is released under
+the [MIT License](LICENSE).
 
 This project is built on [JUCE](https://juce.com), which is dual-licensed and
 not covered by HybridEQ's MIT license. Whoever compiles this code into a
