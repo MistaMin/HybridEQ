@@ -27,10 +27,15 @@ else
 fi
 echo "Packaging HybridEQ version: $VERSION"
 
+# AAX is excluded from public distribution: it requires Avid's proprietary
+# AAX SDK and a PACE-code-signed Avid developer agreement to redistribute
+# legally, neither of which this project holds. Set INCLUDE_AAX=1 to build
+# a personal/local package that does include it.
+INCLUDE_AAX="${INCLUDE_AAX:-0}"
+
 rm -rf "$STAGING"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/VST3"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/Components"
-mkdir -p "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins"
 mkdir -p "$PKG_ROOT/Applications"
 mkdir -p "$SCRIPTS_DIR"
 
@@ -40,8 +45,13 @@ cp -R "$ARTEFACTS/VST3/HybridEQ.vst3" "$PKG_ROOT/Library/Audio/Plug-Ins/VST3/"
 echo "Copying AU..."
 cp -R "$ARTEFACTS/AU/HybridEQ.component" "$PKG_ROOT/Library/Audio/Plug-Ins/Components/"
 
-echo "Copying AAX..."
-cp -R "$ARTEFACTS/AAX/HybridEQ.aaxplugin" "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins/"
+if [ "$INCLUDE_AAX" = "1" ]; then
+    echo "Copying AAX..."
+    mkdir -p "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins"
+    cp -R "$ARTEFACTS/AAX/HybridEQ.aaxplugin" "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins/"
+else
+    echo "Skipping AAX (not redistributable without an Avid developer agreement; set INCLUDE_AAX=1 to include it)."
+fi
 
 echo "Copying Standalone..."
 cp -R "$ARTEFACTS/Standalone/HybridEQ.app" "$PKG_ROOT/Applications/"
@@ -53,14 +63,19 @@ exit 0
 POSTINSTALL
 chmod +x "$SCRIPTS_DIR/postinstall"
 
-cat > "$STAGING/welcome.html" << 'HTML'
+AAX_LI=""
+if [ "$INCLUDE_AAX" = "1" ]; then
+    AAX_LI="<li><b>AAX</b> &rarr; /Library/Application Support/Avid/Audio/Plug-Ins/</li>"
+fi
+
+cat > "$STAGING/welcome.html" << HTML
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">
 <h1>HybridEQ Installer</h1>
 <p>This installer will place the following on your system:</p>
 <ul>
 <li><b>VST3</b> &rarr; /Library/Audio/Plug-Ins/VST3/</li>
 <li><b>Audio Unit</b> &rarr; /Library/Audio/Plug-Ins/Components/</li>
-<li><b>AAX</b> &rarr; /Library/Application Support/Avid/Audio/Plug-Ins/</li>
+$AAX_LI
 <li><b>Standalone App</b> &rarr; /Applications/</li>
 </ul>
 <p>Version $VERSION &mdash; macOS ARM (Apple Silicon)</p>
@@ -108,7 +123,23 @@ function installCheck() {
 </installer-gui-script>
 DIST
 
-cat > "$STAGING/component.plist" << 'COMPONENTPLIST'
+AAX_DICT=""
+if [ "$INCLUDE_AAX" = "1" ]; then
+AAX_DICT='    <dict>
+        <key>BundleHasStrictIdentifier</key>
+        <false/>
+        <key>BundleIsRelocatable</key>
+        <false/>
+        <key>BundleIsVersionChecked</key>
+        <false/>
+        <key>BundleOverwriteAction</key>
+        <string>upgrade</string>
+        <key>RootRelativeBundlePath</key>
+        <string>Library/Application Support/Avid/Audio/Plug-Ins/HybridEQ.aaxplugin</string>
+    </dict>'
+fi
+
+cat > "$STAGING/component.plist" << COMPONENTPLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -137,18 +168,7 @@ cat > "$STAGING/component.plist" << 'COMPONENTPLIST'
         <key>RootRelativeBundlePath</key>
         <string>Library/Audio/Plug-Ins/Components/HybridEQ.component</string>
     </dict>
-    <dict>
-        <key>BundleHasStrictIdentifier</key>
-        <false/>
-        <key>BundleIsRelocatable</key>
-        <false/>
-        <key>BundleIsVersionChecked</key>
-        <false/>
-        <key>BundleOverwriteAction</key>
-        <string>upgrade</string>
-        <key>RootRelativeBundlePath</key>
-        <string>Library/Application Support/Avid/Audio/Plug-Ins/HybridEQ.aaxplugin</string>
-    </dict>
+$AAX_DICT
     <dict>
         <key>BundleHasStrictIdentifier</key>
         <false/>

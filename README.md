@@ -27,16 +27,16 @@ Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, or
 
 ## License
 
-HybridEQ is released under the [GNU Affero General Public License v3.0
-(AGPLv3)](LICENSE).
+HybridEQ's own source code is released under the [MIT License](LICENSE).
 
-This project is built on [JUCE](https://juce.com), which is dual-licensed:
-free/open-source use requires AGPLv3 for anything built with it and
-distributed (or offered over a network), while closed-source distribution
-requires a paid commercial JUCE license. Since this project does not hold a
-commercial JUCE license, AGPLv3 is the license that applies here — see the
-notes at the bottom of [`LICENSE`](LICENSE) for details, and JUCE's own terms
-at https://juce.com/juce-8-licence.
+This project is built on [JUCE](https://juce.com), which is dual-licensed and
+not covered by HybridEQ's MIT license. Whoever compiles this code into a
+binary is bound by their own JUCE license: a paid commercial JUCE license
+(Starter, Indie, Pro, or Educational) permits closed-source distribution
+under that tier's terms, while without one, JUCE's free tier requires the
+resulting binary to be licensed under AGPLv3 instead. See the notes at the
+bottom of [`LICENSE`](LICENSE) for details, and JUCE's own terms at
+https://juce.com/juce-8-licence.
 
 **AAX (Pro Tools) target:** building AAX additionally requires Avid's
 proprietary AAX SDK (not included in this repo, and not redistributable).
