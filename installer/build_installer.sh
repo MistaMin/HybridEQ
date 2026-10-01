@@ -82,6 +82,8 @@ $AAX_LI
 </body></html>
 HTML
 
+cp "$PROJECT_DIR/LICENSE" "$STAGING/license.txt"
+
 cat > "$STAGING/conclusion.html" << 'HTML'
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">
 <h1>Installation Complete</h1>
@@ -95,6 +97,7 @@ cat > "$STAGING/distribution.xml" << DIST
 <installer-gui-script minSpecVersion="2">
     <title>HybridEQ $VERSION</title>
     <welcome file="welcome.html" mime-type="text/html"/>
+    <license file="license.txt" mime-type="text/plain"/>
     <conclusion file="conclusion.html" mime-type="text/html"/>
     <options customize="never" require-scripts="false" hostArchitectures="arm64"/>
     <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true"/>
