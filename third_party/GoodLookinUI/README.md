@@ -45,3 +45,7 @@ aligned strips, physical choice keys with dropdowns, generated fader caps and
 an inset response display. GoodLookinUI remains independent of the DSP.
 
 Existing CSV designs with the original HardwareUI header can still be loaded. Newly saved designs use the GoodLookinUI header.
+
+## License
+
+GoodLookinUI source code and documentation are released under the [MIT License](LICENSE), copyright 2026 Marcos Deida. This covers the core and JUCE adapter; JUCE and other external dependencies retain their own licenses.
