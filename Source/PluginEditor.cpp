@@ -160,7 +160,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     eqDisplay->setSize(0,0);
     resized();
     std::istringstream designInput(hybridEQDesign);
-    const auto bakedItems=hardwareui::readDesign(designInput);
+    const auto bakedItems=goodlookinui::readDesign(designInput);
     auto registerKnob = [this, &bakedItems](const char* id, RotaryKnob& knob) {
         auto item=knob.getDesign(); item.id=id; item.parameter=id;
         const auto b=knob.getBounds(); item.x=float(b.getX()); item.y=float(b.getY());
@@ -170,8 +170,8 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
             item=*found; knob.applyDesign(item);
             knob.setBounds(juce::roundToInt(item.x),juce::roundToInt(item.y),juce::roundToInt(item.width),juce::roundToInt(item.height));
         }
-#if HARDWAREUI_ENABLE_EDITOR
-        designStudio.add(item,knob,[&knob](const hardwareui::Item& value){knob.applyDesign(value);});
+#if GOODLOOKINUI_ENABLE_EDITOR
+        designStudio.add(item,knob,[&knob](const goodlookinui::Item& value){knob.applyDesign(value);});
 #endif
     };
     registerKnob("lcFreq",lcFreqDial); registerKnob("lcQ",lcQDial);
@@ -182,7 +182,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     registerKnob("highFreq",highFreqDial); registerKnob("highGain",highGainDial);
     registerKnob("preampGain",preampGainDial); registerKnob("outputGain",outputGainDial);
 
-#if HARDWAREUI_ENABLE_EDITOR
+#if GOODLOOKINUI_ENABLE_EDITOR
     addChildComponent(designStudio); panelSurface.addAndMakeVisible(designButton);
     designButton.onClick=[this]{designStudio.setVisible(!designStudio.isVisible());designStudio.toFront(false);};
     resized();
@@ -283,8 +283,8 @@ void HybridEQEditor::paint(juce::Graphics& g)
     // Fine machined rack rails, deliberately quieter than the controls.
     for(int x:{16,1164}) {
         g.setColour(juce::Colour(0xff0c1114));g.fillRect(x-5,12,10,856);
-        hardwareui::juce_adapter::drawScrew(g,float(x),24);
-        hardwareui::juce_adapter::drawScrew(g,float(x),856);
+        goodlookinui::juce_adapter::drawScrew(g,float(x),24);
+        goodlookinui::juce_adapter::drawScrew(g,float(x),856);
     }
     g.setColour(juce::Colour(0xff121b20));g.fillRect(30,12,1120,50);
     g.setColour(Theme::textDark);g.setFont(juce::FontOptions(28.0f,juce::Font::bold));
@@ -314,7 +314,7 @@ void HybridEQEditor::resized()
     panelSurface.setBounds(0,0,canvasWidth,canvasHeight);
     panelSurface.setTransform(juce::AffineTransform::scale(scale).translated(
         (getWidth()-canvasWidth*scale)*0.5f,(getHeight()-canvasHeight*scale)*0.5f));
-#if HARDWAREUI_ENABLE_EDITOR
+#if GOODLOOKINUI_ENABLE_EDITOR
     designButton.setBounds(600,22,76,24);
     designStudio.setBounds(8,32,juce::jmin(810,getWidth()-16),92);
 #endif

@@ -3,7 +3,7 @@
 #include "ValueFormat.h"
 #include "Theme.h"
 #include <cmath>
-#include <HardwareUI.h>
+#include <GoodLookinUI.h>
 
 enum class KnobValueType { Frequency, Gain, Q };
 
@@ -60,7 +60,7 @@ public:
         auto diameter = juce::jmin(bounds.getWidth(), bounds.getHeight());
         auto knobBounds = juce::Rectangle<float>(diameter, diameter).withCentre(bounds.getCentre());
 
-        hardwareui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive);
+        goodlookinui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive);
 
         if(design.style=="console" && getWidth()>=110) {
             g.setColour(Theme::textMid);g.setFont(juce::FontOptions(8.0f));
@@ -78,13 +78,13 @@ public:
         g.drawText(formattedValue(), valueArea, juce::Justification::centred);
     }
 
-    void applyDesign(const hardwareui::Item& item) {
+    void applyDesign(const goodlookinui::Item& item) {
         design = item;
         title.setText(item.label, juce::dontSendNotification);
         title.setFont(juce::FontOptions(item.fontSize, juce::Font::bold));
         repaint();
     }
-    const hardwareui::Item& getDesign() const { return design; }
+    const goodlookinui::Item& getDesign() const { return design; }
 private:
     void timerCallback() override {
         const auto target = valueToProportionOfLength(getValue());
@@ -93,8 +93,8 @@ private:
         motion.step(target,1.0/60.0);
         repaint();
     }
-    hardwareui::Item design;
-    hardwareui::Motion motion;
+    goodlookinui::Item design;
+    goodlookinui::Motion motion;
     juce::String formattedValue() const
     {
         return formatValue(static_cast<float>(getValue()));

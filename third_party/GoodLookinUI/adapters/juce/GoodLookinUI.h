@@ -1,10 +1,10 @@
 #pragma once
-#include <hardwareui/Design.h>
+#include <goodlookinui/Design.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <fstream>
 #include <functional>
 
-namespace hardwareui::juce_adapter {
+namespace goodlookinui::juce_adapter {
 inline juce::Colour colour(const std::string& hex) {
     return juce::Colour::fromString("ff" + juce::String(hex.substr(1)));
 }
@@ -96,7 +96,7 @@ inline void drawKnob(juce::Graphics& g, juce::Rectangle<float> bounds,
     g.drawLine({tail,tip},juce::jmax(1.5f,d*0.045f));
 }
 
-#if HARDWAREUI_ENABLE_EDITOR
+#if GOODLOOKINUI_ENABLE_EDITOR
 // Development-only inspector. It is not included in a release translation unit.
 class Studio : public juce::Component {
 public:

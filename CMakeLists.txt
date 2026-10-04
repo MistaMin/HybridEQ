@@ -17,12 +17,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(JUCE)
 
-set(HARDWAREUI_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third_party/HardwareUI" CACHE PATH "HardwareUI toolkit location")
-add_subdirectory("${HARDWAREUI_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/hardwareui")
+set(GOODLOOKINUI_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/third_party/GoodLookinUI" CACHE PATH "GoodLookinUI toolkit location")
+add_subdirectory("${GOODLOOKINUI_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/goodlookinui")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Designs/HybridEQ.csv")
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Designs/HybridEQ.csv" HYBRIDEQ_DESIGN_TEXT)
 configure_file(Designs/EmbeddedDesign.h.in generated/EmbeddedDesign.h @ONLY)
-option(HYBRIDEQ_DESIGN_EDITOR "Include HardwareUI editor in Debug builds" ON)
+option(HYBRIDEQ_DESIGN_EDITOR "Include GoodLookinUI editor in Debug builds" ON)
 
 set(HYBRIDEQ_FORMATS VST3 Standalone)
 if(APPLE)
@@ -56,7 +56,7 @@ target_sources(HybridEQ PRIVATE
 target_include_directories(HybridEQ PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 target_compile_definitions(HybridEQ PUBLIC
-    HARDWAREUI_ENABLE_EDITOR=$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>
+    GOODLOOKINUI_ENABLE_EDITOR=$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
@@ -65,7 +65,7 @@ target_compile_definitions(HybridEQ PUBLIC
 
 target_link_libraries(HybridEQ
     PRIVATE
-        hardwareui_juce
+        goodlookinui_juce
         juce::juce_audio_utils
         juce::juce_dsp
     PUBLIC

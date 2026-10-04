@@ -3,13 +3,13 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Theme.h"
 #include <memory>
-#include <HardwareUI.h>
+#include <GoodLookinUI.h>
 
 // Compact look for cycle buttons: small bold text, subtle chrome.
 class CycleButtonLNF final : public juce::LookAndFeel_V4 {
 public:
     void drawButtonBackground(juce::Graphics& g,juce::Button& b,const juce::Colour& base,bool over,bool down) override {
-        hardwareui::juce_adapter::drawKey(g,b.getLocalBounds().toFloat().reduced(2),over?base.brighter(0.06f):base,down);
+        goodlookinui::juce_adapter::drawKey(g,b.getLocalBounds().toFloat().reduced(2),over?base.brighter(0.06f):base,down);
     }
     juce::Font getTextButtonFont(juce::TextButton&, int) override
     {

@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace hardwareui {
+namespace goodlookinui {
 struct Item {
     std::string id, parameter, label, style = "metal";
     std::string colour = "#CE9435";
@@ -55,7 +55,7 @@ inline std::vector<std::string> fields(const std::string& line) {
 inline constexpr auto header="id,parameter,label,style,colour,x,y,width,height,font size";
 inline void writeDesign(std::ostream& out, const std::vector<Item>& items) {
     out << std::setprecision(std::numeric_limits<float>::max_digits10);
-    out << "HardwareUI design version 1\n" << header << '\n';
+    out << "GoodLookinUI design version 1\n" << header << '\n';
     std::set<std::string> ids;
     for(const auto& i:items) {validate(i); if(!ids.insert(i.id).second) throw std::runtime_error("Duplicate ID");
         out<<quote(i.id)<<','<<quote(i.parameter)<<','<<quote(i.label)<<','<<quote(i.style)<<','<<quote(i.colour)
@@ -64,7 +64,7 @@ inline void writeDesign(std::ostream& out, const std::vector<Item>& items) {
 }
 inline std::vector<Item> readDesign(std::istream& in) {
     std::string line; auto next=[&]{ std::getline(in,line); if(!line.empty()&&line.back()=='\r') line.pop_back(); };
-    next(); if(line!="HardwareUI design version 1") throw std::runtime_error("Unsupported design version");
+    next(); if(line!="GoodLookinUI design version 1" && line!="HardwareUI design version 1") throw std::runtime_error("Unsupported design version");
     next(); if(line!=header) throw std::runtime_error("Invalid design columns");
     std::vector<Item> result; std::set<std::string> ids;
     while(std::getline(in,line)) {if(!line.empty()&&line.back()=='\r')line.pop_back();if(line.empty())continue;
