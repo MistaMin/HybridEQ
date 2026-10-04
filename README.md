@@ -77,3 +77,5 @@ Introduces the console interface: generated hardware knobs, aligned channel
 strips, mechanical keys with dropdown choices, proportional resizing, and a
 development-only visual inspector. Accepted designs are embedded from CSV.
 The UI toolkit is included as source so fresh checkouts are self-contained.
+
+The bundled [GoodLookinUI toolkit](third_party/GoodLookinUI) is independently [MIT licensed](third_party/GoodLookinUI/LICENSE). Its license file travels with the toolkit when reused in other projects.
