@@ -1,0 +1,30 @@
+HybridEQ licensing and component notices
+
+HybridEQ source code
+Copyright (c) 2026 Marcos Deida. MIT License; see LICENSE.
+The official complete binaries are proprietary freeware; see BINARY_LICENSE.txt.
+The MIT permissions for the corresponding source remain available.
+
+GoodLookinUI
+Copyright (c) 2026 Marcos Deida. MIT License.
+See third_party/GoodLookinUI/LICENSE in the source repository, or
+GoodLookinUI-LICENSE.txt alongside this notice in binary distributions.
+The core and JUCE adapter are independent toolkit code, not a JUCE fork.
+Include the GoodLookinUI copyright and MIT permission notice when distributing
+copies or substantial portions of the toolkit, including compiled copies.
+
+JUCE 8.0.4
+Copyright holders and licensing: https://github.com/juce-framework/JUCE/tree/8.0.4
+JUCE is fetched during source builds and is not included as source here.
+Official HybridEQ binaries use the publisher's commercial JUCE license.
+JUCE is not covered by the MIT licenses above. Independent builders must
+comply with the JUCE license applicable to their build and distribution;
+the publisher's commercial license is not supplied with this repository.
+JUCE 8 commercial terms: https://juce.com/legal/juce-8-licence/
+JUCE's alternative open-source terms and component notices are in its source.
+
+Avid AAX SDK (optional)
+The AAX SDK is not included in this repository and is not MIT licensed.
+Building or distributing AAX requires compliance with Avid's SDK/developer
+terms and any applicable signing requirements. A JUCE commercial license
+does not grant rights to the AAX SDK. Public packaging excludes AAX by default.

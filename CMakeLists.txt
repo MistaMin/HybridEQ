@@ -73,3 +73,23 @@ target_link_libraries(HybridEQ
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
+# Keep source/component MIT notices with standalone and raw plugin downloads.
+foreach(format IN LISTS HYBRIDEQ_FORMATS)
+    if(APPLE)
+        set(notice_dir "$<TARGET_FILE_DIR:HybridEQ_${format}>/../Resources/Licenses")
+    else()
+        set(notice_dir "$<TARGET_FILE_DIR:HybridEQ_${format}>/HybridEQ-Licenses")
+    endif()
+    add_custom_command(TARGET HybridEQ_${format} PRE_LINK
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${notice_dir}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/BINARY_LICENSE.txt"
+            "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE"
+            "${CMAKE_CURRENT_SOURCE_DIR}/THIRD_PARTY_NOTICES.txt"
+            "${notice_dir}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/third_party/GoodLookinUI/LICENSE"
+            "${notice_dir}/GoodLookinUI-LICENSE.txt"
+        VERBATIM)
+endforeach()
