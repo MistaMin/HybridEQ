@@ -1,4 +1,4 @@
-HardwareUI design version 1
+GoodLookinUI design version 1
 id,parameter,label,style,colour,x,y,width,height,font size
 lcFreq,lcFreq,FREQ,console,#CBCBBC,12,52,150,98,10
 lcQ,lcQ,Q,console,#CBCBBC,12,152,150,98,10

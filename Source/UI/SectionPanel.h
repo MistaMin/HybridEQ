@@ -2,7 +2,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Theme.h"
 #include <vector>
-#include <HardwareUI.h>
+#include <GoodLookinUI.h>
 
 // Console faceplate with fixed knob slots and aligned choice keys.
 class SectionPanel : public juce::Component {
@@ -45,7 +45,7 @@ public:
     void paint(juce::Graphics& g) override
     {
         auto b=getLocalBounds().toFloat().reduced(1);
-        hardwareui::juce_adapter::drawPanel(g,b);
+        goodlookinui::juce_adapter::drawPanel(g,b);
         g.setColour(accent.withAlpha(0.85f));g.fillRect(10.0f,10.0f,3.0f,15.0f);
         g.setColour(Theme::textDark);g.setFont(juce::FontOptions(11.5f,juce::Font::bold));
         g.drawText(title,18,8,getWidth()-58,20,juce::Justification::centredLeft);

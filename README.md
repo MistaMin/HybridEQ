@@ -12,8 +12,8 @@ Current version: see [`VERSION`](VERSION).
 
 ## Building
 
-Requires CMake 3.22+ and a C++20 compiler. A HardwareUI source snapshot is
-included in `third_party/HardwareUI`; set `HARDWAREUI_ROOT` to use a separate
+Requires CMake 3.22+ and a C++20 compiler. A GoodLookinUI source snapshot is
+included in `third_party/GoodLookinUI`; set `GOODLOOKINUI_ROOT` to use a separate
 checkout instead. AAX is added only when Avid's SDK exists at
 `../aax-sdk-2-8-1`, or at the path specified by `HYBRIDEQ_AAX_SDK`. JUCE itself is fetched automatically via CMake's
 `FetchContent` — no manual setup needed for VST3/AU/Standalone.
@@ -54,7 +54,7 @@ used to build AAX locally for personal use if you obtain the SDK yourself,
 but pre-built AAX binaries should not be redistributed from here without
 your own valid Avid developer agreement.
 
-## HardwareUI development editor
+## GoodLookinUI development editor
 
 Debug builds include a **Design** inspector for generated knobs. Edit style,
 label, hex colour, font size and panel-relative geometry; Apply, Undo, Save CSV
@@ -64,7 +64,7 @@ finished panel scales proportionally with the window.
 
 ## Console appearance
 
-The console edition uses HardwareUI's generated fluted black grips and coloured
+The console edition uses GoodLookinUI's generated fluted black grips and coloured
 knob caps, fixed calibration marks, shaded mechanical keys, recessed numeric
 readouts and a charcoal rack faceplate. Choice keys open dropdown menus using
 the existing DSP choice values. Six strips share fixed control slots and switch

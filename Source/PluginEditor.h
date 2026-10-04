@@ -29,8 +29,8 @@ private:
 
     HybridEQProcessor& proc;
     juce::Component panelSurface;
-#if HARDWAREUI_ENABLE_EDITOR
-    hardwareui::juce_adapter::Studio designStudio;
+#if GOODLOOKINUI_ENABLE_EDITOR
+    goodlookinui::juce_adapter::Studio designStudio;
     juce::TextButton designButton{"Design"};
 #endif
 

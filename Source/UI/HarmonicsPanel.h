@@ -4,7 +4,7 @@
 #include "Theme.h"
 #include <array>
 #include <memory>
-#include <HardwareUI.h>
+#include <GoodLookinUI.h>
 
 class ConsoleFaderLook final : public juce::LookAndFeel_V4 {
 public:
@@ -15,7 +15,7 @@ public:
         g.setColour(juce::Colour(0xff52605e));g.drawHorizontalLine(int(centre+3),float(x),float(x+width));
         for(int n=0;n<9;++n){float tick=float(x)+float(width)*float(n)/8;
             g.setColour(juce::Colour(0xff77867f));g.drawLine(tick,centre+7,tick,centre+10,0.8f);}
-        hardwareui::juce_adapter::drawKey(g,{pos-7,centre-6,14,12},Theme::buttonTop,false);
+        goodlookinui::juce_adapter::drawKey(g,{pos-7,centre-6,14,12},Theme::buttonTop,false);
         g.setColour(juce::Colour(0xff4b564c));g.drawLine(pos,centre-4,pos,centre+4,1);
     }
 };
@@ -63,7 +63,7 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        hardwareui::juce_adapter::drawPanel(g,getLocalBounds().toFloat().reduced(1));
+        goodlookinui::juce_adapter::drawPanel(g,getLocalBounds().toFloat().reduced(1));
 
     }
 
