@@ -1,0 +1,18 @@
+HardwareUI design version 1
+id,parameter,label,style,colour,x,y,width,height,font size
+lcFreq,lcFreq,FREQ,console,#CBCBBC,12,52,150,98,10
+lcQ,lcQ,Q,console,#CBCBBC,12,152,150,98,10
+hcFreq,hcFreq,FREQ,console,#AAAFA6,12,52,150,98,10
+hcQ,hcQ,Q,console,#AAAFA6,12,152,150,98,10
+lowGain,lowGain,GAIN,console,#B58C59,12,52,150,98,10
+lowFreq,lowFreq,FREQ,console,#B58C59,12,152,150,98,10
+mid1Gain,mid1Gain,GAIN,console,#5793B8,12,52,150,98,10
+mid1Freq,mid1Freq,FREQ,console,#5793B8,12,152,150,98,10
+mid1Q,mid1Q,Q,console,#5793B8,12,252,150,98,10
+mid2Gain,mid2Gain,GAIN,console,#6EA68B,12,52,150,98,10
+mid2Freq,mid2Freq,FREQ,console,#6EA68B,12,152,150,98,10
+mid2Q,mid2Q,Q,console,#6EA68B,12,252,150,98,10
+highGain,highGain,GAIN,console,#B96057,12,52,150,98,10
+highFreq,highFreq,FREQ,console,#B96057,12,152,150,98,10
+preampGain,preampGain,GAIN,console,#C7A66A,136,50,88,76,10
+outputGain,outputGain,OUTPUT,console,#B9BDB3,202,50,88,76,10

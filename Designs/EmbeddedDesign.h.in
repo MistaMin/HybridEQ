@@ -1,0 +1,2 @@
+#pragma once
+inline constexpr const char* hybridEQDesign = R"huidesign(@HYBRIDEQ_DESIGN_TEXT@)huidesign";

@@ -3,6 +3,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Theme.h"
 #include <memory>
+#include <HardwareUI.h>
 
 // Small chrome on/off toggle (e.g. the preamp's CIRCUIT active-circuit
 // model). Lights up in the accent colour when enabled; call setActive(false)
@@ -57,8 +58,7 @@ public:
                                                                         : juce::Colours::white;
 
         juce::ColourGradient fill(top, 0.0f, r.getY(), bottom, 0.0f, r.getBottom(), false);
-        g.setGradientFill(fill);
-        g.fillRoundedRectangle(r, 4.0f);
+        hardwareui::juce_adapter::drawKey(g,r,top,shouldDrawButtonAsDown);
 
         g.setColour(Theme::buttonOutline.withAlpha(0.6f));
         g.drawRoundedRectangle(r, 4.0f, 1.0f);

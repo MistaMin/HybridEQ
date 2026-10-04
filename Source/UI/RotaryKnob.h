@@ -3,6 +3,7 @@
 #include "ValueFormat.h"
 #include "Theme.h"
 #include <cmath>
+#include <HardwareUI.h>
 
 enum class KnobValueType { Frequency, Gain, Q };
 
@@ -10,7 +11,7 @@ enum class KnobValueType { Frequency, Gain, Q };
 // knurled body with the band's accent colour as a thin indicator ring, and
 // the current value rendered directly inside the knob body. When the band is
 // bypassed the knob turns neutral grey via setActive(false).
-class RotaryKnob : public juce::Slider {
+class RotaryKnob : public juce::Slider, private juce::Timer {
 public:
     RotaryKnob(const juce::String& labelText, KnobValueType type, juce::Colour accent)
         : valueType(type), accentColour(accent)
@@ -27,6 +28,12 @@ public:
         title.setColour(juce::Label::textColourId, Theme::textDark);
         title.setInterceptsMouseClicks(false, false);
         addAndMakeVisible(title);
+        design.label = labelText.toStdString();
+        design.colour = "#" + accent.toDisplayString(false).toStdString();
+        design.style = "console";
+        setMouseDragSensitivity(180);
+        setScrollWheelEnabled(false);
+        startTimerHz(60);
     }
 
     void setActive(bool active)
@@ -42,8 +49,8 @@ public:
     void resized() override
     {
         auto b = getLocalBounds();
-        title.setBounds(b.removeFromTop(13));
-        valueArea = b.removeFromBottom(14);
+        title.setBounds(b.removeFromTop(14));
+        valueArea = b.removeFromBottom(18);
         knobArea = b.reduced(1, 0);
     }
 
@@ -52,73 +59,48 @@ public:
         auto bounds = knobArea.toFloat();
         auto diameter = juce::jmin(bounds.getWidth(), bounds.getHeight());
         auto knobBounds = juce::Rectangle<float>(diameter, diameter).withCentre(bounds.getCentre());
-        auto radius = diameter * 0.5f;
-        auto centre = knobBounds.getCentre();
 
-        // Soft drop shadow under the knob
-        g.setColour(juce::Colour(0x55000000));
-        g.fillEllipse(knobBounds.translated(0.0f, radius * 0.06f));
+        hardwareui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive);
 
-        // Dark metal bezel ring
-        juce::ColourGradient bezel(Theme::knobTop, centre.x, knobBounds.getY(),
-                                   Theme::knobBottom, centre.x, knobBounds.getBottom(), false);
-        g.setGradientFill(bezel);
-        g.fillEllipse(knobBounds);
-        g.setColour(Theme::knobRim);
-        g.drawEllipse(knobBounds.reduced(0.5f), 1.0f);
-
-        // Small tick dots around the bezel rim
-        g.setColour(isActive ? Theme::knobTick : juce::Colour(0xFF4A4A4C));
-        const int numTicks = 11;
-        for (int i = 0; i < numTicks; ++i) {
-            float t = static_cast<float>(i) / (numTicks - 1);
-            float a = juce::jmap(t, -0.8f * juce::MathConstants<float>::pi,
-                                    0.8f * juce::MathConstants<float>::pi);
-            float tx = centre.x + std::sin(a) * radius * 0.92f;
-            float ty = centre.y - std::cos(a) * radius * 0.92f;
-            g.fillEllipse(tx - 1.3f, ty - 1.3f, 2.6f, 2.6f);
+        if(design.style=="console" && getWidth()>=110) {
+            g.setColour(Theme::textMid);g.setFont(juce::FontOptions(8.0f));
+            const int y=juce::roundToInt(knobBounds.getBottom()-13);
+            g.drawText(formatValue(float(getMinimum())),6,y,35,12,juce::Justification::centred);
+            g.drawText(formatValue(float(getMaximum())),getWidth()-41,y,35,12,juce::Justification::centred);
         }
-
-        // Coloured cap (band accent colour, grey when inactive)
-        auto cap = knobBounds.reduced(radius * 0.28f);
-        juce::Colour capCol = isActive ? accentColour : Theme::knobInactiveBody;
-        juce::ColourGradient capFill(capCol.brighter(0.25f), cap.getX(), cap.getY(),
-                                     capCol.darker(0.35f), cap.getRight(), cap.getBottom(), false);
-        g.setGradientFill(capFill);
-        g.fillEllipse(cap);
-        g.setColour(juce::Colour(0xFF101011));
-        g.drawEllipse(cap, 1.2f);
-
-        // Gloss highlight (upper half of cap)
-        juce::ColourGradient gloss(juce::Colour(0x45FFFFFF), centre.x, cap.getY(),
-                                   juce::Colour(0x00000000), centre.x, centre.y, false);
-        g.setGradientFill(gloss);
-        g.fillEllipse(cap.reduced(cap.getWidth() * 0.12f).withBottom(centre.y));
-
-        // Pointer line showing current rotation
-        auto capRadius = cap.getWidth() * 0.5f;
-        float angle = juce::jmap(static_cast<float>(valueToProportionOfLength(getValue())),
-                                  -0.8f * juce::MathConstants<float>::pi,
-                                  0.8f * juce::MathConstants<float>::pi);
-        juce::Colour pointerCol = isActive ? Theme::knobText : Theme::knobTextInactive;
-        g.setColour(pointerCol);
-        juce::Path pointer;
-        pointer.addRoundedRectangle(-1.4f, -capRadius * 0.88f, 2.8f, capRadius * 0.62f, 1.4f);
-        g.saveState();
-        g.addTransform(juce::AffineTransform::rotation(angle).translated(centre));
-        g.fillPath(pointer);
-        g.restoreState();
-
+        // Exact values sit in a recessed readout beneath the physical control.
+        auto readout=valueArea.toFloat().withSizeKeepingCentre(68.0f,15.0f);
+        g.setColour(juce::Colour(0xff20292c));g.fillRoundedRectangle(readout,2);
+        g.setColour(juce::Colour(0xff465255));g.drawRoundedRectangle(readout,2,0.6f);
         // Value readout below the knob
         g.setColour(isActive ? Theme::knobText : Theme::knobTextInactive);
-        g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
+        g.setFont(juce::FontOptions(design.fontSize, juce::Font::bold));
         g.drawText(formattedValue(), valueArea, juce::Justification::centred);
     }
 
+    void applyDesign(const hardwareui::Item& item) {
+        design = item;
+        title.setText(item.label, juce::dontSendNotification);
+        title.setFont(juce::FontOptions(item.fontSize, juce::Font::bold));
+        repaint();
+    }
+    const hardwareui::Item& getDesign() const { return design; }
 private:
+    void timerCallback() override {
+        const auto target = valueToProportionOfLength(getValue());
+        if (!isShowing()) { motion.position=target; motion.velocity=0; return; }
+        if (std::abs(motion.position-target)<0.0001 && std::abs(motion.velocity)<0.0001) return;
+        motion.step(target,1.0/60.0);
+        repaint();
+    }
+    hardwareui::Item design;
+    hardwareui::Motion motion;
     juce::String formattedValue() const
     {
-        float v = static_cast<float>(getValue());
+        return formatValue(static_cast<float>(getValue()));
+    }
+    juce::String formatValue(float v) const
+    {
         switch (valueType) {
             case KnobValueType::Frequency: return ValueFormat::frequency(v);
             case KnobValueType::Gain:      return ValueFormat::gainDB(v);

@@ -3,6 +3,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Theme.h"
 #include <memory>
+#include <HardwareUI.h>
 
 // Tiny "B" toggle sitting in the corner of each band panel. When bypass is
 // engaged the button lights up with the band's accent colour and the rest of
@@ -19,35 +20,15 @@ public:
 
     void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
-        auto b = getLocalBounds().toFloat().reduced(0.5f);
+        auto b=getLocalBounds().toFloat().reduced(2);
+        hardwareui::juce_adapter::drawKey(g,b,juce::Colour(0xffaeb6a7),shouldDrawButtonAsDown);
+        auto lamp=juce::Rectangle<float>(4,4).withCentre({b.getX()+5,b.getCentreY()});
+        if(getToggleState()){g.setColour(accentColour.withAlpha(0.2f));g.fillEllipse(lamp.expanded(2));}
+        g.setColour(getToggleState()?accentColour:juce::Colour(0xff414c44));g.fillEllipse(lamp);
+        g.setColour(juce::Colour(0xff26312e));g.setFont(juce::FontOptions(8.0f,juce::Font::bold));
+        g.drawText("B",b.withTrimmedLeft(7),juce::Justification::centred);
+        if(shouldDrawButtonAsHighlighted){g.setColour(juce::Colour(0x12ffffff));g.fillRoundedRectangle(b,2);}
 
-        juce::Colour bg;
-        if (getToggleState())
-            bg = shouldDrawButtonAsHighlighted ? accentColour.brighter(0.18f) : accentColour;
-        else
-            bg = shouldDrawButtonAsHighlighted ? Theme::buttonTop.brighter(0.06f) : Theme::buttonTop;
-
-        // Pick black or white text based on the background's brightness so
-        // the "B" stays legible against any accent colour.
-        juce::Colour textCol = bg.getPerceivedBrightness() > 0.55f ? juce::Colours::black
-                                                                   : juce::Colours::white;
-
-        juce::ColourGradient fill(bg.brighter(0.10f), 0.0f, b.getY(),
-                                  bg.darker(0.08f), 0.0f, b.getBottom(), false);
-        g.setGradientFill(fill);
-        g.fillRoundedRectangle(b, 3.0f);
-
-        g.setColour(Theme::buttonOutline.withAlpha(0.55f));
-        g.drawRoundedRectangle(b, 3.0f, 1.0f);
-
-        g.setColour(textCol);
-        g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
-        g.drawText("B", b, juce::Justification::centred);
-
-        if (shouldDrawButtonAsDown)
-            g.setColour(juce::Colour(0x22000000));
-        if (shouldDrawButtonAsDown)
-            g.fillRoundedRectangle(b, 3.0f);
     }
 
 private:

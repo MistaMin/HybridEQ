@@ -7,3 +7,6 @@ dist/
 .DS_Store
 *.xcodeproj
 *.xcworkspace
+
+# Local CMake build outputs
+build*/
