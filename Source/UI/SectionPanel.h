@@ -2,10 +2,9 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Theme.h"
 #include <vector>
+#include <HardwareUI.h>
 
-// Rounded card grouping a set of controls under a title, with items laid
-// out in an evenly spaced row. Panels are meant to be placed in a wrapping
-// FlexBox so the whole editor reflows cleanly when resized.
+// Console faceplate with fixed knob slots and aligned choice keys.
 class SectionPanel : public juce::Component {
 public:
     explicit SectionPanel(const juce::String& titleText) : title(titleText) {}
@@ -42,58 +41,38 @@ public:
         return h;
     }
 
+    void setAccent(juce::Colour colour, const juce::String& range) { accent=colour; subtitle=range; }
     void paint(juce::Graphics& g) override
     {
-        auto b = getLocalBounds().toFloat().reduced(2.0f);
-
-        juce::ColourGradient fill(Theme::panelTop, 0.0f, b.getY(),
-                                  Theme::panelBottom, 0.0f, b.getBottom(), false);
-        g.setGradientFill(fill);
-        g.fillRoundedRectangle(b, 7.0f);
-
-        g.setColour(Theme::panelHighlight);
-        g.drawHorizontalLine(static_cast<int>(b.getY()) + 1,
-                             static_cast<int>(b.getX()) + 8,
-                             static_cast<int>(b.getRight()) - 8);
-        g.setColour(juce::Colour(0x26000000));
-        g.drawHorizontalLine(static_cast<int>(b.getBottom()) - 2,
-                             static_cast<int>(b.getX()) + 8,
-                             static_cast<int>(b.getRight()) - 8);
-
-        g.setColour(Theme::panelOutline);
-        g.drawRoundedRectangle(b, 7.0f, 1.0f);
-
-        g.setColour(Theme::textDark);
-        g.setFont(juce::FontOptions(11.0f, juce::Font::bold));
-        auto titleArea = b.removeFromTop(20.0f);
-        if (bypassButton != nullptr)
-            titleArea.removeFromRight(28.0f);
-        g.drawText(title, titleArea.reduced(10.0f, 0.0f), juce::Justification::centredLeft);
+        auto b=getLocalBounds().toFloat().reduced(1);
+        hardwareui::juce_adapter::drawPanel(g,b);
+        g.setColour(accent.withAlpha(0.85f));g.fillRect(10.0f,10.0f,3.0f,15.0f);
+        g.setColour(Theme::textDark);g.setFont(juce::FontOptions(11.5f,juce::Font::bold));
+        g.drawText(title,18,8,getWidth()-58,20,juce::Justification::centredLeft);
+        g.setColour(Theme::textMid);g.setFont(juce::FontOptions(9.0f));
+        g.drawText(subtitle,18,27,getWidth()-36,14,juce::Justification::centredLeft);
+        g.setColour(juce::Colour(0xff20292c));g.drawHorizontalLine(46,10.0f,float(getWidth()-10));
+        g.setColour(juce::Colour(0x16ffffff));g.drawHorizontalLine(47,10.0f,float(getWidth()-10));
+        if(vLayout && items.size()==4) {
+            g.setColour(Theme::textMid.withAlpha(0.6f));g.setFont(juce::FontOptions(9.0f));
+            g.drawText(title.contains("CUT")?"FILTER / RESONANCE":"GAIN / FREQUENCY",12,285,getWidth()-24,18,juce::Justification::centred);
+            g.setColour(accent.withAlpha(0.35f));g.drawHorizontalLine(314,48.0f,float(getWidth()-48));
+        }
     }
 
     void resized() override
     {
-        auto b = getLocalBounds().reduced(8);
-        auto strip = b.removeFromTop(20);
-        if (bypassButton != nullptr)
-            bypassButton->setBounds(strip.getRight() - 22, strip.getY() + 1, 18, 18);
-
-        if (vLayout) {
-            layoutVertical(b);
-            return;
-        }
-
-        int contentW = 0;
-        for (auto& item : items)
-            contentW += item.width + 6;
-        contentW -= 6;
-
-        int x = b.getX() + (b.getWidth() - contentW) / 2;
-        if (contentW > b.getWidth())
-            x = b.getX();
-        for (auto& item : items) {
-            item.component->setBounds(x, b.getY(), item.width, b.getHeight());
-            x += item.width + 6;
+        if(bypassButton) bypassButton->setBounds(getWidth()-36,10,24,20);
+        if(vLayout) {
+            int knob=0,button=0;
+            for(auto& item:items) {
+                if(item.width>=70) item.component->setBounds(12,52+knob++*100,getWidth()-24,98);
+                else item.component->setBounds(22,354+button++*36,getWidth()-44,32);
+            }
+        } else {
+            int content=0;for(auto& item:items)content+=item.width+12;content-=12;
+            int x=(getWidth()-content)/2;
+            for(auto& item:items){item.component->setBounds(x,50,item.width,getHeight()-56);x+=item.width+12;}
         }
     }
 
@@ -121,7 +100,8 @@ private:
 
     struct Item { juce::Component* component; int width; };
 
-    juce::String title;
+    juce::String title, subtitle;
+    juce::Colour accent=Theme::preampCol;
     juce::Component* bypassButton = nullptr;
     bool vLayout = false;
     int vWidth = 372;

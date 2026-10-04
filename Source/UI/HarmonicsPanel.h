@@ -4,6 +4,21 @@
 #include "Theme.h"
 #include <array>
 #include <memory>
+#include <HardwareUI.h>
+
+class ConsoleFaderLook final : public juce::LookAndFeel_V4 {
+public:
+    void drawLinearSlider(juce::Graphics& g,int x,int y,int width,int height,float pos,float,float,
+                          const juce::Slider::SliderStyle,juce::Slider&) override {
+        float centre=float(y)+float(height)*0.5f;
+        g.setColour(juce::Colour(0xff0d1518));g.fillRoundedRectangle(float(x),centre-2,float(width),4,2);
+        g.setColour(juce::Colour(0xff52605e));g.drawHorizontalLine(int(centre+3),float(x),float(x+width));
+        for(int n=0;n<9;++n){float tick=float(x)+float(width)*float(n)/8;
+            g.setColour(juce::Colour(0xff77867f));g.drawLine(tick,centre+7,tick,centre+10,0.8f);}
+        hardwareui::juce_adapter::drawKey(g,{pos-7,centre-6,14,12},Theme::buttonTop,false);
+        g.setColour(juce::Colour(0xff4b564c));g.drawLine(pos,centre-4,pos,centre+4,1);
+    }
+};
 
 // Four stacked horizontal sliders (2nd..5th harmonic amount), grouped as a
 // single unit. Deliberately shows no numeric readout - the user dials in
@@ -24,6 +39,7 @@ public:
             row.label.setColour(juce::Label::textColourId, Theme::textMid);
             addAndMakeVisible(row.label);
 
+            row.slider.setLookAndFeel(&faderLook);
             row.slider.setSliderStyle(juce::Slider::LinearHorizontal);
             row.slider.setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
             row.slider.setPopupDisplayEnabled(false, false, nullptr);
@@ -43,27 +59,18 @@ public:
         addAndMakeVisible(title);
     }
 
+    ~HarmonicsPanel() override { for(auto& row:rows) row.slider.setLookAndFeel(nullptr); }
+
     void paint(juce::Graphics& g) override
     {
-        auto b = getLocalBounds().toFloat().reduced(2.0f);
+        hardwareui::juce_adapter::drawPanel(g,getLocalBounds().toFloat().reduced(1));
 
-        juce::ColourGradient fill(Theme::panelTop, 0.0f, b.getY(),
-                                  Theme::panelBottom, 0.0f, b.getBottom(), false);
-        g.setGradientFill(fill);
-        g.fillRoundedRectangle(b, 7.0f);
-
-        g.setColour(Theme::panelHighlight);
-        g.drawHorizontalLine(static_cast<int>(b.getY()) + 1,
-                             static_cast<int>(b.getX()) + 8,
-                             static_cast<int>(b.getRight()) - 8);
-        g.setColour(Theme::panelOutline);
-        g.drawRoundedRectangle(b, 7.0f, 1.0f);
     }
 
     void resized() override
     {
         auto b = getLocalBounds();
-        title.setBounds(b.removeFromTop(20).reduced(8, 0));
+        title.setBounds(b.removeFromTop(30).reduced(14, 0));
 
         b.reduce(6, 2);
         int rowH = b.getHeight() / 4;
@@ -81,6 +88,7 @@ private:
         std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
     };
 
+    ConsoleFaderLook faderLook;
     juce::Label title;
     std::array<Row, 4> rows;
 };

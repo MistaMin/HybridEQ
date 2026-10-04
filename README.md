@@ -12,9 +12,10 @@ Current version: see [`VERSION`](VERSION).
 
 ## Building
 
-Requires CMake 3.22+, a C++20 compiler, and (for the AAX target only) Avid's
-AAX SDK checked out as a sibling directory named `../aax-sdk-2-8-1` relative
-to this repo. JUCE itself is fetched automatically via CMake's
+Requires CMake 3.22+ and a C++20 compiler. A HardwareUI source snapshot is
+included in `third_party/HardwareUI`; set `HARDWAREUI_ROOT` to use a separate
+checkout instead. AAX is added only when Avid's SDK exists at
+`../aax-sdk-2-8-1`, or at the path specified by `HYBRIDEQ_AAX_SDK`. JUCE itself is fetched automatically via CMake's
 `FetchContent` — no manual setup needed for VST3/AU/Standalone.
 
 ```bash
@@ -52,3 +53,27 @@ AAX note in [`LICENSE`](LICENSE) — this repository's source can still be
 used to build AAX locally for personal use if you obtain the SDK yourself,
 but pre-built AAX binaries should not be redistributed from here without
 your own valid Avid developer agreement.
+
+## HardwareUI development editor
+
+Debug builds include a **Design** inspector for generated knobs. Edit style,
+label, hex colour, font size and panel-relative geometry; Apply, Undo, Save CSV
+and Load CSV are available. Save the accepted design to `Designs/HybridEQ.csv`
+and rebuild to embed it. Release builds exclude the editor entirely. The
+finished panel scales proportionally with the window.
+
+## Console appearance
+
+The console edition uses HardwareUI's generated fluted black grips and coloured
+knob caps, fixed calibration marks, shaded mechanical keys, recessed numeric
+readouts and a charcoal rack faceplate. Choice keys open dropdown menus using
+the existing DSP choice values. Six strips share fixed control slots and switch
+positions. Resizing preserves the panel proportions. The existing DSP and
+parameter IDs are retained.
+
+## Version 1.6.0
+
+Introduces the console interface: generated hardware knobs, aligned channel
+strips, mechanical keys with dropdown choices, proportional resizing, and a
+development-only visual inspector. Accepted designs are embedded from CSV.
+The UI toolkit is included as source so fresh checkouts are self-contained.

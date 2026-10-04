@@ -3,19 +3,21 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "Theme.h"
 #include <memory>
+#include <HardwareUI.h>
 
 // Compact look for cycle buttons: small bold text, subtle chrome.
 class CycleButtonLNF final : public juce::LookAndFeel_V4 {
 public:
+    void drawButtonBackground(juce::Graphics& g,juce::Button& b,const juce::Colour& base,bool over,bool down) override {
+        hardwareui::juce_adapter::drawKey(g,b.getLocalBounds().toFloat().reduced(2),over?base.brighter(0.06f):base,down);
+    }
     juce::Font getTextButtonFont(juce::TextButton&, int) override
     {
         return juce::FontOptions(10.5f, juce::Font::bold);
     }
 };
 
-// A single button that advances to the next choice each time it is clicked,
-// bound directly to an AudioParameterChoice. Replaces juce::ComboBox, whose
-// popup never got populated with items in the previous implementation.
+// A mechanical choice key opens a dropdown bound to stable DSP choice values.
 class CycleButton : public juce::Component, private juce::AudioProcessorValueTreeState::Listener {
 public:
     CycleButton(juce::AudioProcessorValueTreeState& state, const juce::String& paramIDToUse,
@@ -26,8 +28,7 @@ public:
         jassert(param != nullptr);
 
         title.setText(labelText, juce::dontSendNotification);
-        title.setJustificationType(isHorizontal ? juce::Justification::centredRight
-                                                : juce::Justification::centred);
+        title.setJustificationType(juce::Justification::centredLeft);
         title.setFont(juce::FontOptions(isHorizontal ? 9.5f : 10.5f, juce::Font::bold));
         title.setColour(juce::Label::textColourId,
                         isHorizontal ? Theme::textMid : Theme::textDark);
@@ -39,7 +40,7 @@ public:
         button.setColour(juce::TextButton::buttonOnColourId, Theme::buttonBottom);
         button.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
         button.setColour(juce::TextButton::textColourOnId, Theme::buttonText);
-        button.onClick = [this] { cycle(); };
+        button.onClick = [this] { showChoices(); };
         addAndMakeVisible(button);
 
         updateText();
@@ -57,11 +58,14 @@ public:
         if (isHorizontal) {
             title.setBounds(b.removeFromLeft(42));
             button.setBounds(b.reduced(0, 1));
-        } else {
+        } else if(getHeight()>44) {
+            title.setJustificationType(juce::Justification::centred);
             title.setBounds(b.removeFromTop(14));
-            b.removeFromTop(3);
-            int buttonH = juce::jmin(26, b.getHeight());
-            button.setBounds(2, b.getY(), getWidth() - 4, buttonH);
+            button.setBounds(b.withHeight(28).withY(b.getY()+6).reduced(2,1));
+        } else {
+            title.setJustificationType(juce::Justification::centredLeft);
+            title.setBounds(b.removeFromLeft(40));
+            button.setBounds(b.reduced(1,3));
         }
     }
 
@@ -92,15 +96,20 @@ public:
     void setButtonTooltip(const juce::String& tip) { button.setTooltip(tip); }
 
 private:
-    void cycle()
+    void showChoices()
     {
-        if (param == nullptr) return;
-        int numChoices = param->choices.size();
-        int next = (param->getIndex() + 1) % numChoices;
-        param->beginChangeGesture();
-        param->setValueNotifyingHost(param->getNormalisableRange().convertTo0to1(static_cast<float>(next)));
-        param->endChangeGesture();
-        updateText();
+        if(!param)return;
+        juce::PopupMenu menu;
+        for(int n=0;n<param->choices.size();++n)
+            menu.addItem(n+1,param->choices[n],true,n==param->getIndex());
+        menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&button),
+            [safe=juce::Component::SafePointer<CycleButton>(this)](int result){
+                if(!safe || result<=0)return;
+                auto* parameter=safe->param;
+                parameter->beginChangeGesture();
+                parameter->setValueNotifyingHost(parameter->getNormalisableRange().convertTo0to1(float(result-1)));
+                parameter->endChangeGesture();safe->updateText();
+            });
     }
 
     void parameterChanged(const juce::String&, float) override
