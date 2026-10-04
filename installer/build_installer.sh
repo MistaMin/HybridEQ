@@ -82,7 +82,15 @@ $AAX_LI
 </body></html>
 HTML
 
-cp "$PROJECT_DIR/LICENSE" "$STAGING/license.txt"
+# Present the binary terms and retain MIT component notices in installed files.
+LICENSE_DIR="$PKG_ROOT/Library/Application Support/HybridAudio/HybridEQ/Licenses"
+mkdir -p "$LICENSE_DIR"
+cp "$PROJECT_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/BINARY_LICENSE.txt"
+cp "$PROJECT_DIR/LICENSE" "$LICENSE_DIR/LICENSE"
+cp "$PROJECT_DIR/THIRD_PARTY_NOTICES.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt"
+cp "$PROJECT_DIR/third_party/GoodLookinUI/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt"
+cat "$LICENSE_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt" \
+    "$LICENSE_DIR/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt" > "$STAGING/license.txt"
 
 cat > "$STAGING/conclusion.html" << 'HTML'
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">

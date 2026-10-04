@@ -1,13 +1,3 @@
-FREEWARE NOTICE (applies to the compiled HybridEQ binaries distributed via
-GitHub Releases / the installer / the DMG):
-
-The compiled HybridEQ plug-ins and standalone app are freeware — you may use
-them, for any purpose, at no cost. The MIT License below applies to
-HybridEQ's source code in this repository; it does not change the fact that
-the compiled downloads are free to use.
-
----
-
 MIT License
 
 Copyright (c) 2026 Marcos Deida
@@ -29,34 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-NOTE ON THIRD-PARTY DEPENDENCIES (not part of the MIT text above):
-
-HybridEQ's own source code (everything in this repository) is released under
-the MIT License above. This project is built on the JUCE framework
-(https://juce.com), which is fetched at build time and not redistributed
-here. JUCE is dual-licensed, and whoever compiles this code into a binary is
-bound by their own JUCE license, independent of HybridEQ's MIT license:
-  - If you hold a paid JUCE commercial license (Starter, Indie, Pro, or
-    Educational), you may compile and distribute closed-source binaries
-    under that license's terms (including its revenue/funding limits, where
-    applicable).
-  - If you do not hold a commercial JUCE license, JUCE's free tier requires
-    your compiled binary to be licensed under the AGPLv3 instead.
-This MIT license does not grant you a JUCE license of any kind — you must
-hold your own valid JUCE license (commercial or AGPLv3) to legally
-distribute anything you build from this source.
-
-AAX (Pro Tools) BUILD TARGET: the AAX plug-in format requires Avid's
-proprietary AAX SDK, which is provided under Avid's own developer
-agreement/NDA and is NOT included in, or redistributed by, this
-repository. Avid's terms are incompatible with GPL/AGPL-style source
-disclosure requirements, and only developers formally approved and
-PACE-code-signed through the Avid Developer Program can legally
-distribute functional (non-"Developer build") AAX plugins. Building the
-AAX target from this source is possible for personal/local use if you
-separately obtain the AAX SDK yourself, but pre-built AAX binaries should
-not be publicly redistributed from this project unless the distributor
-holds their own valid Avid developer agreement.

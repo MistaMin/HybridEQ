@@ -28,31 +28,30 @@ Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, or
 
 ## License
 
-The compiled HybridEQ binaries distributed via GitHub Releases (the
-installer, the DMG, and the plug-ins/standalone app inside it) are
-**freeware** — free to use, for any purpose, at no cost.
+Official compiled HybridEQ plug-ins, standalone applications, and installers
+are **proprietary freeware**, free to use for personal and commercial audio
+production. They are distributed under the [binary freeware license](BINARY_LICENSE.txt),
+not an open-source license. The publisher builds them under a JUCE commercial
+license; end users do not need a JUCE developer license to use these downloads.
 
-Separately, HybridEQ's own source code in this repository is released under
-the [MIT License](LICENSE).
+HybridEQ's own source code is separately [MIT licensed](LICENSE). The bundled
+GoodLookinUI toolkit, including its core and JUCE adapter, has its own
+[MIT license](third_party/GoodLookinUI/LICENSE). Those component permissions
+remain intact when included in the freeware binaries, and their copyright and
+permission notices accompany binary distributions.
 
-This project is built on [JUCE](https://juce.com), which is dual-licensed and
-not covered by HybridEQ's MIT license. Whoever compiles this code into a
-binary is bound by their own JUCE license: a paid commercial JUCE license
-(Starter, Indie, Pro, or Educational) permits closed-source distribution
-under that tier's terms, while without one, JUCE's free tier requires the
-resulting binary to be licensed under AGPLv3 instead. See the notes at the
-bottom of [`LICENSE`](LICENSE) for details, and JUCE's own terms at
-https://juce.com/juce-8-licence.
+JUCE and optional Avid SDK code retain their own licenses. Anyone building or
+distributing their own version must comply with the applicable dependency
+licenses; the publisher's JUCE commercial license is not transferred with the
+source. See [component notices](THIRD_PARTY_NOTICES.txt) and the
+[JUCE 8 terms](https://juce.com/legal/juce-8-licence/). Choosing JUCE's
+open-source licensing route requires satisfying its applicable terms.
+AAX additionally requires Avid's SDK/developer permissions and applicable
+signing requirements; it is excluded from public packaging by default.
 
-**AAX (Pro Tools) target:** building AAX additionally requires Avid's
-proprietary AAX SDK (not included in this repo, and not redistributable).
-Avid's SDK/developer terms are incompatible with AGPL-style source
-disclosure, and legally distributing a working (non-developer-build) AAX
-plugin requires being an approved, PACE-code-signed Avid developer. See the
-AAX note in [`LICENSE`](LICENSE) — this repository's source can still be
-used to build AAX locally for personal use if you obtain the SDK yourself,
-but pre-built AAX binaries should not be redistributed from here without
-your own valid Avid developer agreement.
+Binary bundles include license notices. The macOS installer also displays the
+binary freeware terms and installs the notices in
+`/Library/Application Support/HybridAudio/HybridEQ/Licenses`.
 
 ## GoodLookinUI development editor
 
