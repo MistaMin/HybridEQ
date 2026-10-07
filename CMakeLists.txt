@@ -34,6 +34,12 @@ set(HYBRIDEQ_FORMATS VST3 Standalone)
 if(APPLE)
     list(APPEND HYBRIDEQ_FORMATS AU)
 endif()
+# Open formats (also the ones used on Linux): LV2 through JUCE, CLAP through clap-juce-extensions (below).
+option(HYBRIDEQ_LV2 "Build the LV2 format" ON)
+option(HYBRIDEQ_CLAP "Build the CLAP format (fetches clap-juce-extensions)" ON)
+if(HYBRIDEQ_LV2)
+    list(APPEND HYBRIDEQ_FORMATS LV2)
+endif()
 set(HYBRIDEQ_AAX_SDK "${CMAKE_SOURCE_DIR}/../aax-sdk-2-8-1" CACHE PATH "Optional Avid AAX SDK")
 if(EXISTS "${HYBRIDEQ_AAX_SDK}/Interfaces/AAX.h")
     juce_set_aax_sdk_path("${HYBRIDEQ_AAX_SDK}")
@@ -50,9 +56,26 @@ juce_add_plugin(HybridEQ
     PLUGIN_MANUFACTURER_CODE Hybr
     PLUGIN_CODE              HyEq
     FORMATS                  ${HYBRIDEQ_FORMATS}
+    LV2URI                   "https://github.com/MistaMin/HybridEQ"
     PRODUCT_NAME             "HybridEQ"
     COPY_PLUGIN_AFTER_BUILD  FALSE
 )
+
+if(HYBRIDEQ_CLAP)
+    FetchContent_Declare(
+        clap_juce_extensions
+        GIT_REPOSITORY https://github.com/free-audio/clap-juce-extensions.git
+        GIT_TAG        7adee3a1bd4684d4caa5601100e364abccff4b4d
+    )
+    FetchContent_MakeAvailable(clap_juce_extensions)
+    clap_juce_extensions_plugin(
+        TARGET HybridEQ
+        CLAP_ID "com.opengrid.hybrideq"
+        CLAP_FEATURES audio-effect equalizer stereo
+        CLAP_MANUAL_URL "https://github.com/MistaMin/HybridEQ"
+        CLAP_SUPPORT_URL "https://github.com/MistaMin/HybridEQ")
+    list(APPEND HYBRIDEQ_FORMATS CLAP)
+endif()
 
 target_sources(HybridEQ PRIVATE
     Source/PluginProcessor.cpp

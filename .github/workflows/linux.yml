@@ -1,0 +1,34 @@
+# Builds the Linux formats (VST3, LV2, CLAP, standalone) on GitHub's Ubuntu runners and uploads them as artifacts.
+name: Linux build
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build pkg-config libasound2-dev libjack-jackd2-dev \
+            libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
+            libfreetype-dev libfontconfig1-dev libgl1-mesa-dev
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DHYBRIDEQ_BUILD_TESTS=OFF
+      - name: Build
+        run: cmake --build build --target HybridEQ_VST3 HybridEQ_LV2 HybridEQ_CLAP HybridEQ_Standalone
+      - name: Package
+        run: |
+          mkdir -p out && cp -r build/HybridEQ_artefacts/Release/VST3 build/HybridEQ_artefacts/Release/LV2 \
+            build/HybridEQ_artefacts/Release/CLAP build/HybridEQ_artefacts/Release/Standalone out/
+          cp BINARY_LICENSE.txt THIRD_PARTY_NOTICES.txt LICENSE out/
+          tar -C out -czf HybridEQ-${{ github.ref_name }}-linux-x86_64.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-linux
+          path: HybridEQ-*-linux-x86_64.tar.gz

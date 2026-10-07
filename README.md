@@ -24,8 +24,13 @@ cmake -B build -G Xcode
 cmake --build build --config Release --target HybridEQ_VST3
 ```
 
-Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, or
-`HybridEQ_Standalone` for the other formats.
+Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, `HybridEQ_LV2`,
+`HybridEQ_CLAP` or `HybridEQ_Standalone` for the other formats. LV2 and CLAP
+(the open formats for Linux) are on by default; turn them off with
+`-DHYBRIDEQ_LV2=OFF` / `-DHYBRIDEQ_CLAP=OFF` (CLAP fetches clap-juce-extensions
+at configure time). Linux needs the usual JUCE dependencies (ALSA/JACK, X11,
+freetype, fontconfig, OpenGL); the `Linux build` GitHub Actions workflow shows
+the exact package list and builds them.
 
 ## License
 
