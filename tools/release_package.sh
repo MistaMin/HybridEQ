@@ -19,8 +19,11 @@ security find-identity -v -p codesigning | grep -E "Developer ID" || { echo "No 
 echo "== 1/5 Signing bundles (Developer ID, timestamp, hardened runtime)"
 codesign --force --deep --timestamp --options runtime --sign "$APP_ID" "$ART/VST3/HybridEQ.vst3"
 codesign --force --deep --timestamp --options runtime --sign "$APP_ID" "$ART/AU/HybridEQ.component"
+codesign --force --deep --timestamp --options runtime --sign "$APP_ID" "$ART/CLAP/HybridEQ.clap"
+# LV2 is a plain folder (not a bundle): sign the binary inside it
+codesign --force --timestamp --options runtime --sign "$APP_ID" "$ART/LV2/HybridEQ.lv2/libHybridEQ.so"
 codesign --force --deep --timestamp --options runtime --entitlements installer/standalone.entitlements --sign "$APP_ID" "$ART/Standalone/HybridEQ.app"
-for b in "$ART/VST3/HybridEQ.vst3" "$ART/AU/HybridEQ.component" "$ART/Standalone/HybridEQ.app"; do
+for b in "$ART/VST3/HybridEQ.vst3" "$ART/AU/HybridEQ.component" "$ART/CLAP/HybridEQ.clap" "$ART/LV2/HybridEQ.lv2/libHybridEQ.so" "$ART/Standalone/HybridEQ.app"; do
     codesign --verify --deep --strict "$b"
     codesign -dv "$b" 2>&1 | grep -E "Authority=Developer ID Application|Timestamp" | head -2
 done
@@ -36,11 +39,12 @@ xcrun notarytool submit "$PKG" --keychain-profile AC_NOTARY --wait
 xcrun stapler staple "$PKG"
 
 echo "== 4/5 Building the DMG"
-cp BINARY_LICENSE.txt "$OUT/LICENSE.txt"; cat THIRD_PARTY_NOTICES.txt >> "$OUT/LICENSE.txt"
+{ cat BINARY_LICENSE.txt; echo; echo; cat THIRD_PARTY_NOTICES.txt; echo; echo; cat LICENSE; echo; echo; cat third_party/GoodLookinUI/LICENSE; } > "$OUT/LICENSE.txt"
+cp -R Licenses/third-party "$OUT/Licenses"
 cat > "$OUT/README.txt" <<README
 HybridEQ $VERSION - OpenGrid
-Run HybridEQ-Installer.pkg. It installs the VST3, Audio Unit and standalone app (Apple silicon).
-Restart your DAW and rescan plug-ins afterwards. License and trademark notices: LICENSE.txt.
+Run HybridEQ-Installer.pkg. It installs the VST3, Audio Unit, CLAP, LV2 and standalone app (Apple silicon).
+Restart your DAW and rescan plug-ins afterwards. License and trademark notices: LICENSE.txt, and the Licenses folder for third-party components.
 README
 rm -f "$DMG"
 hdiutil create -volname "HybridEQ $VERSION" -srcfolder "$OUT" -ov -format UDZO "$DMG"

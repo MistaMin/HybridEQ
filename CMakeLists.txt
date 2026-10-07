@@ -107,7 +107,9 @@ target_link_libraries(HybridEQ
 
 # Keep source/component MIT notices with standalone and raw plugin downloads.
 foreach(format IN LISTS HYBRIDEQ_FORMATS)
-    if(APPLE)
+    if(format STREQUAL "LV2")
+        set(notice_dir "$<TARGET_FILE_DIR:HybridEQ_${format}>/Licenses")
+    elseif(APPLE)
         set(notice_dir "$<TARGET_FILE_DIR:HybridEQ_${format}>/../Resources/Licenses")
     else()
         set(notice_dir "$<TARGET_FILE_DIR:HybridEQ_${format}>/HybridEQ-Licenses")
@@ -122,6 +124,9 @@ foreach(format IN LISTS HYBRIDEQ_FORMATS)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_SOURCE_DIR}/third_party/GoodLookinUI/LICENSE"
             "${notice_dir}/GoodLookinUI-LICENSE.txt"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_CURRENT_SOURCE_DIR}/Licenses/third-party"
+            "${notice_dir}/third-party"
         VERBATIM)
 endforeach()
 

@@ -20,8 +20,9 @@ license. End users do not need a JUCE developer license to install or use
 these binaries. The publisher's JUCE license is not transferred to anyone
 building or distributing their own versions from source.
 HybridEQ's MIT-licensed source and the MIT-licensed GoodLookinUI components
-retain their respective MIT permissions. See THIRD_PARTY_NOTICES.txt and
-the included MIT license texts. These freeware terms do not restrict rights
+retain their respective MIT permissions. See THIRD_PARTY_NOTICES.txt, the
+included MIT license texts and the third-party license texts in the
+Licenses/third-party folder (installed with the binaries). These freeware terms do not restrict rights
 granted by those component licenses. External components retain their own
 licenses; no license to JUCE or the Avid AAX SDK is granted by this document.
 
