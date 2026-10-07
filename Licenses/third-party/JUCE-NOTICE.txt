@@ -2,7 +2,7 @@ JUCE
 HybridEQ is built with the JUCE framework (https://juce.com). The official HybridEQ binaries are built under
 the publisher's JUCE commercial license; end users do not need a JUCE license to install or use them.
 JUCE is not covered by the MIT licenses of HybridEQ and GoodLookinUI. Anyone building their own version
-must comply with the JUCE license that applies to their build (https://juce.com/legal/juce-8-licence/).
+must comply with the JUCE license that applies to their build (JUCE 9: https://juce.com/legal/juce-9-licence/).
 Libraries bundled inside JUCE keep their own licenses; the ones compiled into HybridEQ are reproduced in
-this folder: zlib, libpng, libjpeg (IJG), FLAC, Ogg Vorbis, HarfBuzz and SheenBidi. The plug-in format
+this folder: zlib, libpng, libjpeg (IJG), libwebp, FLAC, Ogg, Vorbis, Opus, HarfBuzz, SheenBidi and LunaSVG. The plug-in format
 SDKs are also reproduced here: VST3 (MIT), LV2 (and lilv/serd/sord/sratom), CLAP and Audio Unit.

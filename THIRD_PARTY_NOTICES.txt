@@ -13,14 +13,14 @@ The core and JUCE adapter are independent toolkit code, not a JUCE fork.
 Include the GoodLookinUI copyright and MIT permission notice when distributing
 copies or substantial portions of the toolkit, including compiled copies.
 
-JUCE 8.0.15
-Copyright holders and licensing: https://github.com/juce-framework/JUCE/tree/8.0.15
+JUCE 9.0.3
+Copyright holders and licensing: https://github.com/juce-framework/JUCE/tree/9.0.3
 JUCE is fetched during source builds and is not included as source here.
 Official HybridEQ binaries use the publisher's commercial JUCE license.
 JUCE is not covered by the MIT licenses above. Independent builders must
 comply with the JUCE license applicable to their build and distribution;
 the publisher's commercial license is not supplied with this repository.
-JUCE 8 commercial terms: https://juce.com/legal/juce-8-licence/
+JUCE 9 commercial terms: https://juce.com/legal/juce-9-licence/
 JUCE's alternative open-source terms and component notices are in its source.
 
 Included third-party components
@@ -34,9 +34,9 @@ repository, and is installed with the binaries (see "Where the licenses are" at 
     CLAP SDK and clap-helpers (MIT) and clap-juce-extensions (MIT): CLAP-*.txt, clap-juce-extensions-LICENSE.txt
     Audio Unit SDK (Apple, Apache License 2.0): AudioUnitSDK-LICENSE-Apache-2.0.txt
   Libraries bundled inside JUCE and compiled into the binaries
-    zlib, libpng, libjpeg (Independent JPEG Group), FLAC, Ogg Vorbis (libvorbis), HarfBuzz, SheenBidi:
-    zlib-LICENSE.txt, libpng-LICENSE.txt, libjpeg-IJG-README.txt, FLAC-Licence.txt, OggVorbis-Licence.txt,
-    libvorbis-COPYING.txt, HarfBuzz-COPYING.txt, SheenBidi-LICENSE.txt
+    zlib, libpng, libjpeg (Independent JPEG Group), libwebp, FLAC, Ogg, Vorbis, Opus (libopus, opusfile,
+    libopusenc), HarfBuzz, SheenBidi, LunaSVG (with PlutoVG): the matching *-LICENSE.txt / *-COPYING.txt /
+    *-Licence.txt files in the same folder
   JUCE itself: JUCE-NOTICE.txt
 
 Avid AAX SDK (optional)

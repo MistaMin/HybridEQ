@@ -220,6 +220,12 @@ $AAX_DICT
 </plist>
 COMPONENTPLIST
 
+# Remove real macOS helper files (._*, .DS_Store) and clearable extended attributes before packaging. The protected
+# com.apple.provenance attribute cannot be cleared, so the component package is cleaned afterwards (strip_appledouble.py).
+find "$PKG_ROOT" \( -name '._*' -o -name '.DS_Store' \) -delete
+xattr -cr "$PKG_ROOT" 2>/dev/null || true
+export COPYFILE_DISABLE=1
+
 echo "Building component package..."
 pkgbuild \
     --root "$PKG_ROOT" \
@@ -230,6 +236,9 @@ pkgbuild \
     --ownership recommended \
     --install-location "/" \
     "$STAGING/HybridEQ.pkg"
+
+# Drop the AppleDouble "._" entries pkgbuild wrote for macOS's protected provenance attribute (see the script).
+python3 "$SCRIPT_DIR/strip_appledouble.py" "$STAGING/HybridEQ.pkg"
 
 echo "Building product installer..."
 productbuild \

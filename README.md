@@ -50,7 +50,7 @@ JUCE and optional Avid SDK code retain their own licenses. Anyone building or
 distributing their own version must comply with the applicable dependency
 licenses; the publisher's JUCE commercial license is not transferred with the
 source. See [component notices](THIRD_PARTY_NOTICES.txt) and the
-[JUCE 8 terms](https://juce.com/legal/juce-8-licence/). Choosing JUCE's
+[JUCE 9 terms](https://juce.com/legal/juce-9-licence/). Choosing JUCE's
 open-source licensing route requires satisfying its applicable terms.
 AAX additionally requires Avid's SDK/developer permissions and applicable
 signing requirements; it is excluded from public packaging by default.
@@ -88,6 +88,11 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.8
+
+- Built with **JUCE 9.0.3** (JUCE 9 End User Licence Agreement; was JUCE 8.0.15). The bundled-library license
+  texts are regenerated for JUCE 9 (adds Opus, libwebp and LunaSVG).
 
 ## Version 1.6.7
 
