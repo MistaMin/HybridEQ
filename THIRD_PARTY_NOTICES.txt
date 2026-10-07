@@ -28,3 +28,11 @@ The AAX SDK is not included in this repository and is not MIT licensed.
 Building or distributing AAX requires compliance with Avid's SDK/developer
 terms and any applicable signing requirements. A JUCE commercial license
 does not grant rights to the AAX SDK. Public packaging excludes AAX by default.
+
+Trademarks
+Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of
+their respective owners. HybridEQ is an independent project: those companies
+are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the
+OpenGrid Project or this plug-in. The names appear only to describe the
+classic designs that inspired each model; every model here is an independent
+circuit simulation, and no code or text from those companies is included.

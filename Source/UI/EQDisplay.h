@@ -1,4 +1,5 @@
 #pragma once
+#include "../Toolkit.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "../DSP/EQFilters.h"
@@ -50,7 +51,21 @@ public:
         }
     }
 
-    void timerCallback() override { repaint(); }
+    // Transparent mode for sitting on top of the full-window analyser: draws only the curve and the
+    // draggable nodes (plus a gain scale), uses the whole component as the plot, and lets mouse
+    // clicks pass through everywhere except on a node.
+    void setOverlayMode(bool on) { overlay = on; repaint(); }
+    bool hitTest(int x, int y) override { return !overlay || findNearestNode({float(x), float(y)}) >= 0; }
+
+    // Optional analyser drawn behind the EQ curve (owned elsewhere).
+    void setSpectrum(SpectrumRenderer* s) { spectrum = s; startTimerHz(s && s->isOn() ? 30 : 20); }
+    void timerCallback() override
+    {
+        if (overlay && !isShowing()) return;
+        if (spectrum && spectrum->isOn()) { if (isShowing()) spectrum->update(1.0f / float(juce::jmax(1, getTimerInterval() > 0 ? 1000 / getTimerInterval() : 30))); }
+        repaint();
+    }
+    void refreshRate() { startTimerHz(spectrum && spectrum->isOn() ? 30 : 20); }
 
     void parameterChanged(const juce::String&, float) override
     {
@@ -62,14 +77,16 @@ public:
 
     void paint(juce::Graphics& g) override
     {
+        if (overlay) { paintOverlay(g); return; }
         auto bounds = getLocalBounds().toFloat();
         g.setColour(Theme::scopeBg);
         g.fillRoundedRectangle(bounds, 6.0f);
         g.setColour(Theme::scopeOutline);
         g.drawRoundedRectangle(bounds, 6.0f, 1.0f);
 
-        auto plot = bounds.reduced(6.0f).withTrimmedBottom(12.0f);
+        auto plot = plotRect();
         drawGrid(g, plot);
+        if (spectrum) spectrum->paint(g, plot);
         drawEQCurve(g, plot);
         drawNodes(g, plot);
     }
@@ -82,7 +99,7 @@ public:
     void mouseDrag(const juce::MouseEvent& e) override
     {
         if (dragNodeIndex < 0) return;
-        auto plot = getLocalBounds().toFloat().reduced(6.0f).withTrimmedBottom(12.0f);
+        auto plot = plotRect();
         auto& node = nodes[static_cast<size_t>(dragNodeIndex)];
 
         float freq = xToFreq(e.position.x, plot);
@@ -105,13 +122,51 @@ public:
         auto& node = nodes[static_cast<size_t>(idx)];
         if (node.qParamId.isEmpty()) return;
         if (auto* p = apvts.getParameter(node.qParamId)) {
+            // Faster spinning moves Q further per notch: the gap between wheel events sets a boost.
+            const auto now = juce::Time::getMillisecondCounter();
+            const auto gap = now - lastWheelMs;
+            lastWheelMs = now;
+            float boost = gap < 30 ? 6.0f : gap < 60 ? 4.0f : gap < 120 ? 2.5f : gap < 250 ? 1.5f : 1.0f;
+            if (wheel.isSmooth) boost = juce::jmin(boost, 2.0f);   // trackpads already send many small events
             float current = p->getValue();
-            float delta = wheel.deltaY * 0.05f;
+            float delta = wheel.deltaY * 0.05f * boost;
             p->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, current + delta));
         }
     }
 
 private:
+    SpectrumRenderer* spectrum = nullptr;
+    bool overlay = false;
+    juce::uint32 lastWheelMs = 0;
+
+    juce::Rectangle<float> plotRect() const
+    {
+        auto b = getLocalBounds().toFloat();
+        return overlay ? b : b.reduced(6.0f).withTrimmedBottom(12.0f);
+    }
+
+    void paintOverlay(juce::Graphics& g) const
+    {
+        auto plot = plotRect();
+        // EQ gain scale on the right edge (the nodes sit on this axis, not on the dB-level axis behind)
+        g.setFont(juce::FontOptions(9.0f, juce::Font::bold));
+        for (float db : {24.0f, 12.0f, 0.0f, -12.0f, -24.0f}) {
+            const float y = gainToY(db, plot);
+            g.setColour(juce::Colour(db == 0.0f ? 0x55ffffff : 0x22ffffff));
+            for (float x = plot.getX(); x < plot.getRight(); x += 8.0f) g.fillRect(x, y, 4.0f, 1.0f);
+            g.setColour(Theme::gridText);
+            g.drawText((db > 0 ? "+" : "") + juce::String(int(db)) + " dB EQ", int(plot.getRight()) - 64, int(y) - 12, 62, 11, juce::Justification::centredRight);
+        }
+        juce::Path path;
+        bool started = false;
+        for (float x = plot.getX(); x <= plot.getRight(); x += 1.0f) {
+            const float y = gainToY(static_cast<float>(eq.getMagnitudeDB(static_cast<double>(xToFreq(x, plot)))), plot);
+            if (!started) { path.startNewSubPath(x, y); started = true; } else path.lineTo(x, y);
+        }
+        g.setColour(juce::Colour(0x66000000)); g.strokePath(path, juce::PathStrokeType(3.5f));
+        g.setColour(Theme::curveStroke); g.strokePath(path, juce::PathStrokeType(1.8f));
+        drawNodes(g, plot);
+    }
     float freqToX(float freq, juce::Rectangle<float> b) const
     {
         float logMin = std::log10(20.0f);
@@ -226,8 +281,8 @@ private:
 
     int findNearestNode(juce::Point<float> pos) const
     {
-        auto b = getLocalBounds().toFloat().reduced(6.0f).withTrimmedBottom(12.0f);
-        float bestDist = 30.0f;
+        auto b = plotRect();
+        float bestDist = overlay ? 18.0f : 30.0f;
         int bestIdx = -1;
         for (size_t i = 0; i < nodes.size(); ++i) {
             auto& node = nodes[i];

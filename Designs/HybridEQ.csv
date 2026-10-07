@@ -14,5 +14,5 @@ mid2Freq,mid2Freq,FREQ,console,#6EA68B,12,152,150,98,10
 mid2Q,mid2Q,Q,console,#6EA68B,12,252,150,98,10
 highGain,highGain,GAIN,console,#B96057,12,52,150,98,10
 highFreq,highFreq,FREQ,console,#B96057,12,152,150,98,10
-preampGain,preampGain,GAIN,console,#C7A66A,136,50,88,76,10
-outputGain,outputGain,OUTPUT,console,#B9BDB3,202,50,88,76,10
+preampGain,preampGain,GAIN,console,#C7A66A,107,50,78,76,10
+outputGain,outputGain,OUTPUT,console,#B9BDB3,144,50,78,76,10

@@ -8,7 +8,7 @@ STAGING="$SCRIPT_DIR/staging"
 PKG_ROOT="$STAGING/root"
 SCRIPTS_DIR="$STAGING/scripts"
 OUTPUT="$PROJECT_DIR/build3/HybridEQ-Installer.pkg"
-IDENTIFIER="com.hybridaudio.hybrideq"
+IDENTIFIER="com.opengrid.hybrideq"
 
 # ---- Version scheme ----
 # One source of truth: $PROJECT_DIR/VERSION  (MAJOR.MINOR.PATCH, e.g. "1.2.0").
@@ -83,7 +83,7 @@ $AAX_LI
 HTML
 
 # Present the binary terms and retain MIT component notices in installed files.
-LICENSE_DIR="$PKG_ROOT/Library/Application Support/HybridAudio/HybridEQ/Licenses"
+LICENSE_DIR="$PKG_ROOT/Library/Application Support/OpenGrid/HybridEQ/Licenses"
 mkdir -p "$LICENSE_DIR"
 cp "$PROJECT_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/BINARY_LICENSE.txt"
 cp "$PROJECT_DIR/LICENSE" "$LICENSE_DIR/LICENSE"
@@ -123,14 +123,14 @@ function installCheck() {
     </script>
     <choices-outline>
         <line choice="default">
-            <line choice="com.hybridaudio.hybrideq.pkg"/>
+            <line choice="com.opengrid.hybrideq.pkg"/>
         </line>
     </choices-outline>
     <choice id="default"/>
-    <choice id="com.hybridaudio.hybrideq.pkg" visible="false">
-        <pkg-ref id="com.hybridaudio.hybrideq.pkg"/>
+    <choice id="com.opengrid.hybrideq.pkg" visible="false">
+        <pkg-ref id="com.opengrid.hybrideq.pkg"/>
     </choice>
-    <pkg-ref id="com.hybridaudio.hybrideq.pkg" version="$VERSION" auth="Root" onConclusion="none">HybridEQ.pkg</pkg-ref>
+    <pkg-ref id="com.opengrid.hybrideq.pkg" version="$VERSION" auth="Root" onConclusion="none">HybridEQ.pkg</pkg-ref>
 </installer-gui-script>
 DIST
 

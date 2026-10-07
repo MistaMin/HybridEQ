@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcos Deida
 
 Scope
 This license applies to the official compiled HybridEQ plug-ins, standalone
-application, and installers distributed by Marcos Deida / HybridAudio.
+application, and installers distributed by Marcos Deida / OpenGrid.
 HybridEQ source code is separately available under the MIT License.
 
 Permission to use
@@ -31,3 +31,11 @@ IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
 PURPOSE AND NONINFRINGEMENT. TO THE EXTENT PERMITTED BY APPLICABLE LAW,
 THE COPYRIGHT HOLDER IS NOT LIABLE FOR CLAIMS, DAMAGES OR OTHER LIABILITY
 ARISING FROM THE BINARIES OR THEIR USE.
+
+Trademarks
+Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of
+their respective owners. HybridEQ is an independent project: those companies
+are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the
+OpenGrid Project or this plug-in. The names appear only to describe the
+classic designs that inspired each model; every model here is an independent
+circuit simulation, and no code or text from those companies is included.

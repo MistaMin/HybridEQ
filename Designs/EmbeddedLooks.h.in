@@ -1,0 +1,2 @@
+#pragma once
+inline constexpr const char* hybridEQLooks = R"huilooks(@HYBRIDEQ_LOOKS_TEXT@)huilooks";

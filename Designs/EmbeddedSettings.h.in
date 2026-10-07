@@ -1,0 +1,2 @@
+#pragma once
+inline constexpr const char* hybridEQSettings = R"huisettings(@HYBRIDEQ_SETTINGS_TEXT@)huisettings";

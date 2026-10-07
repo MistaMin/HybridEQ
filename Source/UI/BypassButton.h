@@ -4,6 +4,7 @@
 #include "Theme.h"
 #include <memory>
 #include <GoodLookinUI.h>
+#include <Meters.h>
 
 // Tiny "B" toggle sitting in the corner of each band panel. When bypass is
 // engaged the button lights up with the band's accent colour and the rest of
@@ -21,15 +22,12 @@ public:
     void paintButton(juce::Graphics& g, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
         auto b=getLocalBounds().toFloat().reduced(2);
-        goodlookinui::juce_adapter::drawKey(g,b,juce::Colour(0xffaeb6a7),shouldDrawButtonAsDown);
-        auto lamp=juce::Rectangle<float>(4,4).withCentre({b.getX()+5,b.getCentreY()});
-        if(getToggleState()){g.setColour(accentColour.withAlpha(0.2f));g.fillEllipse(lamp.expanded(2));}
-        g.setColour(getToggleState()?accentColour:juce::Colour(0xff414c44));g.fillEllipse(lamp);
-        g.setColour(juce::Colour(0xff26312e));g.setFont(juce::FontOptions(8.0f,juce::Font::bold));
-        g.drawText("B",b.withTrimmedLeft(7),juce::Justification::centred);
+        goodlookinui::juce_adapter::meters::drawLitKey(g,b,"B",getToggleState(),accentColour,shouldDrawButtonAsDown);
         if(shouldDrawButtonAsHighlighted){g.setColour(juce::Colour(0x12ffffff));g.fillRoundedRectangle(b,2);}
-
     }
+
+    void setAccent(juce::Colour c) { accentColour = c; repaint(); }
+    juce::Colour getAccent() const { return accentColour; }
 
 private:
     juce::Colour accentColour;

@@ -212,22 +212,22 @@ inline BiquadCoeffs makeBaxandallHighShelf(double sampleRate, double freq, doubl
     return makeHighShelf(sampleRate, freq, 0.5, gainDB);
 }
 
-inline BiquadCoeffs makeSSLBell(double sampleRate, double freq, double Q, double gainDB)
+inline BiquadCoeffs makeBritBell(double sampleRate, double freq, double Q, double gainDB)
 {
     return makePeakEQ(sampleRate, freq, Q * 1.2, gainDB);
 }
 
-inline BiquadCoeffs makeSSLLowShelf(double sampleRate, double freq, double gainDB)
+inline BiquadCoeffs makeBritLowShelf(double sampleRate, double freq, double gainDB)
 {
     return makeLowShelf(sampleRate, freq, 0.71, gainDB);
 }
 
-inline BiquadCoeffs makeSSLHighShelf(double sampleRate, double freq, double gainDB)
+inline BiquadCoeffs makeBritHighShelf(double sampleRate, double freq, double gainDB)
 {
     return makeHighShelf(sampleRate, freq, 0.71, gainDB);
 }
 
-inline BiquadCoeffs makeNeveProportionalQ(double sampleRate, double freq, double baseQ, double gainDB)
+inline BiquadCoeffs makeNTypeProportionalQ(double sampleRate, double freq, double baseQ, double gainDB)
 {
     double absGain = std::abs(gainDB);
     double effectiveQ = baseQ + absGain * 0.15;
@@ -235,19 +235,19 @@ inline BiquadCoeffs makeNeveProportionalQ(double sampleRate, double freq, double
     return makePeakEQ(sampleRate, freq, effectiveQ, gainDB);
 }
 
-inline BiquadCoeffs makeFocusriteHighShelf(double sampleRate, double freq, double gainDB)
+inline BiquadCoeffs makeFSFHighShelf(double sampleRate, double freq, double gainDB)
 {
     return makeHighShelf(sampleRate, freq, 0.85, gainDB);
 }
 
-inline BiquadCoeffs makeFocusriteLowShelf(double sampleRate, double freq, double gainDB)
+inline BiquadCoeffs makeFSFLowShelf(double sampleRate, double freq, double gainDB)
 {
     return makeLowShelf(sampleRate, freq, 0.85, gainDB);
 }
 
-inline BiquadCoeffs makeAPIBell(double sampleRate, double freq, double gainDB)
+inline BiquadCoeffs makeATypeBell(double sampleRate, double freq, double gainDB)
 {
-    // API-style fixed-shape bell: the console's Q is not adjustable, so a
+    // A-Type fixed-shape bell: the console's Q is not adjustable, so a
     // constant, fairly wide Q is baked into the curve.
     return makePeakEQ(sampleRate, freq, 0.9, gainDB);
 }
@@ -255,8 +255,8 @@ inline BiquadCoeffs makeAPIBell(double sampleRate, double freq, double gainDB)
 } // namespace FilterDesign
 
 enum class CutFilterSlope { dB6 = 0, dB12, dB18, dB24 };
-enum class LowBandType { Baxandall = 0, SSL, Focusrite };
-enum class HighBandType { Baxandall = 0, SSL, Focusrite };
+enum class LowBandType { Baxandall = 0, Brit, FSF };
+enum class HighBandType { Baxandall = 0, Brit, FSF };
 enum class MidBandType { N_EQ = 0, Brit, A_Type };
 enum class MidSideMode { Stereo = 0, Mid, Side };
 enum class BandId { LowCut, HighCut, LowBand, Mid1, Mid2, HighBand };
@@ -390,11 +390,11 @@ public:
             case LowBandType::Baxandall:
                 lowBand.setCoeffs(0, FilterDesign::makeBaxandallLowShelf(sr, freq, gain));
                 break;
-            case LowBandType::SSL:
-                lowBand.setCoeffs(0, FilterDesign::makeSSLLowShelf(sr, freq, gain));
+            case LowBandType::Brit:
+                lowBand.setCoeffs(0, FilterDesign::makeBritLowShelf(sr, freq, gain));
                 break;
-            case LowBandType::Focusrite:
-                lowBand.setCoeffs(0, FilterDesign::makeFocusriteLowShelf(sr, freq, gain));
+            case LowBandType::FSF:
+                lowBand.setCoeffs(0, FilterDesign::makeFSFLowShelf(sr, freq, gain));
                 break;
         }
     }
@@ -407,14 +407,14 @@ public:
         mid1Band.setOrder(1);
         switch (type) {
             case MidBandType::Brit:
-                mid1Band.setCoeffs(0, FilterDesign::makeSSLBell(sr, freq, Q, gain));
+                mid1Band.setCoeffs(0, FilterDesign::makeBritBell(sr, freq, Q, gain));
                 break;
             case MidBandType::A_Type:
-                mid1Band.setCoeffs(0, FilterDesign::makeAPIBell(sr, freq, gain));
+                mid1Band.setCoeffs(0, FilterDesign::makeATypeBell(sr, freq, gain));
                 break;
             case MidBandType::N_EQ:
             default:
-                mid1Band.setCoeffs(0, FilterDesign::makeNeveProportionalQ(sr, freq, Q, gain));
+                mid1Band.setCoeffs(0, FilterDesign::makeNTypeProportionalQ(sr, freq, Q, gain));
                 break;
         }
     }
@@ -427,14 +427,14 @@ public:
         mid2Band.setOrder(1);
         switch (type) {
             case MidBandType::Brit:
-                mid2Band.setCoeffs(0, FilterDesign::makeSSLBell(sr, freq, Q, gain));
+                mid2Band.setCoeffs(0, FilterDesign::makeBritBell(sr, freq, Q, gain));
                 break;
             case MidBandType::A_Type:
-                mid2Band.setCoeffs(0, FilterDesign::makeAPIBell(sr, freq, gain));
+                mid2Band.setCoeffs(0, FilterDesign::makeATypeBell(sr, freq, gain));
                 break;
             case MidBandType::N_EQ:
             default:
-                mid2Band.setCoeffs(0, FilterDesign::makeNeveProportionalQ(sr, freq, Q, gain));
+                mid2Band.setCoeffs(0, FilterDesign::makeNTypeProportionalQ(sr, freq, Q, gain));
                 break;
         }
     }
@@ -449,11 +449,11 @@ public:
             case HighBandType::Baxandall:
                 highBand.setCoeffs(0, FilterDesign::makeBaxandallHighShelf(sr, safeFreq, gain));
                 break;
-            case HighBandType::SSL:
-                highBand.setCoeffs(0, FilterDesign::makeSSLHighShelf(sr, safeFreq, gain));
+            case HighBandType::Brit:
+                highBand.setCoeffs(0, FilterDesign::makeBritHighShelf(sr, safeFreq, gain));
                 break;
-            case HighBandType::Focusrite:
-                highBand.setCoeffs(0, FilterDesign::makeFocusriteHighShelf(sr, safeFreq, gain));
+            case HighBandType::FSF:
+                highBand.setCoeffs(0, FilterDesign::makeFSFHighShelf(sr, safeFreq, gain));
                 break;
         }
     }

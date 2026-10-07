@@ -5,18 +5,24 @@
 #include <array>
 #include <memory>
 #include <GoodLookinUI.h>
+#include <Meters.h>
+#include <Retro.h>
 
 class ConsoleFaderLook final : public juce::LookAndFeel_V4 {
 public:
+    // 0 oval, 1 console cap, 2..5 retro slider styles (neon, bar, chamfer, wedge)
+    int style = 0;
+    float clock = 0.0f;
+    juce::Colour glow = juce::Colour(0xff39f2ff);
     void drawLinearSlider(juce::Graphics& g,int x,int y,int width,int height,float pos,float,float,
                           const juce::Slider::SliderStyle,juce::Slider&) override {
-        float centre=float(y)+float(height)*0.5f;
-        g.setColour(juce::Colour(0xff0d1518));g.fillRoundedRectangle(float(x),centre-2,float(width),4,2);
-        g.setColour(juce::Colour(0xff52605e));g.drawHorizontalLine(int(centre+3),float(x),float(x+width));
-        for(int n=0;n<9;++n){float tick=float(x)+float(width)*float(n)/8;
-            g.setColour(juce::Colour(0xff77867f));g.drawLine(tick,centre+7,tick,centre+10,0.8f);}
-        goodlookinui::juce_adapter::drawKey(g,{pos-7,centre-6,14,12},Theme::buttonTop,false);
-        g.setColour(juce::Colour(0xff4b564c));g.drawLine(pos,centre-4,pos,centre+4,1);
+        const float usable=float(width)-14.0f;
+        const float prop=usable>0?juce::jlimit(0.0f,1.0f,(pos-float(x)-7.0f)/usable):0.0f;
+        const juce::Rectangle<float> r{float(x)+7.0f,float(y),usable,float(height)};
+        namespace gm=goodlookinui::juce_adapter::meters;
+        if(style==0) gm::drawSlotFader(g,r,prop,gm::FaderCap::Oval,Theme::textDark);
+        else if(style==1) gm::drawSlotFader(g,r,prop,gm::FaderCap::Console,Theme::textDark);
+        else goodlookinui::juce_adapter::retro::drawSliderH(g,r,prop,static_cast<goodlookinui::juce_adapter::retro::SliderStyle>(style-2),glow,clock);
     }
 };
 
@@ -59,11 +65,31 @@ public:
         addAndMakeVisible(title);
     }
 
+    static constexpr const char* faderCodes[7] = {"oval","console","neon","bar","chamfer","wedge","flat"};
+    static int faderIndex(const juce::String& code) { for (int i = 0; i < 7; ++i) if (code == faderCodes[i]) return i; return 0; }
+    void setFaderStyle(int styleIndex)
+    {
+        faderLook.style = styleIndex;
+        faderLook.glow = styleIndex == 3 ? juce::Colour(0xffd6ff2e) : styleIndex == 6 ? juce::Colour(0xff3ccf5a) : styleIndex == 5 ? juce::Colour(0xffffa31a) : juce::Colour(0xff39f2ff);
+        for (auto& row : rows) row.slider.repaint();
+    }
+    int getFaderStyle() const { return faderLook.style; }
+
+    void refreshTheme()
+    {
+        for (auto& row : rows) {
+            row.label.setColour(juce::Label::textColourId, Theme::textMid);
+            row.slider.setColour(juce::Slider::thumbColourId, Theme::textDark);
+        }
+        title.setColour(juce::Label::textColourId, Theme::textDark);
+        repaint();
+    }
+
     ~HarmonicsPanel() override { for(auto& row:rows) row.slider.setLookAndFeel(nullptr); }
 
     void paint(juce::Graphics& g) override
     {
-        goodlookinui::juce_adapter::drawPanel(g,getLocalBounds().toFloat().reduced(1));
+        goodlookinui::juce_adapter::drawPanel(g,getLocalBounds().toFloat().reduced(1),Theme::panelTop,Theme::panelBottom,Theme::panelFinish);
 
     }
 
@@ -72,12 +98,14 @@ public:
         auto b = getLocalBounds();
         title.setBounds(b.removeFromTop(30).reduced(14, 0));
 
-        b.reduce(6, 2);
-        int rowH = b.getHeight() / 4;
+        // Compact rows: the four sliders sit in a tighter block, centred under the title.
+        b.reduce(8, 2);
+        constexpr int rowH = 19;
+        b.removeFromTop((b.getHeight() - rowH * 4) / 2);
         for (auto& row : rows) {
             auto r = b.removeFromTop(rowH);
-            row.label.setBounds(r.removeFromLeft(30));
-            row.slider.setBounds(r.reduced(4, 4));
+            row.label.setBounds(r.removeFromLeft(26));
+            row.slider.setBounds(r.reduced(6, 2));
         }
     }
 

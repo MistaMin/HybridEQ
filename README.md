@@ -2,8 +2,8 @@
 
 HybridEQ is a channel-strip plug-in combining a multi-flavor analog preamp
 emulation with a 6-band EQ, harmonic saturation, and mid/side processing.
-Each stage can be switched between circuit models inspired by Neve, SSL,
-API, Baxandall, and Focusrite consoles. Includes adaptive oversampling
+Each stage can be switched between the N-Type, Brit, A-Type, Baxandall and
+FSF circuit models. Includes adaptive oversampling
 (1x/4x/8x) that automatically raises the internal processing rate for
 headroom near Nyquist or when the Circuit model is engaged. Built with
 [JUCE](https://juce.com); ships as VST3, AU, AAX, and Standalone for macOS.
@@ -12,8 +12,9 @@ Current version: see [`VERSION`](VERSION).
 
 ## Building
 
-Requires CMake 3.22+ and a C++20 compiler. A GoodLookinUI source snapshot is
-included in `third_party/GoodLookinUI`; set `GOODLOOKINUI_ROOT` to use a separate
+Requires CMake 3.22+ and a C++20 compiler. GoodLookinUI is a git submodule
+in `third_party/GoodLookinUI` (pinned to v0.2.2): after cloning run
+`git submodule update --init`, or set `GOODLOOKINUI_ROOT` to use a separate
 checkout instead. AAX is added only when Avid's SDK exists at
 `../aax-sdk-2-8-1`, or at the path specified by `HYBRIDEQ_AAX_SDK`. JUCE itself is fetched automatically via CMake's
 `FetchContent` — no manual setup needed for VST3/AU/Standalone.
@@ -51,7 +52,7 @@ signing requirements; it is excluded from public packaging by default.
 
 Binary bundles include license notices. The macOS installer also displays the
 binary freeware terms and installs the notices in
-`/Library/Application Support/HybridAudio/HybridEQ/Licenses`.
+`/Library/Application Support/OpenGrid/HybridEQ/Licenses`.
 
 ## GoodLookinUI development editor
 
@@ -69,6 +70,157 @@ readouts and a charcoal rack faceplate. Choice keys open dropdown menus using
 the existing DSP choice values. Six strips share fixed control slots and switch
 positions. Resizing preserves the panel proportions. The existing DSP and
 parameter IDs are retained.
+
+## Circuit history
+
+Each flavour is inspired by a studio classic:
+
+- **N-Type** is inspired by Rupert Neve's 1073 preamp module, which first appeared in a console built in 1970 and became one of the most celebrated mic preamps ever made ([history](https://www.ams-neve.com/consoles/history-of-1073/)).
+- **FSF** is inspired by Focusrite's console channel, which began with a 1985 commission from Sir George Martin and grew into one of the most influential names in recorded sound ([story](https://eu.focusrite.com/our-story)).
+- **Brit** is inspired by Solid State Logic, founded in 1969 by Colin Sanders, whose 1979 SL 4000 E Series ranks among the most groundbreaking mixing consoles ever built ([history](https://solidstatelogic.com/our-history)).
+- **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
+
+**Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.5
+
+### A-Type
+
+Adds **A-Type**, a fourth preamp flavour with its own circuit simulation
+(`ATypeCircuit.h`): 1:8 mic
+transformer, discrete op-amp gain stage with a T feedback network (gain pot,
+and a MID/HIGH ground-leg switch), 1:2 output transformer and output pad.
+
+- At 0 dB drive the gain is unity. Drive first turns the gain pot up, then
+  moves to the HIGH position and continues with the pot (up to about 40 dB).
+- The netlist's discrete op-amp is a behavioural placeholder (single-pole,
+  slew-limited, clipped) until its schematic is available, so A-Type is very
+  clean until it clips (about +25 dBu); both transformers' inductances and
+  resistances are placeholders too, and their saturation knees are estimates.
+- The input pad position is not modelled (the Pad control does that job).
+- A-Type is the last entry of the Type list so saved sessions keep their stored choices.
+- Light static model when **Preamp Circuit** is off, as for the others.
+
+### Circuit simulations (Brit, N-Type, FSF)
+
+With **Preamp Circuit** on, all three preamp flavours are now real circuit
+simulations of transcribed netlists (kept privately and not distributed) instead of
+behavioural approximations. Every resistor, capacitor, transistor, op-amp and
+saturating transformer core is solved together every sample
+(`Source/DSP/CircuitSolver.h`):
+
+- **Brit** (`BritCircuit.h`): a
+  balanced 500-series console mic preamp: matched-pair transistor input stage
+  with op-amp current feedback, instrumentation-amp second stage, difference
+  amp, DC servos and a balanced line driver. The gain control is the dual-gang
+  pot. The balanced pair cancels even harmonics, so the colour is odd-order
+  and very clean until the line driver clips (about +21 dBu).
+- **N-Type** (`NTypeCircuit.h`):
+  transformer-coupled line path: input transformer, three-transistor feedback
+  preamp, class-A output stage and a gapped output transformer. Drive changes
+  the gain-network resistor like the real gain switch. Asymmetric even-order
+  colour from the class-A stage and the DC-biased output transformer.
+- **FSF** (`FsfCircuit.h`):
+  transformer-coupled console mic channel: mic transformer, 12-position gain
+  network, two op-amp stages and a class-AB output stage inside a transformer
+  feedback loop. Simulated gain is -7.9 to +59.1 dB across the 12 positions
+  (the manual states -6 to +60 dB). The hardware gain is stepped, so drive picks
+  the nearest position and covers the remainder with a trim of up to 3 dB.
+
+Common behaviour:
+
+- At 0 dB drive the small-signal gain is unity. Drive raises the circuit's
+  gain; whatever a circuit cannot supply is applied as an input trim.
+- CPU: this is a heavy mode. Each circuit runs at about 96 kHz internally
+  (decimated from the oversampled rate with zero-latency IIR filters), roughly
+  3x realtime per channel on a loaded Apple-silicon Mac.
+- Op-amps are single-pole, slew-limited, clipped behavioural models (as in the
+  netlists); they capture gain, bandwidth, slew and clipping, not noise.
+  Transistor series resistances are not modelled.
+- **Estimates, not published:** transformer inductance (N-Type input 100 H,
+  output 4 H), saturation knees, leakage and winding capacitance; the FSF output
+  transformer's turns, inductance and resistance (placeholders in the netlist).
+  Measured values or response plots would let these be fitted.
+- With **Preamp Circuit** off, each flavour uses a light static model.
+- Rename: the preamp, EQ-shape and file names now use only N-Type, Brit,
+  A-Type, FSF and Baxandall.
+- Replaces the 1.6.4 transformer model and the 1.6.2 Brit behavioural model.
+
+## Version 1.6.4 (superseded by 1.6.5)
+
+- N preamp: input and output transformers are now flux-state circuit models instead of memoryless saturators plus an envelope-driven filter (with "Preamp Circuit" on). Low-frequency corner shift and low-frequency harmonics now come from the core's inductance falling as it saturates; the output transformer carries a standing DC bias, giving even-order harmonics.
+- Datasheet values (transformer design guide, preliminary, Issue 1e): VTB 9046 input at 2:1 turns, 2k4 source into 2k4 load (0 dB), DCR 175 || 175 primary and 56 + 56 secondary. VTB 9049 output at 1:1.7 turns (series windings), 200 ohm source into 600 ohm load, DCR 12 primary and 40 secondary.
+- ESTIMATES (not published by the manufacturer): magnetising inductance (4 H each, placeholder), post-saturation inductance, saturation flux, output standing bias current, leakage/capacitance high-frequency corner and Q, and the volts-per-full-scale calibration (13.8 V peak). Treat the sound as an approximation, not a measured unit.
+- Limitations: no hysteresis; no manufacturer inductance, frequency-response or THD data was available. Overall small-signal gain remains unity; "Preamp Circuit" off keeps the static saturation curves.
+
+## Version 1.6.3
+
+Rebuilt the "N-Type" preamp as a circuit-behaviour model, the same
+way "Brit" was rebuilt in 1.6.2. Signal path: input transformer, a
+three-transistor direct-coupled feedback gain stage, a class-A line-driver
+stage (degenerated transistor into a complementary emitter-follower pair),
+and an output transformer. Each gain stage is a single-ended transistor
+solved from the real exponential junction equation with emitter
+degeneration, placed inside its feedback loop and solved every sample.
+Resulting behaviour:
+
+- Asymmetric distortion, rich in 2nd harmonic at moderate drive, with 3rd
+  and higher orders growing as the stage is pushed.
+- Distortion depends on the gain setting: less gain means more feedback and
+  a cleaner stage; more gain means less feedback and more colour.
+- The two stages clip against different positive and negative limits.
+- Both transformer cores saturate. With "Preamp Circuit" on, the input
+  transformer's low-frequency corner rises and the output transformer's
+  high-frequency corner falls as the level increases.
+- Coupling capacitors are modelled as DC blockers between stages.
+
+This is a behavioural circuit model, not a SPICE netlist simulation, and
+the transformers are saturating level-dependent filters, not full
+magnetic-core (hysteresis) models. Transistor high-frequency poles are not
+modelled. Parameter IDs are unchanged, so existing sessions load as before,
+but "N-Type" will sound different from 1.6.1.
+
+## Version 1.6.2
+
+Rebuilt the "Brit" preamp as a circuit-behaviour model instead
+of a generic saturation curve. It now follows the structure of a balanced,
+transformerless console mic preamp: a matched pair of degenerated bipolar
+transistors (one per leg) solved from the real exponential junction
+equation, feeding low-noise op-amp stages that clip with a hard knee at
+their supply rails. Resulting behaviour:
+
+- Distortion depends on the gain setting: more gain means less emitter
+  degeneration, so the input stage gets less linear; low gain stays very
+  clean.
+- The legs are subtracted, so even harmonics cancel and the colour is almost
+  purely odd-order, with only a trace of even content from leg mismatch.
+- Overdriving it gives a hard, console-style clip rather than a soft curve.
+- With "Preamp Circuit" on, the sub-audio coupling and servo high-pass poles
+  are modelled in their real positions in the signal chain, so DC from
+  asymmetric clipping settles the way it does in hardware. The circuit's
+  high-frequency poles sit far above the audio band and are not modelled.
+
+This is a behavioural circuit model, not a SPICE netlist simulation. The
+parameter names and IDs are unchanged, so existing sessions load as before,
+but "Brit" will sound different (cleaner at low gain, harder-edged when
+driven).
+
+## Version 1.6.1
+
+Reworked the "N-Type" preamp's circuit model to be closer to real
+transformer-coupled hardware, after a two-transformer mic
+amp topology (input transformer, discrete class-A gain stage,
+output transformer). Previously "N-Type" used a single lumped
+saturation curve plus a static, level-independent pair of filter poles; it
+now explicitly models the input and output transformer stages separately,
+and - when "Preamp Circuit" is on - a fast level follower makes both
+stages' saturation grow more even-harmonic and the transformer poles shift
+(input stage's LF corner rises, output stage's HF corner falls) as drive
+increases, mimicking how a real transformer core saturates and narrows its
+bandwidth
+under heavier signal. This is a tuned approximation, not a component-level
+SPICE model of the original schematics. See the comment above
+`dsp::PreampEngine` in `Source/DSP/Preamp.h` for the full explanation.
 
 ## Version 1.6.0
 

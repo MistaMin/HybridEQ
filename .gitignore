@@ -10,3 +10,6 @@ dist/
 
 # Local CMake build outputs
 build*/
+
+# Third-party reference material (transcribed schematics/BOMs): never publish
+Reference/

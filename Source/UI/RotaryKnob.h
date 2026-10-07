@@ -2,7 +2,9 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "ValueFormat.h"
 #include "Theme.h"
+#include "SectionPanel.h"
 #include <cmath>
+#include <functional>
 #include <GoodLookinUI.h>
 
 enum class KnobValueType { Frequency, Gain, Q };
@@ -46,6 +48,27 @@ public:
 
     bool getActive() const { return isActive; }
 
+    // Re-tint at runtime (colour triggers); keeps the saved design otherwise untouched.
+    void setAccent(juce::Colour c)
+    {
+        accentColour = c;
+        design.colour = "#" + c.toDisplayString(false).toStdString();
+        repaint();
+    }
+    juce::Colour getAccent() const { return juce::Colour::fromString("ff" + juce::String(design.colour.substr(1))); }
+    // Text colours of the section plate this knob sits on (nullptr args = follow the theme).
+    void setPlateText(const juce::Colour* text, const juce::Colour* mid)
+    {
+        hasPlateText = text != nullptr;
+        if (hasPlateText) { plateText = *text; plateMid = *mid; }
+        refreshTheme();
+    }
+    void refreshTheme()
+    {
+        title.setColour(juce::Label::textColourId, hasPlateText ? plateText : Theme::textDark);
+        repaint();
+    }
+
     void resized() override
     {
         auto b = getLocalBounds();
@@ -60,10 +83,12 @@ public:
         auto diameter = juce::jmin(bounds.getWidth(), bounds.getHeight());
         auto knobBounds = juce::Rectangle<float>(diameter, diameter).withCentre(bounds.getCentre());
 
-        goodlookinui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive);
+        juce::Colour backdrop;   // plate behind this knob: lets the toolkit draw dark marks on light plates and light marks on dark ones
+        if (auto* panel = dynamic_cast<SectionPanel*>(getParentComponent())) backdrop = panel->getBackdrop();
+        goodlookinui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive, backdrop);
 
-        if(design.style=="console" && getWidth()>=110) {
-            g.setColour(Theme::textMid);g.setFont(juce::FontOptions(8.0f));
+        if(getWidth()>=110) {
+            g.setColour(hasPlateText?plateMid:Theme::textMid);g.setFont(juce::FontOptions(8.0f));
             const int y=juce::roundToInt(knobBounds.getBottom()-13);
             g.drawText(formatValue(float(getMinimum())),6,y,35,12,juce::Justification::centred);
             g.drawText(formatValue(float(getMaximum())),getWidth()-41,y,35,12,juce::Justification::centred);
@@ -78,6 +103,8 @@ public:
         g.drawText(formattedValue(), valueArea, juce::Justification::centred);
     }
 
+    std::function<void()> onSelect;   // developer mode: clicking a knob selects it in the inspector
+    void mouseDown(const juce::MouseEvent& e) override { if (onSelect) onSelect(); juce::Slider::mouseDown(e); }
     void applyDesign(const goodlookinui::Item& item) {
         design = item;
         title.setText(item.label, juce::dontSendNotification);
@@ -112,6 +139,8 @@ private:
     KnobValueType valueType;
     juce::Colour accentColour;
     bool isActive = true;
+    bool hasPlateText = false;
+    juce::Colour plateText, plateMid;
     juce::Label title;
     juce::Rectangle<int> knobArea;
     juce::Rectangle<int> valueArea;
