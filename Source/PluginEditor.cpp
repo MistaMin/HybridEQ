@@ -120,6 +120,13 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
       meterPanel(p),
       oversampleBtn(p.apvts, "oversampleMode", "OVERSAMPLE")
 {
+    // The Oversample key shows the factor the engine is actually running at, which the headroom floor
+    // (High Cut / High shelf / Preamp Circuit) can raise above the user's choice. The choice itself is
+    // never rewritten, so the menu still shows what the user picked.
+    oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
+    oversampleBtn.setButtonTooltip("Internal processing rate. The headroom floor can raise this above "
+                                   "your choice when High Cut, the High shelf or Preamp Circuit need it.");
+
 #if GOODLOOKINUI_ENABLE_EDITOR && defined(HYBRIDEQ_DESIGNS_DIR)
     autosave.setFolder(designsDir());
 #endif
@@ -556,6 +563,18 @@ void HybridEQEditor::timerCallback()
     const float eased=fadeT*fadeT*(3.0f-2.0f*fadeT);
     stepLook(eased);
     if(fadeT>=1.0f) stopTimer();
+    oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
+}
+
+// Text for the Oversample key: the factor the engine is really running at. The headroom floor can push
+// this above the user's choice, so show the effective value and mark it when it differs.
+juce::String HybridEQEditor::oversampleDisplayText() const
+{
+    const int effective = proc.getEffectiveOversampleFactor();
+    const auto* param = dynamic_cast<juce::AudioParameterChoice*>(proc.apvts.getParameter("oversampleMode"));
+    const int chosen = param != nullptr ? param->getIndex() : 0;
+    const juce::String text = juce::String(effective) + "x";
+    return effective == chosen ? text : text + "*";
 }
 
 void HybridEQEditor::showLookMenu()

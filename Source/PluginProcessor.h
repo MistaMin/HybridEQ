@@ -43,12 +43,19 @@ public:
     const spectrum::SampleRing& getOutputRing() const { return outRing; }
     double getCurrentSampleRate() const { return sampleRateAtomic.load(std::memory_order_relaxed); }
 
+    // Effective oversampling factor (1/2/4/8) the engine is currently running at. This is the user's
+    // "Oversample" choice raised by the headroom floor (High Cut / High shelf / Preamp Circuit), so it
+    // can be higher than the choice itself. Written from prepareToPlay, read from the editor.
+    int getEffectiveOversampleFactor() const { return effectiveFactorAtomic.load(std::memory_order_relaxed); }
+
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
 private:
-    // writeParameters = false lets prepareToPlay settle the oversampling factor and latency without changing
-    // any host-visible parameter (hosts and validators expect none to move during initialisation).
-    void updateParameters(bool writeParameters = true);
+    // Applies the current parameter values to the DSP. Never changes the reported latency and never
+    // writes a host-visible parameter: both are settled in prepareToPlay, and the audio thread only
+    // ever reads them. The effective oversampling factor is published in effectiveFactorAtomic so the
+    // editor can show what the engine is actually running at.
+    void updateParameters();
 
     dsp::MultirateEngine multirateEngine;
     dsp::PreampEngine preamp;
@@ -58,6 +65,7 @@ private:
     LevelTracker inLevel, outLevel;
     spectrum::SampleRing inRing, outRing;
     std::atomic<double> sampleRateAtomic{44100.0};
+    std::atomic<int> effectiveFactorAtomic{1};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridEQProcessor)
 };

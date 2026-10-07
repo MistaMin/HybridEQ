@@ -59,6 +59,7 @@ private:
     void stepLook(float t);
     void showLookMenu();
     void timerCallback() override;
+    juce::String oversampleDisplayText() const;
 
     HybridEQProcessor& proc;
     juce::Component panelSurface;

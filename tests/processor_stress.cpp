@@ -37,6 +37,8 @@ static bool finiteAndBounded(const juce::AudioBuffer<float>& b, float& maxAbs) {
     return true;
 }
 // Parameters that make the plugin change its own oversampling factor (and so its latency) while running.
+// None of them may do so any more: the effective factor is settled in prepareToPlay and the reported
+// latency never moves from the audio thread. Kept as the list the test asserts must stay stable.
 static bool affectsLatency(const juce::String& id) { return id == "oversampleMode" || id == "hcFreq" || id == "highFreq" || id == "preampCircuit"; }
 // Sets random values the way a host would: toggles get 0 or 1, choices get a valid index, floats anything.
 static void randomiseParameters(HybridEQProcessor& p, juce::Random& rng, int howMany, bool leaveLatencyAlone = false) {
@@ -87,13 +89,15 @@ int main(int argc, char** argv) {
         std::printf("1) %d rate/block/oversampling/signal combinations with live automation, worst peak %.2f\n", combos, worst);
     }
 
-    // 1b) INFO: what happens to latency when the parameters that control oversampling are automated
+    // 1b) The reported latency must not move from the audio thread. Hosts (and AAX validation) require
+    // it to be settled in prepareToPlay; a change mid-stream forces the host to re-align and clicks.
     {
         HybridEQProcessor p; p.setPlayConfigDetails(2, 2, 48000.0, 512); p.prepareToPlay(48000.0, 512);
         juce::AudioBuffer<float> buf(2, 512); juce::MidiBuffer midi; Gen g; juce::Random rng(77); int changes = 0, last = p.getLatencySamples(), lo = last, hi = last;
         for (int i = 0; i < 400; ++i) { g.fill(buf, Sig::Noise, 48000.0); randomiseParameters(p, rng, 4); p.processBlock(buf, midi);
             const int now = p.getLatencySamples(); if (now != last) { ++changes; last = now; lo = std::min(lo, now); hi = std::max(hi, now); } }
-        std::printf("1b) INFO: with oversampling / High Cut / High shelf / Circuit automated, reported latency changed %d times in 400 blocks (range %d..%d samples) from the audio thread\n", changes, lo, hi);
+        std::printf("1b) with oversampling / High Cut / High shelf / Circuit automated, reported latency changed %d times in 400 blocks (range %d..%d samples)\n", changes, lo, hi);
+        check(changes == 0, "reported latency never changes from the audio thread (" + juce::String(changes) + " changes)");
     }
 
     // 2) extreme settings: every parameter at 0, at 1, and at the middle
