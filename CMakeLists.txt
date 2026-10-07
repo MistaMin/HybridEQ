@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
     JUCE
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        8.0.4
+    GIT_TAG        8.0.15
 )
 FetchContent_MakeAvailable(JUCE)
 
@@ -124,6 +124,7 @@ foreach(format IN LISTS HYBRIDEQ_FORMATS)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_SOURCE_DIR}/third_party/GoodLookinUI/LICENSE"
             "${notice_dir}/GoodLookinUI-LICENSE.txt"
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${notice_dir}/third-party"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CMAKE_CURRENT_SOURCE_DIR}/Licenses/third-party"
             "${notice_dir}/third-party"

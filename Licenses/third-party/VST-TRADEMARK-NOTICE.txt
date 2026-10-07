@@ -1,4 +1,5 @@
 VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.
-The VST3 plug-in format uses the Steinberg VST3 SDK; see VST3-SDK-LICENSE.txt.
-CLAP is an open plug-in standard (https://cleveraudio.org); LV2 is an open plug-in standard (https://lv2plug.in).
-Audio Units is a technology of Apple Inc.; AAX is a technology of Avid Technology, Inc.
+The VST3 plug-in format uses the Steinberg VST3 SDK (MIT license); see VST3-SDK-LICENSE-MIT.txt and
+VST3-Usage-Guidelines.pdf. CLAP is an open plug-in standard (https://cleveraudio.org); LV2 is an open
+plug-in standard (https://lv2plug.in). Audio Units is a technology of Apple Inc.; AAX is a technology of
+Avid Technology, Inc.
