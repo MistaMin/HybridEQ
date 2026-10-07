@@ -109,6 +109,17 @@ public:
 
     void setButtonTooltip(const juce::String& tip) { button.setTooltip(tip); }
 
+    // Overrides the text shown on the key without touching the parameter. Used for the Oversample key,
+    // whose displayed factor is the engine's effective one (the user's choice raised by the headroom
+    // floor), not the raw choice value. Pass an empty string to go back to the choice name.
+    void setDisplayTextOverride(const juce::String& text)
+    {
+        if (textOverride == text)
+            return;
+        textOverride = text;
+        updateText();
+    }
+
 private:
     void showChoices()
     {
@@ -136,13 +147,15 @@ private:
 
     void updateText()
     {
-        if (param != nullptr)
-            button.setButtonText(param->getCurrentChoiceName());
+        if (param == nullptr)
+            return;
+        button.setButtonText(textOverride.isNotEmpty() ? textOverride : param->getCurrentChoiceName());
     }
 
     juce::AudioProcessorValueTreeState& apvts;
     juce::String paramID;
     juce::AudioParameterChoice* param = nullptr;
+    juce::String textOverride;
     bool isActive = true;
     bool hasPlateText = false;
     juce::Colour plateText, plateMid;

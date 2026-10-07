@@ -171,13 +171,14 @@ void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     preamp.prepare(sampleRate);
     eq.prepare(sampleRate, samplesPerBlock);
     // Hosts read the latency right after prepareToPlay, so settle the oversampling factor (and with it
-    // the reported latency) now instead of on the first audio block, without touching any parameter.
-    updateParameters(false);
+    // the reported latency) now instead of on the first audio block. This is the only place the
+    // reported latency is ever changed.
+    updateParameters();
 }
 
 void HybridEQProcessor::releaseResources() {}
 
-void HybridEQProcessor::updateParameters(bool writeParameters)
+void HybridEQProcessor::updateParameters()
 {
     auto getFloat = [&](const juce::String& id) {
         return apvts.getRawParameterValue(id)->load();
@@ -203,20 +204,11 @@ void HybridEQProcessor::updateParameters(bool writeParameters)
     static constexpr int userFactors[] = {1, 4, 8};
 
     // Turning the Preamp Circuit model on adds a nonlinear stage that needs
-    // more oversampling headroom to stay clean, so activating it raises the
-    // floor to 4x. This changes the actual "oversampleMode" parameter (not
-    // just an internal effective rate) so the global Oversample control
-    // itself visibly shows 4x while Circuit is on. It only ever raises the
-    // floor - it won't pull 8x back down to 4x, and it never lowers the
-    // user's choice back down once Circuit is switched off again.
-    if (getBool("preampCircuit")) {
-        int currentIndex = getChoice("oversampleMode");
-        if (writeParameters && userFactors[currentIndex] < 4) {
-            if (auto* p = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("oversampleMode")))
-                p->setValueNotifyingHost(p->getNormalisableRange().convertTo0to1(1.0f)); // index 1 = "4x"
-        }
-    }
-
+    // more oversampling headroom to stay clean, so it raises the floor to 4x.
+    // This is applied to the engine only (below): the audio thread must never
+    // write a host-visible parameter, and the "Oversample" choice stays the
+    // user's own. The editor shows the effective factor instead.
+    //
     // A digital cut/shelf only reproduces its analog prototype's curve while
     // its design frequency stays well below the current Nyquist; push it too
     // close and the curve compresses ("cramps") against the ceiling. Rather
@@ -239,7 +231,7 @@ void HybridEQProcessor::updateParameters(bool writeParameters)
         requiredFactor = f;
     }
     int userFactor = userFactors[getChoice("oversampleMode")];
-    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 4);   // same floor whether or not the parameter was written
+    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 4);   // circuit needs the headroom
     int effectiveFactor = std::max(userFactor, requiredFactor);
     dsp::OversampleMode effectiveMode = dsp::OversampleMode::Native;
     for (int i = 0; i < 4; ++i)
@@ -247,7 +239,9 @@ void HybridEQProcessor::updateParameters(bool writeParameters)
             effectiveMode = allModes[i];
 
     multirateEngine.setMode(effectiveMode);
-    setLatencySamples(static_cast<int>(std::round(multirateEngine.getLatencySamples())));
+    // Publish the factor the engine is really running at so the editor can show it (the "Oversample"
+    // choice itself may be lower when the headroom floor is doing the work).
+    effectiveFactorAtomic.store(effectiveFactor, std::memory_order_relaxed);
 
     static constexpr float padGains[] = {-20.0f, 0.0f, 10.0f};
     preamp.setType(static_cast<dsp::PreampType>(getChoice("preampType")));

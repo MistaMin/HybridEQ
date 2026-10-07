@@ -141,6 +141,15 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_link_libraries(HybridEQStress PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
 endif()
 
+# Per-configuration CPU table for the preamp circuit path (oversampling x rate x block size).
+if(HYBRIDEQ_BUILD_TESTS)
+    juce_add_console_app(HybridEQCPU PRODUCT_NAME "HybridEQ CPU Table")
+    target_sources(HybridEQCPU PRIVATE tests/cpu_table.cpp)
+    target_include_directories(HybridEQCPU PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQCPU PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
+    target_link_libraries(HybridEQCPU PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+endif()
+
 # Developer-build autosave test: drives the real editor and checks that design changes reach Designs/*.csv
 # (in a scratch folder). Only meaningful in Debug builds, where the developer editor is compiled in.
 if(HYBRIDEQ_BUILD_TESTS AND HYBRIDEQ_DESIGN_EDITOR)
