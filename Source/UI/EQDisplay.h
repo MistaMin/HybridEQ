@@ -269,7 +269,7 @@ private:
             g.drawEllipse(x - 6.0f, y - 6.0f, 12.0f, 12.0f, 1.0f);
 
             g.setFont(juce::FontOptions(10.0f, juce::Font::bold));
-            float pillW = g.getCurrentFont().getStringWidth(node.label) + 10.0f;
+            float pillW = juce::GlyphArrangement::getStringWidth(g.getCurrentFont(), node.label) + 10.0f;
             auto pill = juce::Rectangle<float>(pillW, 14.0f)
                             .withCentre({x, juce::jmax(b.getY() + 9.0f, y - 22.0f)});
             g.setColour(node.colour.withAlpha(0.92f));

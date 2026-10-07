@@ -89,6 +89,12 @@ Each flavour is inspired by a studio classic:
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
 
+## Version 1.6.7
+
+- Built with **JUCE 8.0.15** (was 8.0.4). Its bundled VST3 SDK is MIT licensed, so VST3 builds no longer depend on
+  the older dual-license (Steinberg license / GPLv3) SDK. Third-party license texts in `Licenses/third-party` are
+  regenerated from the new JUCE tree (`tools/collect_licenses.py`).
+
 ## Version 1.6.6
 
 - **LV2 and CLAP** are built alongside VST3, AU and the standalone, and are installed by the macOS installer
