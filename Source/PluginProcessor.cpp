@@ -136,7 +136,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"preampType", 1}, "Preamp Type",
-        juce::StringArray{"Brit", "N", "FSF", "Off"}, 0));
+        juce::StringArray{"Brit", "N-Type", "FSF", "Off", "A-Type"}, 0));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"preampPad", 1}, "Preamp Pad",
         juce::StringArray{"-20 dB", "Unity", "+10 dB"}, 1));
@@ -165,15 +165,19 @@ HybridEQProcessor::HybridEQProcessor()
 
 void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
+    sampleRateAtomic.store(sampleRate, std::memory_order_relaxed);
     currentSampleRate = sampleRate;
     multirateEngine.prepare(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
     preamp.prepare(sampleRate);
     eq.prepare(sampleRate, samplesPerBlock);
+    // Hosts read the latency right after prepareToPlay, so settle the oversampling factor (and with it
+    // the reported latency) now instead of on the first audio block, without touching any parameter.
+    updateParameters(false);
 }
 
 void HybridEQProcessor::releaseResources() {}
 
-void HybridEQProcessor::updateParameters()
+void HybridEQProcessor::updateParameters(bool writeParameters)
 {
     auto getFloat = [&](const juce::String& id) {
         return apvts.getRawParameterValue(id)->load();
@@ -207,7 +211,7 @@ void HybridEQProcessor::updateParameters()
     // user's choice back down once Circuit is switched off again.
     if (getBool("preampCircuit")) {
         int currentIndex = getChoice("oversampleMode");
-        if (userFactors[currentIndex] < 4) {
+        if (writeParameters && userFactors[currentIndex] < 4) {
             if (auto* p = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter("oversampleMode")))
                 p->setValueNotifyingHost(p->getNormalisableRange().convertTo0to1(1.0f)); // index 1 = "4x"
         }
@@ -235,6 +239,7 @@ void HybridEQProcessor::updateParameters()
         requiredFactor = f;
     }
     int userFactor = userFactors[getChoice("oversampleMode")];
+    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 4);   // same floor whether or not the parameter was written
     int effectiveFactor = std::max(userFactor, requiredFactor);
     dsp::OversampleMode effectiveMode = dsp::OversampleMode::Native;
     for (int i = 0; i < 4; ++i)
@@ -304,6 +309,8 @@ void HybridEQProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mid
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
+    inLevel.push(buffer.getArrayOfReadPointers(), buffer.getNumChannels(), buffer.getNumSamples());
+    inRing.push(buffer.getArrayOfReadPointers(), std::min(buffer.getNumChannels(), 2), buffer.getNumSamples());
 
     // ONE oversampled region wrapping every nonlinear stage (preamp, EQ,
     // harmonics). JUCE's Oversampling requires exactly one up/down cycle per
@@ -327,6 +334,8 @@ void HybridEQProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mid
     float outGainDB = apvts.getRawParameterValue("outputGain")->load();
     float outGain = juce::Decibels::decibelsToGain(outGainDB);
     buffer.applyGain(outGain);
+    outLevel.push(buffer.getArrayOfReadPointers(), buffer.getNumChannels(), buffer.getNumSamples());
+    outRing.push(buffer.getArrayOfReadPointers(), std::min(buffer.getNumChannels(), 2), buffer.getNumSamples());
 }
 
 juce::AudioProcessorEditor* HybridEQProcessor::createEditor()

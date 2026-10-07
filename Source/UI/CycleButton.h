@@ -75,6 +75,18 @@ public:
         if (isActive == active)
             return;
         isActive = active;
+        refreshTheme();
+    }
+
+    void setPlateText(const juce::Colour* text, const juce::Colour* mid)
+    {
+        hasPlateText = text != nullptr;
+        if (hasPlateText) { plateText = *text; plateMid = *mid; }
+        refreshTheme();
+    }
+
+    void refreshTheme()
+    {
         if (isActive) {
             button.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
             button.setColour(juce::TextButton::buttonOnColourId, Theme::buttonBottom);
@@ -87,8 +99,10 @@ public:
             button.setColour(juce::TextButton::textColourOnId, Theme::buttonTextInactive);
         }
         title.setColour(juce::Label::textColourId, isActive
-                             ? (isHorizontal ? Theme::textMid : Theme::textDark)
+                             ? (hasPlateText ? (isHorizontal ? plateMid : plateText)
+                                             : (isHorizontal ? Theme::textMid : Theme::textDark))
                              : Theme::buttonTextInactive);
+        button.repaint();
     }
 
     bool getActive() const { return isActive; }
@@ -130,6 +144,8 @@ private:
     juce::String paramID;
     juce::AudioParameterChoice* param = nullptr;
     bool isActive = true;
+    bool hasPlateText = false;
+    juce::Colour plateText, plateMid;
     bool isHorizontal = false;
     std::unique_ptr<juce::LookAndFeel> lnf;
     juce::Label title;

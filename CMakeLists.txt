@@ -22,6 +22,12 @@ add_subdirectory("${GOODLOOKINUI_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/goodlookinu
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Designs/HybridEQ.csv")
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Designs/HybridEQ.csv" HYBRIDEQ_DESIGN_TEXT)
 configure_file(Designs/EmbeddedDesign.h.in generated/EmbeddedDesign.h @ONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Designs/LookTriggers.csv")
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Designs/LookTriggers.csv" HYBRIDEQ_LOOKS_TEXT)
+configure_file(Designs/EmbeddedLooks.h.in generated/EmbeddedLooks.h @ONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Designs/Settings.csv")
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Designs/Settings.csv" HYBRIDEQ_SETTINGS_TEXT)
+configure_file(Designs/EmbeddedSettings.h.in generated/EmbeddedSettings.h @ONLY)
 option(HYBRIDEQ_DESIGN_EDITOR "Include GoodLookinUI editor in Debug builds" ON)
 
 set(HYBRIDEQ_FORMATS VST3 Standalone)
@@ -37,7 +43,7 @@ else()
 endif()
 
 juce_add_plugin(HybridEQ
-    COMPANY_NAME            "HybridAudio"
+    COMPANY_NAME            "OpenGrid"
     IS_SYNTH                FALSE
     NEEDS_MIDI_INPUT        FALSE
     NEEDS_MIDI_OUTPUT       FALSE
@@ -57,6 +63,8 @@ target_include_directories(HybridEQ PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/
 
 target_compile_definitions(HybridEQ PUBLIC
     GOODLOOKINUI_ENABLE_EDITOR=$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>
+    # Developer builds autosave every design change into this folder (Designs/*.csv) and start from it
+    $<$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>:HYBRIDEQ_DESIGNS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Designs">
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
@@ -93,3 +101,23 @@ foreach(format IN LISTS HYBRIDEQ_FORMATS)
             "${notice_dir}/GoodLookinUI-LICENSE.txt"
         VERBATIM)
 endforeach()
+
+# Headless stress test of the real processor (rates, block sizes, oversampling, automation, threads).
+option(HYBRIDEQ_BUILD_TESTS "Build the processor stress test" ON)
+if(HYBRIDEQ_BUILD_TESTS)
+    juce_add_console_app(HybridEQStress PRODUCT_NAME "HybridEQ Stress Test")
+    target_sources(HybridEQStress PRIVATE tests/processor_stress.cpp)
+    target_include_directories(HybridEQStress PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQStress PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
+    target_link_libraries(HybridEQStress PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+endif()
+
+# Developer-build autosave test: drives the real editor and checks that design changes reach Designs/*.csv
+# (in a scratch folder). Only meaningful in Debug builds, where the developer editor is compiled in.
+if(HYBRIDEQ_BUILD_TESTS AND HYBRIDEQ_DESIGN_EDITOR)
+    juce_add_console_app(HybridEQAutosaveTest PRODUCT_NAME "HybridEQ Autosave Test")
+    target_sources(HybridEQAutosaveTest PRIVATE tests/autosave_editor.cpp)
+    target_include_directories(HybridEQAutosaveTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQAutosaveTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=1)
+    target_link_libraries(HybridEQAutosaveTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+endif()
