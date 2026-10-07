@@ -55,7 +55,9 @@ open-source licensing route requires satisfying its applicable terms.
 AAX additionally requires Avid's SDK/developer permissions and applicable
 signing requirements; it is excluded from public packaging by default.
 
-Binary bundles include license notices. The macOS installer also displays the
+The license texts of every bundled third-party component (JUCE-bundled libraries and the VST3, LV2,
+CLAP and Audio Unit SDKs) are in [`Licenses/third-party`](Licenses/third-party). Binary bundles
+(VST3, AU, CLAP, LV2, standalone) carry them in their Licenses folders. The macOS installer also displays the
 binary freeware terms and installs the notices in
 `/Library/Application Support/OpenGrid/HybridEQ/Licenses`.
 
@@ -86,6 +88,14 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.6
+
+- **LV2 and CLAP** are built alongside VST3, AU and the standalone, and are installed by the macOS installer
+  (`/Library/Audio/Plug-Ins/CLAP` and `/Library/Audio/Plug-Ins/LV2`). A GitHub Actions workflow builds the Linux
+  versions (VST3, LV2, CLAP, standalone).
+- **Licenses:** the license texts of all bundled third-party components are in `Licenses/third-party` and ship
+  with the source, the installer, the disk image and inside every plug-in bundle.
 
 ## Version 1.6.5
 

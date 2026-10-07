@@ -36,11 +36,19 @@ INCLUDE_AAX="${INCLUDE_AAX:-0}"
 rm -rf "$STAGING"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/VST3"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/Components"
+mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/CLAP"
+mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/LV2"
 mkdir -p "$PKG_ROOT/Applications"
 mkdir -p "$SCRIPTS_DIR"
 
 echo "Copying VST3..."
 cp -R "$ARTEFACTS/VST3/HybridEQ.vst3" "$PKG_ROOT/Library/Audio/Plug-Ins/VST3/"
+
+echo "Copying CLAP..."
+cp -R "$ARTEFACTS/CLAP/HybridEQ.clap" "$PKG_ROOT/Library/Audio/Plug-Ins/CLAP/"
+
+echo "Copying LV2..."
+cp -R "$ARTEFACTS/LV2/HybridEQ.lv2" "$PKG_ROOT/Library/Audio/Plug-Ins/LV2/"
 
 echo "Copying AU..."
 cp -R "$ARTEFACTS/AU/HybridEQ.component" "$PKG_ROOT/Library/Audio/Plug-Ins/Components/"
@@ -75,6 +83,8 @@ cat > "$STAGING/welcome.html" << HTML
 <ul>
 <li><b>VST3</b> &rarr; /Library/Audio/Plug-Ins/VST3/</li>
 <li><b>Audio Unit</b> &rarr; /Library/Audio/Plug-Ins/Components/</li>
+<li><b>CLAP</b> &rarr; /Library/Audio/Plug-Ins/CLAP/</li>
+<li><b>LV2</b> &rarr; /Library/Audio/Plug-Ins/LV2/</li>
 $AAX_LI
 <li><b>Standalone App</b> &rarr; /Applications/</li>
 </ul>
@@ -89,13 +99,15 @@ cp "$PROJECT_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/BINARY_LICENSE.txt"
 cp "$PROJECT_DIR/LICENSE" "$LICENSE_DIR/LICENSE"
 cp "$PROJECT_DIR/THIRD_PARTY_NOTICES.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt"
 cp "$PROJECT_DIR/third_party/GoodLookinUI/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt"
+cp -R "$PROJECT_DIR/Licenses/third-party" "$LICENSE_DIR/third-party"
 cat "$LICENSE_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt" \
     "$LICENSE_DIR/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt" > "$STAGING/license.txt"
 
 cat > "$STAGING/conclusion.html" << 'HTML'
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">
 <h1>Installation Complete</h1>
-<p>HybridEQ has been installed successfully.</p>
+<p>HybridEQ has been installed successfully (VST3, Audio Unit, CLAP, LV2 and the standalone app).</p>
+<p>License texts are in /Library/Application Support/OpenGrid/HybridEQ/Licenses.</p>
 <p>Please restart your DAW to load the new plug-in.</p>
 </body></html>
 HTML
@@ -178,6 +190,18 @@ cat > "$STAGING/component.plist" << COMPONENTPLIST
         <string>upgrade</string>
         <key>RootRelativeBundlePath</key>
         <string>Library/Audio/Plug-Ins/Components/HybridEQ.component</string>
+    </dict>
+    <dict>
+        <key>BundleHasStrictIdentifier</key>
+        <false/>
+        <key>BundleIsRelocatable</key>
+        <false/>
+        <key>BundleIsVersionChecked</key>
+        <false/>
+        <key>BundleOverwriteAction</key>
+        <string>upgrade</string>
+        <key>RootRelativeBundlePath</key>
+        <string>Library/Audio/Plug-Ins/CLAP/HybridEQ.clap</string>
     </dict>
 $AAX_DICT
     <dict>
