@@ -191,12 +191,10 @@ void HybridEQProcessor::updateParameters()
         return apvts.getRawParameterValue(id)->load() > 0.5f;
     };
 
-    // The "Oversample" control only offers 1x/4x/8x - 2x is never a user
-    // choice - but the engine itself also supports an internal 2x step
-    // (dsp::OversampleMode::TwoX) purely so headroom protection (below) can
-    // stop there instead of jumping straight to 4x when 2x is already
-    // enough. That internal step never touches the parameter or the visible
-    // control; it is applied to the engine only.
+    // The "Oversample" control offers 1x/4x/8x. The engine also has a 2x step
+    // (dsp::OversampleMode::TwoX) that the user never picks: it is the floor
+    // the Preamp Circuit model applies (below). It never touches the
+    // parameter or the visible control; it is applied to the engine only.
     static constexpr dsp::OversampleMode allModes[] = {
         dsp::OversampleMode::Native, dsp::OversampleMode::TwoX,
         dsp::OversampleMode::FourX, dsp::OversampleMode::EightX
@@ -205,7 +203,9 @@ void HybridEQProcessor::updateParameters()
     static constexpr int userFactors[] = {1, 4, 8};
 
     // Turning the Preamp Circuit model on adds a nonlinear stage that needs
-    // more oversampling headroom to stay clean, so it raises the floor to 4x.
+    // some oversampling headroom, so it raises the floor to 2x (the user can
+    // still choose 4x or 8x). With Circuit off the static preamp models are
+    // anti-aliased by ADAA (dsp/Adaa.h) and need none.
     // This is applied to the engine only (below): the audio thread must never
     // write a host-visible parameter, and the "Oversample" choice stays the
     // user's own. The editor shows the effective factor instead.
@@ -213,9 +213,9 @@ void HybridEQProcessor::updateParameters()
     // The High Cut, High shelf and bells no longer need extra oversampling to avoid "cramping" near Nyquist:
     // their biquads are fitted to the analog curve at the base rate (see dsp/BiquadFit.h), so even a corner at or
     // above Nyquist follows the analog response in-band. Oversampling is now only the user's choice (Oversample)
-    // and what the nonlinear stages need (Circuit forces 4x). With 1x and Circuit off the plug-in has no latency.
+    // and what the circuit needs (Circuit forces 2x). With 1x and Circuit off the plug-in has no latency.
     int userFactor = userFactors[getChoice("oversampleMode")];
-    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 4);   // circuit needs the headroom
+    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 2);   // circuit needs the headroom
     const int effectiveFactor = userFactor;
     dsp::OversampleMode effectiveMode = dsp::OversampleMode::Native;
     for (int i = 0; i < 4; ++i)

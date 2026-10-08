@@ -146,6 +146,13 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_include_directories(HybridEQEqTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
     target_compile_definitions(HybridEQEqTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
     target_link_libraries(HybridEQEqTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+
+    # ADAA on the static preamp models: alias reduction, transparency, silence, stability.
+    juce_add_console_app(HybridEQAdaaTest PRODUCT_NAME "HybridEQ ADAA Test")
+    target_sources(HybridEQAdaaTest PRIVATE tests/adaa_preamp.cpp)
+    target_include_directories(HybridEQAdaaTest PRIVATE Source)
+    target_compile_definitions(HybridEQAdaaTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+    target_link_libraries(HybridEQAdaaTest PRIVATE juce::juce_audio_basics juce::juce_recommended_config_flags)
 endif()
 
 # Per-configuration CPU table for the preamp circuit path (oversampling x rate x block size).

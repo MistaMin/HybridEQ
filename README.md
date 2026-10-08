@@ -5,7 +5,7 @@ emulation with a 6-band EQ, harmonic saturation, and mid/side processing.
 Each stage can be switched between the N-Type, Brit, A-Type, Baxandall and
 FSF circuit models. Includes adaptive oversampling
 (1x/4x/8x) that automatically raises the internal processing rate for
-headroom near Nyquist or when the Circuit model is engaged. Built with
+headroom when the Circuit model is engaged (2x minimum; 4x and 8x stay available). Built with
 [JUCE](https://juce.com); ships as VST3, AU, AAX, and Standalone for macOS.
 
 Current version: see [`VERSION`](VERSION).
@@ -89,6 +89,18 @@ Each flavour is inspired by a studio classic:
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
 
+## Version 1.6.10
+
+- **ADAA on the preamp with Circuit off.** The static N-Type, Brit, A-Type and FSF models now use first-order
+  antiderivative anti-aliasing (`Source/DSP/Adaa.h`) on every nonlinear stage, so the harmonics they generate fold back
+  less, even at 1x (measured 5 to 14 dB lower aliasing on hard-driven tones, 4.4 and 10 kHz). It works on the
+  nonlinear part only: quiet signals keep their level at every frequency (the linear path is a unity-magnitude
+  all-pass, about half a sample of delay, no reported latency). ADAA holds off while the Drive control is moving.
+  N-Type's feedback-loop stages are not ADAA'd (their antiderivative proved too noisy); its limiters and cores are.
+- **Circuit needs only 2x.** Turning Circuit on now raises Oversample to a minimum of 2x (it was 4x). The choice list
+  is still 1x/4x/8x; 4x and 8x remain available.
+- Tests: `tests/adaa.cpp` (antiderivatives against their functions, transparency for linear stages, alias reduction).
+
 ## Version 1.6.9
 
 - **Cramping-free EQ without oversampling.** The High Cut, High shelf and bells (corner above 10 % of the sample
@@ -97,7 +109,7 @@ Each flavour is inspired by a studio classic:
   0.4 dB of the same plug-in running 8x oversampled; the steepest, highest-Q High Cut slopes within about 1.2 dB.
   The filters are ordinary IIR biquads (no latency); the fit runs only when a control changes.
 - The EQ no longer forces extra oversampling for the High Cut and High shelf, so with Oversample at 1x and
-  Circuit off the plug-in has no latency (Circuit still forces 4x).
+  Circuit off the plug-in has no latency (Circuit forces a 2x minimum since 1.6.10).
 - The reported latency is now set from `prepareToPlay` (it was never reported after the audio-thread call was removed).
 - Tests: `tests/eq_fit.cpp` (fit accuracy, stability, speed, continuity), `tests/eq_integration.cpp` (`HybridEQEqTest`:
   1x versus 8x on the real processor, latency); `tools/eq_matching_experiment.py` is the Python experiment behind it.
