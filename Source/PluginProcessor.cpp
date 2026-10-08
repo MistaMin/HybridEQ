@@ -174,6 +174,7 @@ void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     // the reported latency) now instead of on the first audio block. This is the only place the
     // reported latency is ever changed.
     updateParameters();
+    setLatencySamples(static_cast<int>(std::round(multirateEngine.getLatencySamples())));
 }
 
 void HybridEQProcessor::releaseResources() {}
