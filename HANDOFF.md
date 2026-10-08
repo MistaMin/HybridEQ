@@ -200,6 +200,9 @@ The owner's specification, verbatim intent:
 In other words: the target internal rate is `max(88200 or 96000, sessionRate)`, and the user's
 oversampling selection multiplies on top of that, with a 4x floor applied when the circuit is on.
 
+> Update (1.6.10): the circuit floor is now **2x**; 4x/8x are still user choices. The static (Circuit off)
+> preamp models are anti-aliased with ADAA (`Source/DSP/Adaa.h`).
+
 **This is the inverse of the current behaviour** and is the right fix — it makes the oversampling
 control actually do something for the preamp, and it makes the 48 kHz default roughly 2x cheaper
 than today.

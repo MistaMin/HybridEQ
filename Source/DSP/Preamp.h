@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <cmath>
+#include "Adaa.h"
 #include "EQFilters.h"
 #include "NTypeCircuit.h"
 #include "BritCircuit.h"
@@ -26,7 +27,9 @@ enum class PreampType { Brit = 0, N, FSF, Off, AType };
 //     because it is CPU heavy. Values the manufacturers do not publish
 //     (transformer inductance, saturation, leakage) are labelled estimates in
 //     those headers.
-//   - "Preamp Circuit" OFF: a light static waveshaper per flavour.
+//   - "Preamp Circuit" OFF: a light static waveshaper per flavour. Its
+//     nonlinear stages use first-order antiderivative anti-aliasing (Adaa.h),
+//     so they stay clean without a high oversampling factor.
 //
 //   - Brit: balanced 500-series console mic preamp (BritCircuit.h): matched
 //     transistor pair with op-amp current feedback, instrumentation pair,
@@ -60,12 +63,15 @@ public:
         bCircOk = bCirc[0].prepare(kCircuitRate) && bCirc[1].prepare(kCircuitRate);
         fCircOk = fCirc[0].prepare(kCircuitRate) && fCirc[1].prepareLike(fCirc[0], kCircuitRate);
         aCircOk = aCirc[0].prepare(kCircuitRate) && aCirc[1].prepare(kCircuitRate);
+        adaa::railTable();      // build the limiter's antiderivative table here, not on the audio thread
     }
 
     void setType(PreampType t) noexcept { type.store(t, std::memory_order_relaxed); }
     void setDriveDB(float db) noexcept { driveTargetDB.store(db, std::memory_order_relaxed); }
     void setBypassed(bool b) noexcept { bypassed.store(b, std::memory_order_relaxed); }
     void setCircuitEnabled(bool enabled) noexcept { circuitOn.store(enabled, std::memory_order_relaxed); }
+    // Anti-aliasing of the static (Circuit off) models; on by default.
+    void setAdaaEnabled(bool enabled) noexcept { adaaOn.store(enabled, std::memory_order_relaxed); }
 
     // Called every block with the current effective sample rate. The circuit
     // poles are computed from sr, so only force a reconfigure (which also
@@ -173,33 +179,42 @@ private:
             // stage: a soft, slightly asymmetric input curve (odd + a touch
             // of even) followed by a gentler output-transformer curve, so
             // harmonics are generated at both ends of the gain stage.
-            constexpr float inW1 = 0.62f, inK1 = 1.15f;
-            constexpr float inW2 = 0.38f, inK2 = 2.2f;
-            constexpr float inNorm = inW1 * inK1 + inW2 * inK2;
-            constexpr float inAsym = 0.06f;
-            constexpr float outDrive = 1.35f;
-            constexpr float outAsym = 0.08f;
-            if (circuit) {
-                for (int i = 0; i < numSamples; ++i) {
-                    const float s = data[i] * ramp[i];
-                    float in = (inW1 * std::tanh(inK1 * s) + inW2 * std::tanh(inK2 * s)) / inNorm
-                               + inAsym * s * s;
-                    float y = std::tanh(outDrive * in) / outDrive + outAsym * in * std::abs(in);
-                    data[i] = lpFilters[channel].process(hpFilters[channel].process(y));
-                }
-            } else {
-                for (int i = 0; i < numSamples; ++i) {
-                    const float s = data[i] * ramp[i];
-                    float in = (inW1 * std::tanh(inK1 * s) + inW2 * std::tanh(inK2 * s)) / inNorm
-                               + inAsym * s * s;
-                    data[i] = std::tanh(outDrive * in) / outDrive + outAsym * in * std::abs(in);
-                }
+            // Both curves have unity small-signal slope, so ADAA touches only what they add on top.
+            constexpr double inW1 = 0.62, inK1 = 1.15;
+            constexpr double inW2 = 0.38, inK2 = 2.2;
+            constexpr double inNorm = inW1 * inK1 + inW2 * inK2;
+            constexpr double inAsym = 0.06;
+            constexpr double outDrive = 1.35;
+            constexpr double outAsym = 0.08;
+            const bool useAdaa = adaaOn.load(std::memory_order_relaxed);
+            auto& st = fAdaa[static_cast<size_t>(channel)];
+            for (int i = 0; i < numSamples; ++i) {
+                const double g = static_cast<double>(ramp[i]);
+                const adaa::Mode mode = adaaMode(useAdaa, channel, g);
+                const double s = static_cast<double>(data[i]) * g;
+                const double in = st[0].step(s,
+                    (inW1 * std::tanh(inK1 * s) + inW2 * std::tanh(inK2 * s)) / inNorm + inAsym * s * s,
+                    (inW1 * adaa::logCosh(inK1 * s) / inK1 + inW2 * adaa::logCosh(inK2 * s) / inK2) / inNorm
+                        + inAsym * s * s * s / 3.0,
+                    1.0, mode);
+                const double y = st[1].step(in,
+                    std::tanh(outDrive * in) / outDrive + outAsym * in * std::abs(in),
+                    adaa::logCosh(outDrive * in) / (outDrive * outDrive) + outAsym * in * in * std::abs(in) / 3.0,
+                    1.0, mode);
+                data[i] = circuit ? lpFilters[channel].process(hpFilters[channel].process(static_cast<float>(y)))
+                                  : static_cast<float>(y);
             }
         } else if (t == PreampType::AType) {
             // Light static model: gentle transformer-style soft clip with a touch of even order.
+            const bool useAdaa = adaaOn.load(std::memory_order_relaxed);
+            auto& st = aAdaa[static_cast<size_t>(channel)];
             for (int i = 0; i < numSamples; ++i) {
-                const double x = static_cast<double>(data[i]) * static_cast<double>(ramp[i]);
-                data[i] = static_cast<float>(std::tanh(1.4 * x) / 1.4 + 0.03 * x * std::abs(x));
+                const double g = static_cast<double>(ramp[i]);
+                const double x = static_cast<double>(data[i]) * g;
+                data[i] = static_cast<float>(st.step(x,
+                    std::tanh(1.4 * x) / 1.4 + 0.03 * x * std::abs(x),
+                    adaa::logCosh(1.4 * x) / (1.4 * 1.4) + 0.01 * x * x * std::abs(x),
+                    1.0, adaaMode(useAdaa, channel, g)));
             }
         } else if (t == PreampType::N) {
             processN(data, numSamples, channel, circuit);
@@ -220,9 +235,12 @@ private:
         constexpr double railClip = 1.2;   // op-amp output limit, full-scale units
         const size_t ch = static_cast<size_t>(channel);
         const float* ramp = driveRamp.data();
+        const bool useAdaa = adaaOn.load(std::memory_order_relaxed);
+        auto& st = bAdaa[ch];
 
         for (int i = 0; i < numSamples; ++i) {
             const double g = static_cast<double>(ramp[i]);
+            const adaa::Mode mode = adaaMode(useAdaa, channel, g);
             const double pad = g < 1.0 ? g : 1.0;      // attenuation ahead of the input stage
             const double gain = g < 1.0 ? 1.0 : g;     // amplification
             const double g1 = std::min(std::pow(gain, gainSplit), openGain);
@@ -232,14 +250,21 @@ private:
             const double v = static_cast<double>(data[i]) * pad * vScale;
             const double legA = solveLeg(v, kappa);
             const double legB = solveLeg(-v, kappa);
-            double o1 = railLimit(0.5 * swing * ((1.0 + legMismatch) * legA - legB - legMismatch), railClip);
+            // Differential pair: u(v) = swing/2 * ((1+m) I(v) - I(-v) - m), slope swing (2+m) / (2 (1+kappa)) at 0;
+            // its antiderivative follows from d(v) = (1/I + kappa) dI (adaa::legF).
+            double o1 = st[0].step(v,
+                0.5 * swing * ((1.0 + legMismatch) * legA - legB - legMismatch),
+                0.5 * swing * ((1.0 + legMismatch) * adaa::legF(legA, kappa) + adaa::legF(legB, kappa) - legMismatch * v),
+                0.5 * swing * (2.0 + legMismatch) / (1.0 + kappa), mode);
+            o1 = st[1].step(o1, railLimit(o1, railClip), adaa::railLimitF(o1, railClip), 1.0, mode);
 
             if (circuit) {
                 brit1[ch] += britA1 * (o1 - brit1[ch]);
                 o1 -= brit1[ch];
             }
 
-            double o2 = railLimit(g2 * o1, railClip);
+            const double in2 = g2 * o1;
+            double o2 = st[2].step(in2, railLimit(in2, railClip), adaa::railLimitF(in2, railClip), 1.0, mode);
 
             if (circuit) {
                 brit2[ch] += britA2 * (o2 - brit2[ch]);
@@ -263,28 +288,31 @@ private:
         constexpr double betaDrv = 1.0 - 1.0 / aeffDrv; // unity closed-loop gain
         const size_t ch = static_cast<size_t>(channel);
         const float* ramp = driveRamp.data();
+        const bool useAdaa = adaaOn.load(std::memory_order_relaxed);
+        auto& st = nAdaa[ch];
 
         for (int i = 0; i < numSamples; ++i) {
             const double g = static_cast<double>(ramp[i]);
+            const adaa::Mode mode = adaaMode(useAdaa, channel, g);
             const double pad = g < 1.0 ? g : 1.0;
             const double gain = std::min(g < 1.0 ? 1.0 : g, 0.9 * aeffGain);
             const double betaGain = 1.0 / gain - 1.0 / aeffGain;
 
             const double x = static_cast<double>(data[i]) * pad;
 
-            double v = coreSaturate(x, 2.0);
+            double v = st[0].step(x, coreSaturate(x, 2.0), adaa::coreSaturateF(x, 2.0), 1.0, mode);
 
             double y1 = solveLoop(v, betaGain, a0Gain, kGain, vS, nY1[ch]);
-            y1 = asymLimit(y1, 1.5, 1.1);
+            y1 = st[1].step(y1, asymLimit(y1, 1.5, 1.1), adaa::asymLimitF(y1, 1.5, 1.1), 1.0, mode);
             nDc1[ch] += dcA * (y1 - nDc1[ch]);
             y1 -= nDc1[ch];
 
             double y2 = solveLoop(y1, betaDrv, a0Drv, kDrv, vS, nY2[ch]);
-            y2 = asymLimit(y2, 1.6, 1.3);
+            y2 = st[2].step(y2, asymLimit(y2, 1.6, 1.3), adaa::asymLimitF(y2, 1.6, 1.3), 1.0, mode);
             nDc2[ch] += dcA * (y2 - nDc2[ch]);
             y2 -= nDc2[ch];
 
-            data[i] = static_cast<float>(coreSaturate(y2, 2.5));
+            data[i] = static_cast<float>(st[3].step(y2, coreSaturate(y2, 2.5), adaa::coreSaturateF(y2, 2.5), 1.0, mode));
         }
     }
 
@@ -358,6 +386,16 @@ private:
         }
     }
 
+    // ADAA mode for this sample. The static stages' antiderivatives are valid for fixed gains, so ADAA holds off
+    // while the drive control is moving.
+    adaa::Mode adaaMode(bool enabled, int channel, double g) noexcept
+    {
+        double& prev = adaaPrevDrive[static_cast<size_t>(channel)];
+        const bool settled = std::abs(g - prev) <= 1.0e-6 * g;
+        prev = g;
+        return !enabled ? adaa::Mode::Off : settled ? adaa::Mode::On : adaa::Mode::Hold;
+    }
+
     // Solves y = h(x - beta*y) for one transistor gain stage inside its
     // feedback loop, where h(v) = a0 * (I(v*vS) - 1) / vS and I is the
     // relative collector current from solveLeg. The loop function is
@@ -423,6 +461,13 @@ private:
 
         configuredOn = on;
         configuredType = t;
+        for (size_t ch = 0; ch < static_cast<size_t>(kMaxChannels); ++ch) {
+            for (auto& r : nAdaa[ch]) r.reset();
+            for (auto& r : bAdaa[ch]) r.reset();
+            for (auto& r : fAdaa[ch]) r.reset();
+            aAdaa[ch].reset();
+            adaaPrevDrive[ch] = -1.0;
+        }
 
         // N carries its own state (static model and, with Circuit on, the netlist simulation).
         if (t == PreampType::N) {
@@ -485,6 +530,7 @@ private:
     std::atomic<float> driveTargetDB{0.0f};
     std::atomic<bool> bypassed{false};
     std::atomic<bool> circuitOn{false};
+    std::atomic<bool> adaaOn{true};
 
     PreampType configuredType = PreampType::Brit;
     // Anti-alias / anti-image low-pass for the decimated circuit (8th-order
@@ -528,6 +574,13 @@ private:
     static constexpr double kAFullScaleVolts = 0.6;      // A-Type balanced EMF at 0 dBFS
 
     bool configuredOn = false;
+
+    // ADAA state of the static models' memoryless stages (see Adaa.h).
+    std::array<std::array<adaa::Residual, 4>, kMaxChannels> nAdaa;
+    std::array<std::array<adaa::Residual, 3>, kMaxChannels> bAdaa;
+    std::array<std::array<adaa::Residual, 2>, kMaxChannels> fAdaa;
+    std::array<adaa::Residual, kMaxChannels> aAdaa;
+    std::array<double, kMaxChannels> adaaPrevDrive{-1.0, -1.0};
 
     std::array<BiquadProcessor, kMaxChannels> hpFilters;
     std::array<BiquadProcessor, kMaxChannels> lpFilters;
