@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <complex>
+#include "BiquadFit.h"
 
 namespace dsp {
 
@@ -152,14 +153,9 @@ inline BiquadCoeffs makeLowShelf(double sampleRate, double freq, double Q, doubl
 // Pure numerical safety net - NOT a curve-shaping tool. A bilinear-transform
 // biquad becomes unstable if asked to design for a frequency at/above
 // Nyquist, so this only clamps the pathological case (freq >= ~Nyquist) to
-// stop NaNs/blowups. It must never be relied on to prevent "cramping": under
-// normal operation the caller (HybridEQProcessor::updateParameters) keeps
-// the *actual* Nyquist comfortably above every requested cut/shelf frequency
-// by raising the internal oversampling factor, so this clamp should not
-// engage in practice. Anything that silently pulls the requested corner
-// frequency down (as an earlier version of this function did) makes cramping
-// WORSE, not better - it cuts lower than the user asked for on top of
-// whatever warping remains, which is exactly the bug this replaces.
+// stop NaNs/blowups. It is the fallback/standard design only: corners above
+// ~10 % of the sample rate are fitted to the analog curve instead
+// (AnalogEQ, BiquadFit.h), which avoids cramping without oversampling.
 inline double safeFilterFreq(double sampleRate, double freq)
 {
     return std::min(freq, sampleRate * 0.49);
@@ -170,15 +166,10 @@ inline double safeShelfFreq(double sampleRate, double freq)
     return safeFilterFreq(sampleRate, freq);
 }
 
-// The bilinear transform maps the entire analog frequency axis onto
-// [0, Nyquist), so a digital cut/shelf's curve shape only matches its analog
-// prototype closely while the design frequency stays well below Nyquist; as
-// it climbs past roughly 3/4 of Nyquist the curve starts to visibly and
-// audibly compress ("cramp") against the ceiling. The fix used here is to
-// keep raising Nyquist (i.e. the internal oversampling factor) until the
-// requested frequency is safely inside the accurate region, rather than
-// warping the frequency itself. Returns the minimum sample rate at which
-// `freq` sits at or below that safe fraction of Nyquist.
+// Legacy: the minimum sample rate at which `freq` sits at or below 75 % of
+// Nyquist, i.e. where a bilinear design still follows its analog prototype.
+// The plug-in used to raise its oversampling factor to satisfy this; it no
+// longer does (the EQ fits the analog curve directly) and nothing calls it.
 inline double minSampleRateFor(double freq)
 {
     constexpr double kSafeFractionOfNyquist = 0.75;
@@ -369,16 +360,37 @@ public:
     {
         hcMode = mode;
         msActive = usesMidSide();
-        double safeFreq = FilterDesign::safeFilterFreq(sr, freq);
-        int order = static_cast<int>(slope) + 1;
+        if (unchanged(hcKey, freq, Q, static_cast<double>(slope), 0.0, 0.0)) return;
+        const double safeFreq = FilterDesign::safeFilterFreq(sr, freq);
+        const int order = static_cast<int>(slope) + 1;
         highCut.setOrder(order);
+        std::array<fit::Spec, kMaxBiquadStages> specs;
+        std::array<BiquadCoeffs, kMaxBiquadStages> standard;
         for (int i = 0; i < order; ++i) {
             double stageQ = Q;
             if (order > 1)
                 stageQ = 1.0 / (2.0 * std::sin(juce::MathConstants<double>::pi * (2.0 * i + 1) / (2.0 * order)));
             stageQ = std::max(stageQ * Q / 0.7071, 0.1);
-            highCut.setCoeffs(i, FilterDesign::makeLowPass(sr, safeFreq, stageQ));
+            standard[static_cast<size_t>(i)] = FilterDesign::makeLowPass(sr, safeFreq, stageQ);
+            specs[static_cast<size_t>(i)] = {fit::Shape::LowPass, freq, stageQ, 0.0};
         }
+        // Corners above ~10 % of the sample rate would cramp with the standard design: fit the cascade to the
+        // analog curve instead (see BiquadFit.h). Below that the standard design is accurate.
+        bool done = false;
+        if (freq >= kFitFraction * sr) {
+            std::array<fit::Coeffs, kMaxBiquadStages> warm, out;
+            const bool haveWarm = hcFitted && hcFittedOrder == order;
+            for (int i = 0; i < order && haveWarm; ++i) warm[static_cast<size_t>(i)] = toFit(highCut.getStageCoeffs(i));
+            fit::designCascade(specs.data(), order, sr, haveWarm ? warm.data() : nullptr, out.data());
+            bool ok = true;
+            for (int i = 0; i < order; ++i) ok = ok && fit::isStable(out[static_cast<size_t>(i)]);
+            if (ok) {
+                for (int i = 0; i < order; ++i) highCut.setCoeffs(i, fromFit(out[static_cast<size_t>(i)]));
+                done = true;
+            }
+        }
+        if (!done) for (int i = 0; i < order; ++i) highCut.setCoeffs(i, standard[static_cast<size_t>(i)]);
+        hcFitted = done; hcFittedOrder = order;
     }
 
     void updateLowBand(double freq, double gain, LowBandType type, MidSideMode mode = MidSideMode::Stereo)
@@ -404,19 +416,9 @@ public:
     {
         mid1Mode = mode;
         msActive = usesMidSide();
+        if (unchanged(mid1Key, freq, gain, Q, static_cast<double>(type), 0.0)) return;
         mid1Band.setOrder(1);
-        switch (type) {
-            case MidBandType::Brit:
-                mid1Band.setCoeffs(0, FilterDesign::makeBritBell(sr, freq, Q, gain));
-                break;
-            case MidBandType::A_Type:
-                mid1Band.setCoeffs(0, FilterDesign::makeATypeBell(sr, freq, gain));
-                break;
-            case MidBandType::N_EQ:
-            default:
-                mid1Band.setCoeffs(0, FilterDesign::makeNTypeProportionalQ(sr, freq, Q, gain));
-                break;
-        }
+        mid1Band.setCoeffs(0, designBell(freq, gain, Q, type, mid1Band.getStageCoeffs(0), mid1Fitted));
     }
 
     void updateMid2(double freq, double gain, double Q, MidBandType type = MidBandType::N_EQ,
@@ -424,38 +426,26 @@ public:
     {
         mid2Mode = mode;
         msActive = usesMidSide();
+        if (unchanged(mid2Key, freq, gain, Q, static_cast<double>(type), 0.0)) return;
         mid2Band.setOrder(1);
-        switch (type) {
-            case MidBandType::Brit:
-                mid2Band.setCoeffs(0, FilterDesign::makeBritBell(sr, freq, Q, gain));
-                break;
-            case MidBandType::A_Type:
-                mid2Band.setCoeffs(0, FilterDesign::makeATypeBell(sr, freq, gain));
-                break;
-            case MidBandType::N_EQ:
-            default:
-                mid2Band.setCoeffs(0, FilterDesign::makeNTypeProportionalQ(sr, freq, Q, gain));
-                break;
-        }
+        mid2Band.setCoeffs(0, designBell(freq, gain, Q, type, mid2Band.getStageCoeffs(0), mid2Fitted));
     }
 
     void updateHighBand(double freq, double gain, HighBandType type, MidSideMode mode = MidSideMode::Stereo)
     {
         highMode = mode;
         msActive = usesMidSide();
+        if (unchanged(highKey, freq, gain, static_cast<double>(type), 0.0, 0.0)) return;
         highBand.setOrder(1);
-        double safeFreq = FilterDesign::safeShelfFreq(sr, freq);
+        const double safeFreq = FilterDesign::safeShelfFreq(sr, freq);
+        BiquadCoeffs standard;
+        double shelfQ = 0.5;
         switch (type) {
-            case HighBandType::Baxandall:
-                highBand.setCoeffs(0, FilterDesign::makeBaxandallHighShelf(sr, safeFreq, gain));
-                break;
-            case HighBandType::Brit:
-                highBand.setCoeffs(0, FilterDesign::makeBritHighShelf(sr, safeFreq, gain));
-                break;
-            case HighBandType::FSF:
-                highBand.setCoeffs(0, FilterDesign::makeFSFHighShelf(sr, safeFreq, gain));
-                break;
+            case HighBandType::Baxandall: shelfQ = 0.5;  standard = FilterDesign::makeBaxandallHighShelf(sr, safeFreq, gain); break;
+            case HighBandType::Brit:      shelfQ = 0.71; standard = FilterDesign::makeBritHighShelf(sr, safeFreq, gain); break;
+            case HighBandType::FSF:       shelfQ = 0.85; standard = FilterDesign::makeFSFHighShelf(sr, safeFreq, gain); break;
         }
+        highBand.setCoeffs(0, fitted({fit::Shape::HighShelf, freq, shelfQ, gain}, standard, highBand.getStageCoeffs(0), highFitted));
     }
 
     void processBlock(juce::AudioBuffer<float>& buffer) noexcept
@@ -570,6 +560,52 @@ private:
             right[i] = mid[i] - side[i];
         }
     }
+
+    // Fit used from this fraction of the sample rate upward (cramping is negligible below it).
+    static constexpr double kFitFraction = 0.1;
+
+    static fit::Coeffs toFit(const BiquadCoeffs& c) { return {c.b0, c.b1, c.b2, c.a1, c.a2}; }
+    static BiquadCoeffs fromFit(const fit::Coeffs& c) { return {c.b0, c.b1, c.b2, c.a1, c.a2}; }
+
+    // A band is only redesigned when one of its inputs (or the sample rate) actually changed.
+    struct Key { double v[5] = {}; double sr = 0.0; bool valid = false; };
+    bool unchanged(Key& k, double a, double b, double c, double d, double e) const
+    {
+        if (k.valid && k.sr == sr && k.v[0] == a && k.v[1] == b && k.v[2] == c && k.v[3] == d && k.v[4] == e) return true;
+        k.v[0] = a; k.v[1] = b; k.v[2] = c; k.v[3] = d; k.v[4] = e; k.sr = sr; k.valid = true;
+        return false;
+    }
+
+    // Standard design below the fit threshold, magnitude fit above it. `wasFitted` says whether the previous
+    // coefficients came from the fit (then they are the warm start, so sweeps stay continuous).
+    BiquadCoeffs fitted(const fit::Spec& spec, const BiquadCoeffs& standard, const BiquadCoeffs& previous, bool& wasFitted) const
+    {
+        if (spec.f0 < kFitFraction * sr) { wasFitted = false; return standard; }
+        const fit::Coeffs warm = toFit(previous);
+        const fit::Result r = fit::design(spec, sr, wasFitted ? &warm : nullptr);
+        wasFitted = r.fitted;
+        return r.fitted ? fromFit(r.c) : standard;
+    }
+
+    BiquadCoeffs designBell(double freq, double gain, double Q, MidBandType type, const BiquadCoeffs& previous, bool& wasFitted) const
+    {
+        BiquadCoeffs standard;
+        double bellQ = Q;
+        switch (type) {
+            case MidBandType::Brit:   bellQ = Q * 1.2; standard = FilterDesign::makeBritBell(sr, freq, Q, gain); break;
+            case MidBandType::A_Type: bellQ = 0.9;     standard = FilterDesign::makeATypeBell(sr, freq, gain); break;
+            case MidBandType::N_EQ:
+            default:
+                bellQ = std::clamp(Q + std::abs(gain) * 0.15, 0.3, 12.0);
+                standard = FilterDesign::makeNTypeProportionalQ(sr, freq, Q, gain);
+                break;
+        }
+        return fitted({fit::Shape::Peak, freq, bellQ, gain}, standard, previous, wasFitted);
+    }
+
+    Key hcKey, mid1Key, mid2Key, highKey;
+    bool hcFitted = false, mid1Fitted = false, mid2Fitted = false, highFitted = false;
+    int hcFittedOrder = 0;
 
     double sr = 44100.0;
     CascadedFilter lowCut, highCut, lowBand, mid1Band, mid2Band, highBand;

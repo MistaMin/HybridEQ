@@ -89,6 +89,20 @@ Each flavour is inspired by a studio classic:
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
 
+## Version 1.6.9
+
+- **Cramping-free EQ without oversampling.** The High Cut, High shelf and bells (corner above 10 % of the sample
+  rate) are now biquads fitted by least squares to the analog curve (`Source/DSP/BiquadFit.h`), so a corner near or
+  above Nyquist follows the analog response in-band instead of bending. At the base rate they stay within about
+  0.4 dB of the same plug-in running 8x oversampled; the steepest, highest-Q High Cut slopes within about 1.2 dB.
+  The filters are ordinary IIR biquads (no latency); the fit runs only when a control changes.
+- The EQ no longer forces extra oversampling for the High Cut and High shelf, so with Oversample at 1x and
+  Circuit off the plug-in has no latency (Circuit still forces 4x).
+- The reported latency is now set from `prepareToPlay` (it was never reported after the audio-thread call was removed).
+- Tests: `tests/eq_fit.cpp` (fit accuracy, stability, speed, continuity), `tests/eq_integration.cpp` (`HybridEQEqTest`:
+  1x versus 8x on the real processor, latency); `tools/eq_matching_experiment.py` is the Python experiment behind it.
+- Magnitude is matched, phase is not (it cannot follow the analog phase near Nyquist).
+
 ## Version 1.6.8
 
 - Built with **JUCE 9.0.3** (JUCE 9 End User Licence Agreement; was JUCE 8.0.15). The bundled-library license

@@ -210,30 +210,13 @@ void HybridEQProcessor::updateParameters()
     // write a host-visible parameter, and the "Oversample" choice stays the
     // user's own. The editor shows the effective factor instead.
     //
-    // A digital cut/shelf only reproduces its analog prototype's curve while
-    // its design frequency stays well below the current Nyquist; push it too
-    // close and the curve compresses ("cramps") against the ceiling. Rather
-    // than quietly moving the corner frequency down to dodge that (which
-    // just cuts lower than the user asked for), keep Nyquist itself high
-    // enough: auto-raise the internal oversampling factor above whatever the
-    // user picked whenever High Cut or the High shelf need more headroom, so
-    // the curve always matches the hardware regardless of the project's
-    // sample rate. The "Oversample" control becomes a floor, never a ceiling
-    // this can't exceed. This search is allowed to land on the internal-only
-    // 2x step even though 2x is not a selectable choice.
-    double maxCriticalFreq = std::max(getFloat("hcFreq"), getFloat("highFreq"));
-    double requiredSR = dsp::FilterDesign::minSampleRateFor(maxCriticalFreq);
-    int requiredFactor = 1;
-    for (int f : allFactors) {
-        if (currentSampleRate * f >= requiredSR) {
-            requiredFactor = f;
-            break;
-        }
-        requiredFactor = f;
-    }
+    // The High Cut, High shelf and bells no longer need extra oversampling to avoid "cramping" near Nyquist:
+    // their biquads are fitted to the analog curve at the base rate (see dsp/BiquadFit.h), so even a corner at or
+    // above Nyquist follows the analog response in-band. Oversampling is now only the user's choice (Oversample)
+    // and what the nonlinear stages need (Circuit forces 4x). With 1x and Circuit off the plug-in has no latency.
     int userFactor = userFactors[getChoice("oversampleMode")];
     if (getBool("preampCircuit")) userFactor = std::max(userFactor, 4);   // circuit needs the headroom
-    int effectiveFactor = std::max(userFactor, requiredFactor);
+    const int effectiveFactor = userFactor;
     dsp::OversampleMode effectiveMode = dsp::OversampleMode::Native;
     for (int i = 0; i < 4; ++i)
         if (allFactors[i] == effectiveFactor)
