@@ -139,6 +139,13 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_include_directories(HybridEQStress PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
     target_compile_definitions(HybridEQStress PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
     target_link_libraries(HybridEQStress PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+
+    # End-to-end EQ check: fitted base-rate filters versus the 8x-oversampled plug-in, and the reported latency.
+    juce_add_console_app(HybridEQEqTest PRODUCT_NAME "HybridEQ EQ Test")
+    target_sources(HybridEQEqTest PRIVATE tests/eq_integration.cpp)
+    target_include_directories(HybridEQEqTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQEqTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
+    target_link_libraries(HybridEQEqTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
 endif()
 
 # Per-configuration CPU table for the preamp circuit path (oversampling x rate x block size).
