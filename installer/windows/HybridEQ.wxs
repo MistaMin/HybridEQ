@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="HybridEQ" Language="1033" Version="1.6.10" Manufacturer="OpenGrid"
+  <Package Name="HybridEQ" Language="1033" Version="$(var.Version)" Manufacturer="OpenGrid"
            UpgradeCode="6A1F2F3B-4C5D-6E7F-8A9B-0C1D2E3F4A5B" Scope="perMachine">
     <MajorUpgrade DowngradeErrorMessage="A newer version of HybridEQ is already installed." />
     <MediaTemplate EmbedCab="yes" />
@@ -35,43 +35,43 @@
 
     <ComponentGroup Id="VST3Files" Directory="VST3PluginFolder">
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\Resources\moduleinfo.json" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\Resources\moduleinfo.json" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="CLAPFiles" Directory="CLAPFolder">
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\CLAP\HybridEQ.clap" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\CLAP\HybridEQ.clap" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="LV2Files" Directory="LV2PluginFolder">
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\HybridEQ.dll" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\HybridEQ.dll" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\dsp.ttl" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\dsp.ttl" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\manifest.ttl" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\manifest.ttl" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\ui.ttl" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\ui.ttl" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="StandaloneFiles" Directory="HybridEQFolder">
       <Component>
-        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\Standalone\HybridEQ.exe" />
+        <File Source="$(var.BuildDir)\HybridEQ_artefacts\Release\Standalone\HybridEQ.exe" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)LICENSE" />
+        <File Source="$(var.SourceDir)\LICENSE" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)BINARY_LICENSE.txt" />
+        <File Source="$(var.SourceDir)\BINARY_LICENSE.txt" />
       </Component>
       <Component>
-        <File Source="$(var.SourceDir)THIRD_PARTY_NOTICES.txt" />
+        <File Source="$(var.SourceDir)\THIRD_PARTY_NOTICES.txt" />
       </Component>
     </ComponentGroup>
   </Package>

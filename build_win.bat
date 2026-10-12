@@ -7,21 +7,15 @@ REM   build_win.bat --configure     -> configure only
 
 setlocal
 
-set "VS=C:\Program Files\Microsoft Visual Studio\18\Community"
-set "CMAKE_BIN=C:\Program Files\CMake\bin"
-set "NINJA_BIN=C:\Users\marco\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin"
-
-call "%VS%\VC\Auxiliary\Build\vcvars64.bat" >nul
+call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" >nul
 if errorlevel 1 (
     echo [ERROR] Failed to initialise the MSVC environment.
     exit /b 1
 )
 
-set "PATH=%PATH%;%CMAKE_BIN%;%NINJA_BIN%"
-
 if not exist "build3\CMakeCache.txt" (
     echo [HybridEQ] Configuring...
-    cmake -B build3 -G Ninja -DCMAKE_BUILD_TYPE=Release
+    cmake -B build3 -G Ninja -DCMAKE_BUILD_TYPE=Release -DHYBRIDEQ_BUILD_TESTS=OFF
     if errorlevel 1 exit /b 1
 )
 
