@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="HybridEQ" Language="1033" Version="1.6.10" Manufacturer="OpenGrid"
+           UpgradeCode="6A1F2F3B-4C5D-6E7F-8A9B-0C1D2E3F4A5B" Scope="perMachine">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of HybridEQ is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="VST3" Title="VST3 Plugin" Level="1">
+      <ComponentGroupRef Id="VST3Files" />
+    </Feature>
+    <Feature Id="CLAP" Title="CLAP Plugin" Level="1">
+      <ComponentGroupRef Id="CLAPFiles" />
+    </Feature>
+    <Feature Id="LV2" Title="LV2 Plugin" Level="1">
+      <ComponentGroupRef Id="LV2Files" />
+    </Feature>
+    <Feature Id="Standalone" Title="Standalone Application" Level="1">
+      <ComponentGroupRef Id="StandaloneFiles" />
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="OpenGrid">
+        <Directory Name="HybridEQ" Id="HybridEQFolder" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="CommonFiles64Folder">
+      <Directory Id="VST3Folder" Name="VST3">
+        <Directory Name="HybridEQ.vst3" Id="VST3PluginFolder" />
+      </Directory>
+      <Directory Id="CLAPFolder" Name="CLAP" />
+      <Directory Id="LV2Folder" Name="LV2">
+        <Directory Name="HybridEQ.lv2" Id="LV2PluginFolder" />
+      </Directory>
+    </StandardDirectory>
+
+    <ComponentGroup Id="VST3Files" Directory="VST3PluginFolder">
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\VST3\HybridEQ.vst3\Contents\Resources\moduleinfo.json" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="CLAPFiles" Directory="CLAPFolder">
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\CLAP\HybridEQ.clap" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="LV2Files" Directory="LV2PluginFolder">
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\HybridEQ.dll" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\dsp.ttl" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\manifest.ttl" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\LV2\HybridEQ.lv2\ui.ttl" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="StandaloneFiles" Directory="HybridEQFolder">
+      <Component>
+        <File Source="$(var.SourceDir)build3\HybridEQ_artefacts\Release\Standalone\HybridEQ.exe" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)LICENSE" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)BINARY_LICENSE.txt" />
+      </Component>
+      <Component>
+        <File Source="$(var.SourceDir)THIRD_PARTY_NOTICES.txt" />
+      </Component>
+    </ComponentGroup>
+  </Package>
+</Wix>
