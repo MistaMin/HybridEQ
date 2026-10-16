@@ -52,6 +52,7 @@ private:
     void refreshBypassStates();
     void applyKnobStyle(const juce::String& code);
     void refreshKnobStyles();
+    void styleSpectrumButton();
     void showKnobStyleMenu();
     // Colour triggers / faceplates (see UI/LookTriggers.h).
     TriggerMode getTriggerMode() const;

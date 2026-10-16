@@ -124,6 +124,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     // (High Cut / High shelf / Preamp Circuit) can raise above the user's choice. The choice itself is
     // never rewritten, so the menu still shows what the user picked.
     oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
+    if(!isTimerRunning()) startTimerHz(10);
     oversampleBtn.setButtonTooltip("Internal processing rate. The headroom floor can raise this above "
                                    "your choice when High Cut, the High shelf or Preamp Circuit need it.");
 
@@ -270,8 +271,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     addAndMakeVisible(panelSurface);
     // Full-window analyser: a button in the header opens it over the whole editor.
     panelSurface.addAndMakeVisible(spectrumBtn);
-    spectrumBtn.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
-    spectrumBtn.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
+    styleSpectrumButton();
     spectrumBtn.setTooltip("Full-window spectrum / spectrogram");
     spectrumBtn.onClick = [this] { spectrumOverlay->setVisible(!spectrumOverlay->isVisible()); if (spectrumOverlay->isVisible()) spectrumOverlay->toFront(true); };
     panelSurface.addChildComponent(*spectrumOverlay);
@@ -328,8 +328,10 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
         &mid1FreqDial,&mid1GainDial,&mid1QDial,&mid2FreqDial,&mid2GainDial,&mid2QDial,&highFreqDial,&highGainDial,
         &preampGainDial,&outputGainDial}) trackDefault(*k);
 
-    globalPanel.addAndMakeVisible(knobStyleBtn);
+#if GOODLOOKINUI_ENABLE_EDITOR
+    globalPanel.addAndMakeVisible(knobStyleBtn);       // developer-only: releases always use each knob's own design
     knobStyleBtn.setBounds(18,100,117,24);
+#endif
     cycleButtons = {&lcSlopeBtn,&lcModeBtn,&hcSlopeBtn,&hcModeBtn,&lowTypeBtn,&lowModeBtn,&mid1TypeBtn,&mid1ModeBtn,
                     &mid2TypeBtn,&mid2ModeBtn,&highTypeBtn,&highModeBtn,&preampPadBtn,&preampTypeBtn,&oversampleBtn};
     // Which controls re-tint when a parameter's choice changes (Control mode).
@@ -371,11 +373,11 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     resized();
 #endif
 
+#if GOODLOOKINUI_ENABLE_EDITOR
     knobStyleBtn.setLookAndFeel(&knobStyleLnf);
     knobStyleBtn.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
     knobStyleBtn.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
     knobStyleBtn.onClick=[this]{showKnobStyleMenu();};
-#if GOODLOOKINUI_ENABLE_EDITOR
     // Developer-only: how a project's look and colour trigger are chosen.
     globalPanel.addAndMakeVisible(lookBtn);
     lookBtn.setBounds(141,100,70,24);
@@ -385,7 +387,11 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     lookBtn.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
     lookBtn.onClick=[this]{showLookMenu();};
 #endif
+#if GOODLOOKINUI_ENABLE_EDITOR
     applyKnobStyle(proc.apvts.state.getProperty("knobStyle","").toString());
+#else
+    applyKnobStyle({});     // releases ignore any saved global knob override
+#endif
     refreshBypassStates();
     applyLook(false);
     applyMeterStyles();
@@ -528,7 +534,7 @@ void HybridEQEditor::applyLook(bool animate)
     }
     refreshKnobStyles();
     fadeT=animate?0.0f:1.0f;
-    if(animate) startTimerHz(60); else {stopTimer();stepLook(1.0f);}
+    if(animate) startTimerHz(60); else {startTimerHz(10);stepLook(1.0f);}
 }
 
 void HybridEQEditor::stepLook(float t)
@@ -554,15 +560,32 @@ void HybridEQEditor::stepLook(float t)
     for(auto& k:knobDefaults) k.first->refreshTheme();
     for(auto* b:cycleButtons) b->refreshTheme();
     harmonicsPanel.refreshTheme();
+    styleSpectrumButton();
     repaint();
+}
+
+// The Spectrum key sits in the title bar, so it takes the bar's colour (with light text and a quiet outline)
+// instead of the cream of the control keys. Called again when the theme changes.
+void HybridEQEditor::styleSpectrumButton()
+{
+    spectrumBtn.setColour(juce::TextButton::buttonColourId, Theme::titleBar);
+    spectrumBtn.setColour(juce::TextButton::buttonOnColourId, Theme::titleBar.brighter(0.15f));
+    spectrumBtn.setColour(juce::TextButton::textColourOffId, Theme::textDark);
+    spectrumBtn.setColour(juce::TextButton::textColourOnId, Theme::textDark);
+    spectrumBtn.setColour(juce::ComboBox::outlineColourId, Theme::textMid.withAlpha(0.45f));
+    spectrumBtn.repaint();
 }
 
 void HybridEQEditor::timerCallback()
 {
-    fadeT=juce::jmin(1.0f,fadeT+1.0f/60.0f/0.25f);
-    const float eased=fadeT*fadeT*(3.0f-2.0f*fadeT);
-    stepLook(eased);
-    if(fadeT>=1.0f) stopTimer();
+    // The look fade runs at 60 Hz for a quarter second; afterwards the timer idles at 10 Hz so the Oversample
+    // key still follows the engine's effective factor.
+    if(fadeT<1.0f) {
+        fadeT=juce::jmin(1.0f,fadeT+1.0f/60.0f/0.25f);
+        const float eased=fadeT*fadeT*(3.0f-2.0f*fadeT);
+        stepLook(eased);
+        if(fadeT>=1.0f) startTimerHz(10);
+    }
     oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
 }
 
@@ -572,7 +595,8 @@ juce::String HybridEQEditor::oversampleDisplayText() const
 {
     const int effective = proc.getEffectiveOversampleFactor();
     const auto* param = dynamic_cast<juce::AudioParameterChoice*>(proc.apvts.getParameter("oversampleMode"));
-    const int chosen = param != nullptr ? param->getIndex() : 0;
+    static constexpr int factors[] = {1, 4, 8};          // the Oversample choices
+    const int chosen = param != nullptr ? factors[juce::jlimit(0, 2, param->getIndex())] : 1;
     const juce::String text = juce::String(effective) + "x";
     return effective == chosen ? text : text + "*";
 }
@@ -631,7 +655,7 @@ void HybridEQEditor::applyKnobStyle(const juce::String& code)
 {
     // Empty code = no global override: saved design styles (or a section's trigger style) apply.
     proc.apvts.state.setProperty("knobStyle", code, nullptr);
-    knobStyleBtn.setButtonText("KNOBS: " + (code.isEmpty() ? juce::String("DESIGN") : code));
+    knobStyleBtn.setButtonText("KNOBS: " + (code.isEmpty() ? juce::String("DEFAULT") : code));
     refreshKnobStyles();
 }
 
@@ -654,7 +678,7 @@ void HybridEQEditor::showKnobStyleMenu()
 {
     juce::PopupMenu menu;
     const auto current=proc.apvts.state.getProperty("knobStyle","").toString();
-    menu.addItem(1,"DESIGN (as saved)",true,current.isEmpty());
+    menu.addItem(1,"DEFAULT (each knob keeps its own style)",true,current.isEmpty());
     menu.addSeparator();
     int id=2;
     for(const auto& s:goodlookinui::knobStyles)
