@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.22)
 # Bump that file (or answer the installer prompt) - nothing else hardcodes it.
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" HYBRIDEQ_VERSION_STR)
 string(STRIP "${HYBRIDEQ_VERSION_STR}" HYBRIDEQ_VERSION_STR)
+# macOS builds are universal (Apple silicon + Intel) and run on macOS 11 or later. These must be set before project().
+if(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "macOS architectures" FORCE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version" FORCE)
+endif()
 project(HybridEQ VERSION ${HYBRIDEQ_VERSION_STR} LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -146,6 +151,13 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_include_directories(HybridEQEqTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
     target_compile_definitions(HybridEQEqTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
     target_link_libraries(HybridEQEqTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+
+    # The three preamp modes (Circuit off, reduced Circuit, HQ) on the real processor.
+    juce_add_console_app(HybridEQEngineTest PRODUCT_NAME "HybridEQ Engine Test")
+    target_sources(HybridEQEngineTest PRIVATE tests/engine_modes.cpp)
+    target_include_directories(HybridEQEngineTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQEngineTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
+    target_link_libraries(HybridEQEngineTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
 
     # ADAA on the static preamp models: alias reduction, transparency, silence, stability.
     juce_add_console_app(HybridEQAdaaTest PRODUCT_NAME "HybridEQ ADAA Test")

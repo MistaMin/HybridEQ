@@ -200,6 +200,9 @@ The owner's specification, verbatim intent:
 In other words: the target internal rate is `max(88200 or 96000, sessionRate)`, and the user's
 oversampling selection multiplies on top of that, with a 4x floor applied when the circuit is on.
 
+> Update (1.6.12): Circuit now has three modes on one key (Off / Circuit = reduced engine from OpenPreamp / Circuit HQ = full
+> solver, parameters `preampCircuit` + `preampHQ`); only HQ forces 2x. Builds are universal (arm64;x86_64, macOS 11+).
+>
 > Update (1.6.10): the circuit floor is now **2x**; 4x/8x are still user choices. The static (Circuit off)
 > preamp models are anti-aliased with ADAA (`Source/DSP/Adaa.h`).
 

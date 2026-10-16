@@ -147,6 +147,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
         juce::ParameterID{"preampBypass", 1}, "Preamp Bypass", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>(
         juce::ParameterID{"preampCircuit", 1}, "Preamp Circuit", false));
+    // Appended after the original parameters. With Circuit on, HQ selects the full component-level solver
+    // (on) or the reduced Circuit model (off). Sessions saved before this parameter existed restore as HQ,
+    // which is what their Circuit setting always meant.
+    params.push_back(std::make_unique<juce::AudioParameterBool>(
+        juce::ParameterID{"preampHQ", 1}, "Preamp HQ", true));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"outputGain", 1}, "Output Gain",
@@ -169,6 +174,9 @@ void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     currentSampleRate = sampleRate;
     multirateEngine.prepare(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
     preamp.prepare(sampleRate);
+    reducedBank = std::make_unique<dsp::ReducedCircuitBank>();
+    reducedBank->prepare(sampleRate);
+    reducedType = -1; reducedFactor = 0; reducedActive = false;
     eq.prepare(sampleRate, samplesPerBlock);
     // Hosts read the latency right after prepareToPlay, so settle the oversampling factor (and with it
     // the reported latency) now instead of on the first audio block. This is the only place the
@@ -215,7 +223,10 @@ void HybridEQProcessor::updateParameters()
     // above Nyquist follows the analog response in-band. Oversampling is now only the user's choice (Oversample)
     // and what the circuit needs (Circuit forces 2x). With 1x and Circuit off the plug-in has no latency.
     int userFactor = userFactors[getChoice("oversampleMode")];
-    if (getBool("preampCircuit")) userFactor = std::max(userFactor, 2);   // circuit needs the headroom
+    const bool preampOn = !getBool("preampBypass") && getChoice("preampType") != static_cast<int>(dsp::PreampType::Off);
+    const bool circuitOn = getBool("preampCircuit");
+    const bool reducedOn = circuitOn && !getBool("preampHQ") && preampOn && reducedBank != nullptr;
+    if (circuitOn && getBool("preampHQ")) userFactor = std::max(userFactor, 2);   // the full solver needs the headroom
     const int effectiveFactor = userFactor;
     dsp::OversampleMode effectiveMode = dsp::OversampleMode::Native;
     for (int i = 0; i < 4; ++i)
@@ -231,7 +242,25 @@ void HybridEQProcessor::updateParameters()
     preamp.setType(static_cast<dsp::PreampType>(getChoice("preampType")));
     preamp.setDriveDB(getFloat("preampGain") + padGains[getChoice("preampPad")]);
     preamp.setBypassed(getBool("preampBypass"));
-    preamp.setCircuitEnabled(getBool("preampCircuit"));
+    preamp.setCircuitEnabled(circuitOn && !reducedOn);
+
+    // Reduced engine: ADAA is built into its saturating stages at the base rate only (the tables for 2x and
+    // above are not antialiased), so it is switched on at 1x. Re-pointing a kernel resets its state.
+    if (reducedOn) {
+        const int type = getChoice("preampType");
+        if (!reducedActive || reducedType != type || reducedFactor != effectiveFactor) {
+            for (auto& kernel : reducedKernels)
+                kernel.configure(reducedBank->get(type, effectiveFactor), effectiveFactor == 1);
+            reducedType = type;
+            reducedFactor = effectiveFactor;
+            reducedDrive.reset(currentSampleRate * effectiveFactor, 0.02);
+            reducedDrive.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(
+                getFloat("preampGain") + padGains[getChoice("preampPad")]));
+        }
+        reducedDrive.setTargetValue(juce::Decibels::decibelsToGain(
+            getFloat("preampGain") + padGains[getChoice("preampPad")]));
+    }
+    reducedActive = reducedOn;
 
     saturation.setHarmonicLevels(
         getFloat("harmonic2nd"), getFloat("harmonic3rd"),
@@ -302,7 +331,15 @@ void HybridEQProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mid
     for (int ch = 0; ch < numCh; ++ch)
         chPtrs[ch] = osBlock.getChannelPointer(static_cast<size_t>(ch));
 
-    preamp.processBlock(chPtrs, numCh, numSamp);
+    if (reducedActive) {
+        // The kernel has no gain stage of its own: Drive and Pad are an input trim, smoothed per sample.
+        for (int i = 0; i < numSamp; ++i) {
+            const float g = reducedDrive.getNextValue();
+            for (int ch = 0; ch < numCh; ++ch)
+                chPtrs[ch][i] = static_cast<float>(reducedKernels[static_cast<size_t>(ch)].process(double(chPtrs[ch][i]) * g));
+        }
+    } else
+        preamp.processBlock(chPtrs, numCh, numSamp);
     eq.processBlock(chPtrs, numCh, numSamp);
     for (int ch = 0; ch < numCh; ++ch)
         saturation.processBlock(chPtrs[ch], numSamp);

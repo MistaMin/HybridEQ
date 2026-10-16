@@ -1,19 +1,46 @@
 # HybridEQ
 
-HybridEQ is a channel-strip plug-in combining a multi-flavor analog preamp
-emulation with a 6-band EQ, harmonic saturation, and mid/side processing.
-Each stage can be switched between the N-Type, Brit, A-Type, Baxandall and
-FSF circuit models. Includes adaptive oversampling
-(1x/4x/8x) that automatically raises the internal processing rate for
-headroom when the Circuit model is engaged (2x minimum; 4x and 8x stay available). Built with
-[JUCE](https://juce.com); ships as VST3, AU, AAX, and Standalone for macOS.
+**Console-style channel strip: six-band EQ, four preamp circuits, three ways to run them.**
+
+![HybridEQ 1.6.12](Docs/HybridEQ-1.6.12-preview.png)
+
+HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
+multi-flavour analogue preamp emulation with a six-band EQ, harmonic saturation and
+mid/side processing, in a hardware-style interface. Built with
+[JUCE](https://juce.com); ships as VST3, Audio Unit, CLAP, LV2 and a standalone app,
+universal (Apple silicon and Intel) for macOS 11 or later. AAX is built locally only.
+
+[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1612)
+
+## Preamp: four circuits, three modes
+
+- **Models:** Brit, N-Type, FSF and A-Type, plus a clean Off model. Each EQ band can
+  also be switched between circuit flavours (N-Type, Brit, A-Type, Baxandall, FSF).
+- **One key, three modes.** The preamp's circuit key steps through them on each click:
+
+  ![Preamp mode key: Off, Circuit, Circuit HQ](Docs/HybridEQ-1.6.12-modes.png)
+
+  | Key | Mode | What runs | Oversampling |
+  |---|---|---|---|
+  | CIRCUIT (unlit) | Standard | Light static waveshapers with ADAA anti-aliasing | none needed |
+  | CIRCUIT (lit) | Circuit | Reduced circuit model with its own ADAA at 1x | none needed |
+  | CIRCUIT HQ | HQ | Full component-level circuit solver (transistors, op-amps, saturating transformers) | 2x minimum |
+
+- **Oversampling** 1x / 4x / 8x is your choice. HQ raises the minimum to 2x (the key then
+  reads `2x*`); Standard and Circuit run at 1x with no latency.
+- **Cramping-free EQ:** High Cut, High shelf and bells are fitted to the analogue curve at
+  the base rate, so they follow it near Nyquist without oversampling.
+- Six EQ bands with Mid/Side per band, harmonic saturation (2nd to 5th), VU and peak
+  metering, and a full-window spectrum / spectrogram view with draggable EQ points.
+
+![Three-dimensional knobs, switches and meters](Docs/HybridEQ-1.6.12-bands.png)
 
 Current version: see [`VERSION`](VERSION).
 
 ## Building
 
 Requires CMake 3.22+ and a C++20 compiler. GoodLookinUI is a git submodule
-in `third_party/GoodLookinUI` (pinned to v0.2.2): after cloning run
+in `third_party/GoodLookinUI` (pinned to v0.2.3-4, the 3D hardware look): after cloning run
 `git submodule update --init`, or set `GOODLOOKINUI_ROOT` to use a separate
 checkout instead. AAX is added only when Avid's SDK exists at
 `../aax-sdk-2-8-1`, or at the path specified by `HYBRIDEQ_AAX_SDK`. JUCE itself is fetched automatically via CMake's
@@ -23,6 +50,9 @@ checkout instead. AAX is added only when Avid's SDK exists at
 cmake -B build -G Xcode
 cmake --build build --config Release --target HybridEQ_VST3
 ```
+
+macOS builds are universal (`arm64;x86_64`, macOS 11+) by default; check one with
+`lipo -archs build/HybridEQ_artefacts/Release/VST3/HybridEQ.vst3/Contents/MacOS/HybridEQ`.
 
 Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, `HybridEQ_LV2`,
 `HybridEQ_CLAP` or `HybridEQ_Standalone` for the other formats. LV2 and CLAP
@@ -88,6 +118,27 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.12
+
+- **Three preamp modes on one key.** The CIRCUIT key now steps Off -> Circuit -> Circuit HQ.
+  - Off: the light static models (with ADAA, as in 1.6.10).
+  - Circuit: the reduced circuit model from OpenPreamp, light enough for 1x with no
+    latency, with its own ADAA at 1x. Its coefficient tables cover 1x, 2x, 4x and 8x.
+  - Circuit HQ: the full component-level solver, which is what Circuit on always meant.
+    Sessions saved before 1.6.12 open as Circuit HQ.
+  - Stored as the existing `preampCircuit` plus a new appended `preampHQ` parameter
+    (default on), so saved sessions and host automation keep their meaning.
+- **New interface rendering** (GoodLookinUI 0.2.3-4): shaded, fluted 3D knobs, recessed
+  rocker switches and an upgraded VU meter. Layout, colours and designs are unchanged;
+  the toolkit's `flat_` styles remain available.
+- **Universal binary.** The plug-ins and standalone app contain Apple silicon and Intel
+  code and require macOS 11 or later; the installer accepts both architectures.
+- Includes 1.6.11: Oversample key shows the real factor and keeps updating, the KNOBS
+  style picker is developer-only again, and the Spectrum key takes the title bar's colour.
+- Tests: `tests/engine_modes.cpp` (`HybridEQEngineTest`): every type x mode x oversampling
+  x rate for finite and bounded output, effective factor and latency per mode, live mode
+  switching, and old-session restore.
 
 ## Version 1.6.11
 

@@ -8,6 +8,7 @@
 #include "UI/HarmonicsPanel.h"
 #include "UI/SectionPanel.h"
 #include "UI/SmallToggle.h"
+#include "UI/PreampModeKey.h"
 #include "UI/VerticalPair.h"
 #include "UI/Theme.h"
 #include "Toolkit.h"
@@ -122,7 +123,7 @@ private:
     CycleButton preampPadBtn, preampTypeBtn;
     RotaryKnob preampGainDial{"GAIN", KnobValueType::Gain, Theme::preampCol};
     BypassButton preampBypassBtn;
-    SmallToggle preampCircuitToggle;
+    PreampModeKey preampModeKey;      // Off -> Circuit -> HQ, one click per step
     VerticalPair preampTypeCircuitPair;
 
     HarmonicsPanel harmonicsPanel;

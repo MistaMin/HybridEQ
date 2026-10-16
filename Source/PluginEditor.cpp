@@ -115,7 +115,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
       preampPadBtn(p.apvts, "preampPad", "PAD"),
       preampTypeBtn(p.apvts, "preampType", "TYPE"),
       preampBypassBtn(p.apvts, "preampBypass", Theme::preampCol),
-      preampCircuitToggle(p.apvts, "preampCircuit", "CIRCUIT", Theme::preampCol),
+      preampModeKey(p.apvts, Theme::preampCol),
       harmonicsPanel(p.apvts),
       meterPanel(p),
       oversampleBtn(p.apvts, "oversampleMode", "OVERSAMPLE")
@@ -126,7 +126,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
     if(!isTimerRunning()) startTimerHz(10);
     oversampleBtn.setButtonTooltip("Internal processing rate. The headroom floor can raise this above "
-                                   "your choice when High Cut, the High shelf or Preamp Circuit need it.");
+                                   "your choice when the HQ circuit needs it.");
 
 #if GOODLOOKINUI_ENABLE_EDITOR && defined(HYBRIDEQ_DESIGNS_DIR)
     autosave.setFolder(designsDir());
@@ -203,7 +203,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     constexpr int hKnobW = 78;
     constexpr int hButtonW = 84;
 
-    preampTypeCircuitPair.setChildren(preampTypeBtn, preampCircuitToggle);
+    preampTypeCircuitPair.setChildren(preampTypeBtn, preampModeKey);
 
     preampPanel.addItem(preampPadBtn, hButtonW);
     preampPanel.addItem(preampGainDial, hKnobW);
@@ -782,7 +782,7 @@ void HybridEQEditor::refreshBypassStates()
     preampPadBtn.setActive(!pb);
     preampTypeBtn.setActive(!pb);
     preampGainDial.setActive(!pb);
-    preampCircuitToggle.setActive(!pb);
+    preampModeKey.setActive(!pb);
 }
 
 void HybridEQEditor::paint(juce::Graphics& g)

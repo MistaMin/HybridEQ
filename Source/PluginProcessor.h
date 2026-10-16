@@ -5,6 +5,7 @@
 #include "DSP/HarmonicSaturation.h"
 #include "DSP/EQFilters.h"
 #include "DSP/Preamp.h"
+#include "DSP/ReducedCircuitBank.h"
 #include "Toolkit.h"
 
 class HybridEQProcessor : public juce::AudioProcessor {
@@ -59,6 +60,13 @@ private:
 
     dsp::MultirateEngine multirateEngine;
     dsp::PreampEngine preamp;
+    // The reduced "Circuit" engine (Preamp Circuit on, HQ off). The coefficient bank is built in
+    // prepareToPlay; the kernels only point at it and are re-pointed when the type or rate changes.
+    std::unique_ptr<dsp::ReducedCircuitBank> reducedBank;
+    std::array<dsp::ReducedCircuitKernel, 2> reducedKernels;
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> reducedDrive;
+    bool reducedActive = false;
+    int reducedType = -1, reducedFactor = 0;
     dsp::HarmonicSaturationEngine saturation;
     dsp::AnalogEQ eq;
     double currentSampleRate = 44100.0;

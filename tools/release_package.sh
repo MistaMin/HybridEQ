@@ -43,7 +43,7 @@ echo "== 4/5 Building the DMG"
 cp -R Licenses/third-party "$OUT/Licenses"
 cat > "$OUT/README.txt" <<README
 HybridEQ $VERSION - OpenGrid
-Run HybridEQ-Installer.pkg. It installs the VST3, Audio Unit, CLAP, LV2 and standalone app (Apple silicon).
+Run HybridEQ-Installer.pkg. It installs the VST3, Audio Unit, CLAP, LV2 and standalone app (universal: Apple silicon and Intel, macOS 11 or later).
 Restart your DAW and rescan plug-ins afterwards. License and trademark notices: LICENSE.txt, and the Licenses folder for third-party components.
 README
 rm -f "$DMG"
