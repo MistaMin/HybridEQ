@@ -10,6 +10,7 @@ namespace dsp {
 // still be driven to it silently to keep a cut/shelf frequency clear of
 // Nyquist without jumping straight to 4x when 2x headroom is already enough.
 enum class OversampleMode { Native, TwoX, FourX, EightX };
+enum class ResamplerFilter { IIR = 0, FIR = 1 };
 
 class MultirateEngine {
 public:
@@ -19,16 +20,22 @@ public:
         baseBlockSize = samplesPerBlock;
         channels = numChannels;
 
-        oversampler2x = std::make_unique<juce::dsp::Oversampling<float>>(
-            numChannels, 1, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR, true);
-        oversampler4x = std::make_unique<juce::dsp::Oversampling<float>>(
-            numChannels, 2, juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple, true);
-        oversampler8x = std::make_unique<juce::dsp::Oversampling<float>>(
-            numChannels, 3, juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple, true);
+        for (int f = 0; f < 2; ++f) {
+            const auto filterType = (f == 0)
+                ? juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR
+                : juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple;
 
-        oversampler2x->initProcessing(static_cast<size_t>(samplesPerBlock));
-        oversampler4x->initProcessing(static_cast<size_t>(samplesPerBlock));
-        oversampler8x->initProcessing(static_cast<size_t>(samplesPerBlock));
+            oversamplers2x[f] = std::make_unique<juce::dsp::Oversampling<float>>(
+                numChannels, 1, filterType, true);
+            oversamplers4x[f] = std::make_unique<juce::dsp::Oversampling<float>>(
+                numChannels, 2, filterType, true);
+            oversamplers8x[f] = std::make_unique<juce::dsp::Oversampling<float>>(
+                numChannels, 3, filterType, true);
+
+            oversamplers2x[f]->initProcessing(static_cast<size_t>(samplesPerBlock));
+            oversamplers4x[f]->initProcessing(static_cast<size_t>(samplesPerBlock));
+            oversamplers8x[f]->initProcessing(static_cast<size_t>(samplesPerBlock));
+        }
     }
 
     void setMode(OversampleMode m)
@@ -36,14 +43,27 @@ public:
         if (m == mode)
             return;
         mode = m;
-        // Clear internal filter history so a mode switch mid-stream cannot
-        // splice stale samples from the old rate into the new path (a source
-        // of clicks/crackle when switching 1x/2x/4x/8x).
-        if (oversampler2x) oversampler2x->reset();
-        if (oversampler4x) oversampler4x->reset();
-        if (oversampler8x) oversampler8x->reset();
+        reset();
     }
     OversampleMode getMode() const { return mode; }
+
+    void setFilter(ResamplerFilter f)
+    {
+        if (f == filter)
+            return;
+        filter = f;
+        reset();
+    }
+    ResamplerFilter getFilter() const { return filter; }
+
+    void reset()
+    {
+        for (int f = 0; f < 2; ++f) {
+            if (oversamplers2x[f]) oversamplers2x[f]->reset();
+            if (oversamplers4x[f]) oversamplers4x[f]->reset();
+            if (oversamplers8x[f]) oversamplers8x[f]->reset();
+        }
+    }
 
     double getEffectiveSampleRate() const
     {
@@ -59,13 +79,14 @@ public:
     juce::dsp::AudioBlock<float> upsample(juce::AudioBuffer<float>& buffer)
     {
         juce::dsp::AudioBlock<float> block(buffer);
+        const int f = static_cast<int>(filter);
         switch (mode) {
             case OversampleMode::TwoX:
-                return oversampler2x->processSamplesUp(block);
+                return oversamplers2x[f]->processSamplesUp(block);
             case OversampleMode::FourX:
-                return oversampler4x->processSamplesUp(block);
+                return oversamplers4x[f]->processSamplesUp(block);
             case OversampleMode::EightX:
-                return oversampler8x->processSamplesUp(block);
+                return oversamplers8x[f]->processSamplesUp(block);
             case OversampleMode::Native:
             default:
                 return block;
@@ -75,15 +96,16 @@ public:
     void downsample(juce::AudioBuffer<float>& buffer)
     {
         juce::dsp::AudioBlock<float> block(buffer);
+        const int f = static_cast<int>(filter);
         switch (mode) {
             case OversampleMode::TwoX:
-                oversampler2x->processSamplesDown(block);
+                oversamplers2x[f]->processSamplesDown(block);
                 break;
             case OversampleMode::FourX:
-                oversampler4x->processSamplesDown(block);
+                oversamplers4x[f]->processSamplesDown(block);
                 break;
             case OversampleMode::EightX:
-                oversampler8x->processSamplesDown(block);
+                oversamplers8x[f]->processSamplesDown(block);
                 break;
             case OversampleMode::Native:
             default:
@@ -93,10 +115,11 @@ public:
 
     float getLatencySamples() const
     {
+        const int f = static_cast<int>(filter);
         switch (mode) {
-            case OversampleMode::TwoX:   return oversampler2x->getLatencyInSamples();
-            case OversampleMode::FourX:  return oversampler4x->getLatencyInSamples();
-            case OversampleMode::EightX: return oversampler8x->getLatencyInSamples();
+            case OversampleMode::TwoX:   return oversamplers2x[f] ? oversamplers2x[f]->getLatencyInSamples() : 0.0f;
+            case OversampleMode::FourX:  return oversamplers4x[f] ? oversamplers4x[f]->getLatencyInSamples() : 0.0f;
+            case OversampleMode::EightX: return oversamplers8x[f] ? oversamplers8x[f]->getLatencyInSamples() : 0.0f;
             default: return 0.0f;
         }
     }
@@ -106,10 +129,11 @@ private:
     int baseBlockSize = 512;
     int channels = 2;
     OversampleMode mode = OversampleMode::Native;
+    ResamplerFilter filter = ResamplerFilter::IIR;
 
-    std::unique_ptr<juce::dsp::Oversampling<float>> oversampler2x;
-    std::unique_ptr<juce::dsp::Oversampling<float>> oversampler4x;
-    std::unique_ptr<juce::dsp::Oversampling<float>> oversampler8x;
+    std::unique_ptr<juce::dsp::Oversampling<float>> oversamplers2x[2];
+    std::unique_ptr<juce::dsp::Oversampling<float>> oversamplers4x[2];
+    std::unique_ptr<juce::dsp::Oversampling<float>> oversamplers8x[2];
 };
 
 } // namespace dsp

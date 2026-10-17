@@ -63,10 +63,10 @@ inline constexpr Entry entries[] = {
     {"hcSlope",   "-18 dB/oct", "#7FB0D4", nullptr, "Chr",  nullptr},
     {"hcSlope",   "-24 dB/oct", "#6A95D8", nullptr, "Wh",   nullptr},
     // Preamp type (also drives the whole-UI faceplate)
+    {"preampType","Off",        "#7A7F82", "Graphite", "Snk",  nullptr},
     {"preampType","Brit",       "#C96F4A", "Silver",   "Brit", "Granite"},
     {"preampType","N-Type",     "#A32323", "Navy",     "A",    "Marine"},
     {"preampType","FSF",        "#F2D21E", "Teal",     "FS",   "Royal"},
-    {"preampType","Off",        "#7A7F82", "Graphite", "Snk",  nullptr},
     {"preampType","A-Type",     "#3F8FD8", "Cream",    "A",    "Black"},
 };
 inline const Entry* find(const char* parameter, const char* choice) {

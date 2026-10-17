@@ -39,7 +39,7 @@ static bool finiteAndBounded(const juce::AudioBuffer<float>& b, float& maxAbs) {
 // Parameters that make the plugin change its own oversampling factor (and so its latency) while running.
 // None of them may do so any more: the effective factor is settled in prepareToPlay and the reported
 // latency never moves from the audio thread. Kept as the list the test asserts must stay stable.
-static bool affectsLatency(const juce::String& id) { return id == "oversampleMode" || id == "hcFreq" || id == "highFreq" || id == "preampCircuit" || id == "preampHQ"; }
+static bool affectsLatency(const juce::String& id) { return id == "oversampleMode" || id == "oversampleFilter" || id == "hcFreq" || id == "highFreq" || id == "preampCircuit" || id == "preampHQ"; }
 // Sets random values the way a host would: toggles get 0 or 1, choices get a valid index, floats anything.
 static void randomiseParameters(HybridEQProcessor& p, juce::Random& rng, int howMany, bool leaveLatencyAlone = false) {
     auto& params = p.getParameters();
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
             HybridEQProcessor p; p.setPlayConfigDetails(2, 2, sr, bs); p.prepareToPlay(sr, bs);
             if (auto* os = p.getParameters()[0]) (void)os;
             juce::AudioBuffer<float> buf(2, bs); juce::MidiBuffer midi; Gen g; juce::Random rng(int(sr) + bs);
-            for (int mode = 0; mode < 3; ++mode) {
+            for (int mode = 0; mode < 4; ++mode) {
                 if (auto* prm = p.apvts.getParameter("oversampleMode")) prm->setValueNotifyingHost(prm->convertTo0to1(float(mode)));
                 p.prepareToPlay(sr, bs);
                 for (int s = 0; s < 8; ++s) {
@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
     // 6) CPU: real-time factor for the heaviest configuration (8x oversampling, 48 kHz, 512-sample blocks, noise)
     {
         HybridEQProcessor p; p.setPlayConfigDetails(2, 2, 48000.0, 512); p.prepareToPlay(48000.0, 512);
-        if (auto* prm = p.apvts.getParameter("oversampleMode")) prm->setValueNotifyingHost(prm->convertTo0to1(2.0f)); p.prepareToPlay(48000.0, 512);
+        if (auto* prm = p.apvts.getParameter("oversampleMode")) prm->setValueNotifyingHost(prm->convertTo0to1(3.0f)); p.prepareToPlay(48000.0, 512);
         juce::AudioBuffer<float> buf(2, 512); juce::MidiBuffer midi; Gen g; const int seconds = 10, blocks = seconds * 48000 / 512;
         const auto t0 = std::chrono::steady_clock::now();
         for (int i = 0; i < blocks; ++i) { g.fill(buf, Sig::Noise, 48000.0); p.processBlock(buf, midi); }

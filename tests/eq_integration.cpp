@@ -27,6 +27,7 @@ static std::vector<double> impulseResponse(double sr, int oversampleIndex, const
     setParam(p, "preampCircuit", 0.0f);
     for (const char* id : {"harmonic2nd", "harmonic3rd", "harmonic4th", "harmonic5th"}) setParam(p, id, 0.0f);
     setParam(p, "oversampleMode", float(oversampleIndex));
+    setParam(p, "oversampleFilter", 1.0f);
     for (auto& kv : s.params) setParam(p, kv.first, kv.second);
     p.prepareToPlay(sr, 512);
     juce::AudioBuffer<float> buf(2, 512);
@@ -67,7 +68,7 @@ int main()
         std::printf("sample rate %.0f Hz: base-rate (fitted) versus 8x oversampled, worst difference 20 Hz - 18 kHz\n", sr);
         for (const Setup& s : setups) {
             int lat1 = -1, lat8 = -1;
-            const auto a = impulseResponse(sr, 0, s, &lat1), r = impulseResponse(sr, 2, s, &lat8);
+            const auto a = impulseResponse(sr, 0, s, &lat1), r = impulseResponse(sr, 3, s, &lat8);
             double worst = 0.0, worstF = 0.0;
             for (int k = 0; k < 160; ++k) {
                 const double f = 20.0 * std::pow(18000.0 / 20.0, k / 159.0);

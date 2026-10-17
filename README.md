@@ -2,7 +2,7 @@
 
 **Console-style channel strip: six-band EQ, four preamp circuits, three ways to run them.**
 
-![HybridEQ 1.6.12](Docs/HybridEQ-1.6.12-preview.png)
+![HybridEQ 1.6.13](Docs/HybridEQ-1.6.13-preview.png)
 
 HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
 multi-flavour analogue preamp emulation with a six-band EQ, harmonic saturation and
@@ -10,7 +10,7 @@ mid/side processing, in a hardware-style interface. Built with
 [JUCE](https://juce.com); ships as VST3, Audio Unit, CLAP, LV2 and a standalone app,
 universal (Apple silicon and Intel) for macOS 11 or later. AAX is built locally only.
 
-[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1612)
+[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1613)
 
 ## Preamp: four circuits, three modes
 
@@ -118,6 +118,13 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.13
+
+- **Toggle controls**: Slope, M/S, Band Type, and Preamp Pad keys now cycle on left-click as immediate toggles rather than opening dropdowns (right-click still opens the full choice menu).
+- **Preamp Type menu**: Retains dropdown menu navigation with `Off` as the first item on the list and `Brit` as the initial default.
+- **2x Oversampling**: Added `2x` as a direct user-selectable oversampling rate alongside `1x`, `4x`, and `8x`.
+- **Selectable anti-aliasing filter**: Added `FILTER` key in Global section allowing selection between `IIR (Min)` (minimum-phase polyphase IIR, zero/low latency, no pre-ringing) and `FIR (Lin)` (linear-phase equiripple FIR) across all oversampled rates.
 
 ## Version 1.6.12
 

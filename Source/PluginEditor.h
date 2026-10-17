@@ -67,14 +67,17 @@ private:
     juce::Component panelSurface;
 #if GOODLOOKINUI_ENABLE_EDITOR
     goodlookinui::juce_adapter::Studio designStudio;
-    juce::TextButton designButton{"Design"};
+    juce::TextButton designButton{"DEV"};
     struct SelectionRing : juce::Component {
         SelectionRing() { setInterceptsMouseClicks(false, false); }
         void paint(juce::Graphics& g) override { g.setColour(juce::Colour(0xffce9435)); g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1.5f), 5.0f, 2.5f); }
     } ring;
     std::unique_ptr<LookStudio> lookStudio;
+    std::unique_ptr<Gallery> gallery;
+    std::unique_ptr<juce::DocumentWindow> developerWindow;
     juce::TooltipWindow tooltips{this, 500};
     void highlightKnob(juce::Component*);
+    void setupDeveloperWindow();
 #endif
 
     std::unique_ptr<SpectrumRenderer> spectrumRenderer;
@@ -131,6 +134,8 @@ private:
     void applyMeterStyles();
 
     CycleButton oversampleBtn;
+    CycleButton oversampleFilterBtn;
+    VerticalPair oversamplePair;
     CycleButtonLNF knobStyleLnf;
     juce::TextButton knobStyleBtn;
     juce::TextButton lookBtn;

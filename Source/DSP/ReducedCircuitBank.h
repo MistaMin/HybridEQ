@@ -20,7 +20,7 @@ public:
         }
     }
     const ReducedCircuitCoefficients& get(int type,int factor) const noexcept {
-        const int model=type==4?3:std::clamp(type,0,2);
+        const int model = std::clamp(type - 1, 0, 3);
         return coefficients[size_t(factor>=8?3:factor>=4?2:factor>=2?1:0)][size_t(model)];
     }
 private:

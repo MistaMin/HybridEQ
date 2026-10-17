@@ -16,7 +16,7 @@ static void setParam(HybridEQProcessor& p, const char* id, float plain)
 
 enum class Mode { Off, Circuit, HQ };
 static const char* modeName[] = {"Circuit off", "Circuit", "HQ"};
-static const char* typeName[] = {"Brit", "N-Type", "FSF", "?", "A-Type"};
+static const char* typeName[] = {"Off", "Brit", "N-Type", "FSF", "A-Type"};
 
 static void configure(HybridEQProcessor& p, int type, Mode m, int osIndex)
 {
@@ -52,17 +52,18 @@ static Result run(HybridEQProcessor& p, double sr, int block, double seconds, do
 int main()
 {
     juce::ScopedJuceInitialiser_GUI init;
-    const int types[] = {0, 1, 2, 4};
+    const int types[] = {1, 2, 3, 4};
     std::printf("1) every type x mode x oversampling x rate: finite, bounded, silence stays silent\n");
     for (double sr : {44100.0, 48000.0, 96000.0})
         for (int type : types)
             for (Mode m : {Mode::Off, Mode::Circuit, Mode::HQ})
-                for (int os = 0; os < 3; ++os) {
-                    if (m == Mode::HQ && sr > 50000.0 && os == 2) continue;                 // 8x of 96 kHz is a very slow full solve
+                for (int os = 0; os < 4; ++os) {
+                    if (m == Mode::HQ && sr > 50000.0 && os == 3) continue;                 // 8x of 96 kHz is a very slow full solve
                     HybridEQProcessor p; configure(p, type, m, os); p.prepareToPlay(sr, 256);
                     const auto quiet = run(p, sr, 256, 0.15, 0.0, 1000.0);
                     const auto loud = run(p, sr, 256, 0.30, 0.5, 1000.0);
-                    const juce::String tag = juce::String(typeName[type]) + ", " + modeName[int(m)] + ", " + juce::String(os == 0 ? 1 : os == 1 ? 4 : 8) + "x, " + juce::String(sr, 0) + " Hz";
+                    const int factor = os == 0 ? 1 : os == 1 ? 2 : os == 2 ? 4 : 8;
+                    const juce::String tag = juce::String(typeName[type]) + ", " + modeName[int(m)] + ", " + juce::String(factor) + "x, " + juce::String(sr, 0) + " Hz";
                     check(quiet.finite && loud.finite && loud.peak < 20.0f && quiet.peak < 1.0e-3f && loud.rms > 0.01, tag + ": peak " + juce::String(loud.peak, 2) + ", silence " + juce::String(quiet.peak, 6));
                 }
 
@@ -81,10 +82,10 @@ int main()
 
     std::printf("3) switching modes, types and rates while audio runs\n");
     {
-        HybridEQProcessor p; configure(p, 0, Mode::HQ, 0); p.prepareToPlay(48000.0, 256);
+        HybridEQProcessor p; configure(p, 1, Mode::HQ, 0); p.prepareToPlay(48000.0, 256);
         juce::AudioBuffer<float> buf(2, 256); juce::MidiBuffer midi; juce::Random rng(5); bool ok = true; float peak = 0; long idx = 0;
         for (int blk = 0; blk < 600; ++blk) {
-            if (blk % 3 == 0) { configure(p, types[rng.nextInt(4)], Mode(rng.nextInt(3)), rng.nextInt(3)); }
+            if (blk % 3 == 0) { configure(p, types[rng.nextInt(4)], Mode(rng.nextInt(3)), rng.nextInt(4)); }
             for (int i = 0; i < 256; ++i, ++idx) { const float v = float(0.4 * std::sin(0.0654 * double(idx))); buf.setSample(0, i, v); buf.setSample(1, i, v); }
             p.processBlock(buf, midi);
             for (int i = 0; i < 256; ++i) { const float v = buf.getSample(0, i); ok &= std::isfinite(v); peak = std::max(peak, std::abs(v)); }

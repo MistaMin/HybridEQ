@@ -13,8 +13,8 @@
 
 namespace dsp {
 
-// AType is appended after Off so saved sessions keep their stored choice indices.
-enum class PreampType { Brit = 0, N, FSF, Off, AType };
+// Off is 0, Brit is 1 (default), followed by N, FSF, AType.
+enum class PreampType { Off = 0, Brit, N, FSF, AType };
 
 // Input-stage preamp emulation. Each flavour has two modes:
 //   - "Preamp Circuit" ON: a transistor/op-amp-level simulation of the

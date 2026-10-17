@@ -17,12 +17,22 @@ public:
     }
 };
 
-// A mechanical choice key opens a dropdown bound to stable DSP choice values.
+class ClickableKeyButton : public juce::TextButton {
+public:
+    std::function<void(const juce::ModifierKeys&)> onCustomClick;
+    void clicked(const juce::ModifierKeys& mods) override
+    {
+        if (onCustomClick) onCustomClick(mods);
+        else juce::TextButton::clicked(mods);
+    }
+};
+
+// A mechanical choice key that toggles/cycles through choices on click (or opens a dropdown when configured).
 class CycleButton : public juce::Component, private juce::AudioProcessorValueTreeState::Listener {
 public:
     CycleButton(juce::AudioProcessorValueTreeState& state, const juce::String& paramIDToUse,
-                const juce::String& labelText, bool horizontalLayout = false)
-        : apvts(state), paramID(paramIDToUse), isHorizontal(horizontalLayout)
+                const juce::String& labelText, bool horizontalLayout = false, bool dropdown = false)
+        : apvts(state), paramID(paramIDToUse), isHorizontal(horizontalLayout), isDropdown(dropdown)
     {
         param = dynamic_cast<juce::AudioParameterChoice*>(apvts.getParameter(paramID));
         jassert(param != nullptr);
@@ -40,7 +50,12 @@ public:
         button.setColour(juce::TextButton::buttonOnColourId, Theme::buttonBottom);
         button.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
         button.setColour(juce::TextButton::textColourOnId, Theme::buttonText);
-        button.onClick = [this] { showChoices(); };
+        button.onCustomClick = [this](const juce::ModifierKeys& mods) {
+            if (mods.isPopupMenu() || isDropdown)
+                showChoices();
+            else
+                cycleNext();
+        };
         addAndMakeVisible(button);
 
         updateText();
@@ -120,6 +135,19 @@ public:
         updateText();
     }
 
+    void setDropdown(bool dropdown) { isDropdown = dropdown; }
+    bool getDropdown() const { return isDropdown; }
+
+    void cycleNext()
+    {
+        if (!param || param->choices.isEmpty()) return;
+        const int next = (param->getIndex() + 1) % param->choices.size();
+        param->beginChangeGesture();
+        param->setValueNotifyingHost(param->getNormalisableRange().convertTo0to1(float(next)));
+        param->endChangeGesture();
+        updateText();
+    }
+
 private:
     void showChoices()
     {
@@ -162,5 +190,6 @@ private:
     bool isHorizontal = false;
     std::unique_ptr<juce::LookAndFeel> lnf;
     juce::Label title;
-    juce::TextButton button;
+    ClickableKeyButton button;
+    bool isDropdown = false;
 };

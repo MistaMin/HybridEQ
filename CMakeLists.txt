@@ -34,6 +34,7 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Designs/Settings.csv" HYBRIDEQ_SETTINGS_TEXT)
 configure_file(Designs/EmbeddedSettings.h.in generated/EmbeddedSettings.h @ONLY)
 option(HYBRIDEQ_DESIGN_EDITOR "Include GoodLookinUI editor in Debug builds" ON)
+option(HYBRIDEQ_DEVELOPER_MODE "Enable GoodLookinUI developer mode in all build configurations (Release + Debug)" OFF)
 
 set(HYBRIDEQ_FORMATS VST3 Standalone)
 if(APPLE)
@@ -90,9 +91,9 @@ target_sources(HybridEQ PRIVATE
 target_include_directories(HybridEQ PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 target_compile_definitions(HybridEQ PUBLIC
-    GOODLOOKINUI_ENABLE_EDITOR=$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>
+    GOODLOOKINUI_ENABLE_EDITOR=$<OR:$<BOOL:${HYBRIDEQ_DEVELOPER_MODE}>,$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>>
     # Developer builds autosave every design change into this folder (Designs/*.csv) and start from it
-    $<$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>:HYBRIDEQ_DESIGNS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Designs">
+    $<$<OR:$<BOOL:${HYBRIDEQ_DEVELOPER_MODE}>,$<AND:$<CONFIG:Debug>,$<BOOL:${HYBRIDEQ_DESIGN_EDITOR}>>>:HYBRIDEQ_DESIGNS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Designs">
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
@@ -184,4 +185,12 @@ if(HYBRIDEQ_BUILD_TESTS AND HYBRIDEQ_DESIGN_EDITOR)
     target_include_directories(HybridEQAutosaveTest PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
     target_compile_definitions(HybridEQAutosaveTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=1)
     target_link_libraries(HybridEQAutosaveTest PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+endif()
+
+if(HYBRIDEQ_BUILD_TESTS)
+    juce_add_console_app(HybridEQCapture PRODUCT_NAME "HybridEQ Capture")
+    target_sources(HybridEQCapture PRIVATE tools/capture_ui.cpp)
+    target_include_directories(HybridEQCapture PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQCapture PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=1)
+    target_link_libraries(HybridEQCapture PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
 endif()

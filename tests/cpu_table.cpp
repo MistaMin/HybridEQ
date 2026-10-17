@@ -20,7 +20,7 @@ double measure(double sr, int bs, int osIndex, bool circuit, double seconds = 4.
     if (auto* prm = p.apvts.getParameter("preampCircuit"))
         prm->setValueNotifyingHost(circuit ? 1.0f : 0.0f);
     if (auto* prm = p.apvts.getParameter("preampType"))
-        prm->setValueNotifyingHost(prm->convertTo0to1(1.0f));   // N-Type (the netlist circuit)
+        prm->setValueNotifyingHost(prm->convertTo0to1(2.0f));   // N-Type (the netlist circuit)
     p.prepareToPlay(sr, bs);   // settle latency/oversampling the way a host would
 
     juce::AudioBuffer<float> buf(2, bs);

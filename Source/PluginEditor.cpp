@@ -34,7 +34,7 @@ static std::string designText(const char* baked, const char* file)
 
 const std::vector<juce::String>& HybridEQEditor::settingKeys()
 {
-    static const std::vector<juce::String> keys{"lookTrigger","lookFaceplate","lookPlate","knobStyle","meterFace","faderStyle","glow","spectrum"};
+    static const std::vector<juce::String> keys{"lookTrigger","lookFaceplate","lookPlate","knobStyle","meterFace","faderStyle","glow","flatKnobs","spectrum"};
     return keys;
 }
 
@@ -58,8 +58,17 @@ void HybridEQEditor::valueTreePropertyChanged(juce::ValueTree& tree, const juce:
 {
 #if GOODLOOKINUI_ENABLE_EDITOR
     if (tree != proc.apvts.state) return;
-    if (property.toString() == "lookTable") { saveLooksFile(); return; }
-    for (const auto& key : settingKeys()) if (property.toString() == key) { saveSettingsFile(); return; }
+    const auto prop = property.toString();
+    if (prop == "lookTable") { saveLooksFile(); return; }
+    for (const auto& key : settingKeys()) {
+        if (prop == key) {
+            if (prop == "knobStyle") refreshKnobStyles();
+            else if (prop == "meterFace" || prop == "glow" || prop == "faderStyle" || prop == "flatKnobs") applyMeterStyles();
+            else if (prop == "lookTrigger" || prop == "lookFaceplate" || prop == "lookPlate") applyLook(false);
+            saveSettingsFile();
+            return;
+        }
+    }
 #else
     (void) tree; (void) property;
 #endif
@@ -118,12 +127,16 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
       preampModeKey(p.apvts, Theme::preampCol),
       harmonicsPanel(p.apvts),
       meterPanel(p),
-      oversampleBtn(p.apvts, "oversampleMode", "OVERSAMPLE")
+      oversampleBtn(p.apvts, "oversampleMode", "RATE"),
+      oversampleFilterBtn(p.apvts, "oversampleFilter", "FILTER")
 {
+    preampTypeBtn.setDropdown(true);
     // The Oversample key shows the factor the engine is actually running at, which the headroom floor
     // (High Cut / High shelf / Preamp Circuit) can raise above the user's choice. The choice itself is
     // never rewritten, so the menu still shows what the user picked.
     oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
+    oversampleFilterBtn.setActive(proc.getEffectiveOversampleFactor() > 1);
+    oversampleFilterBtn.setButtonTooltip("Anti-aliasing filter type: IIR (Minimum Phase, zero latency) or FIR (Linear Phase, constant delay). Active when oversampling is above 1x.");
     if(!isTimerRunning()) startTimerHz(10);
     oversampleBtn.setButtonTooltip("Internal processing rate. The headroom floor can raise this above "
                                    "your choice when the HQ circuit needs it.");
@@ -211,7 +224,8 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     preampPanel.setBypassButton(preampBypassBtn);
     addAndMakeVisible(preampPanel);
 
-    globalPanel.addItem(oversampleBtn, 104);
+    oversamplePair.setChildren(oversampleBtn, oversampleFilterBtn);
+    globalPanel.addItem(oversamplePair, 108);
     globalPanel.addItem(outputGainDial, hKnobW);
     addAndMakeVisible(globalPanel);
 
@@ -296,7 +310,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
         knobById[id]=&knob;
         designStudio.add(item,knob,[this,&knob](const goodlookinui::Item& value){onKnobDesignEdited(knob,value);},knobName(id));
         knob.setTooltip(juce::String(knobName(id))+"   ["+id+"]");
-        knob.onSelect=[this,&knob]{if(designStudio.isVisible()) designStudio.select(&knob);};
+        knob.onSelect=[this,&knob]{designStudio.select(&knob);};
 #endif
     };
     auto trackDefault=[this](RotaryKnob& k){knobDefaults.emplace_back(&k,k.getDesign().style);};
@@ -309,15 +323,14 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     registerKnob("preampGain",preampGainDial); registerKnob("outputGain",outputGainDial);
 
 #if GOODLOOKINUI_ENABLE_EDITOR
-    addChildComponent(designStudio); panelSurface.addAndMakeVisible(designButton);
+    panelSurface.addAndMakeVisible(designButton);
+    panelSurface.addAndMakeVisible(lookBtn);
+    panelSurface.addAndMakeVisible(knobStyleBtn);
     panelSurface.addChildComponent(ring);
-    designButton.onClick=[this]{
-        const bool show=!designStudio.isVisible();
-        designStudio.setVisible(show);designStudio.toFront(false);
-        if(lookStudio){lookStudio->setVisible(show);lookStudio->toFront(false);}
-        if(spectrumStudio){spectrumStudio->setVisible(show);spectrumStudio->toFront(false);}
-        highlightKnob(designStudio.selected());
-    };
+    designButton.setLookAndFeel(&knobStyleLnf);
+    designButton.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
+    designButton.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
+    designButton.setTooltip("Open the GoodLookinUI developer window (Knobs / layout, Section looks, Spectrum, Gallery).");
     designStudio.onSelect=[this](juce::Component* c){
         highlightKnob(c);
         if(lookStudio) for(auto& r:rules) for(auto* k:r.knobs) if(k==c) lookStudio->follow(r.param,choiceName(proc.apvts,r.param));
@@ -328,12 +341,8 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
         &mid1FreqDial,&mid1GainDial,&mid1QDial,&mid2FreqDial,&mid2GainDial,&mid2QDial,&highFreqDial,&highGainDial,
         &preampGainDial,&outputGainDial}) trackDefault(*k);
 
-#if GOODLOOKINUI_ENABLE_EDITOR
-    globalPanel.addAndMakeVisible(knobStyleBtn);       // developer-only: releases always use each knob's own design
-    knobStyleBtn.setBounds(18,100,117,24);
-#endif
     cycleButtons = {&lcSlopeBtn,&lcModeBtn,&hcSlopeBtn,&hcModeBtn,&lowTypeBtn,&lowModeBtn,&mid1TypeBtn,&mid1ModeBtn,
-                    &mid2TypeBtn,&mid2ModeBtn,&highTypeBtn,&highModeBtn,&preampPadBtn,&preampTypeBtn,&oversampleBtn};
+                    &mid2TypeBtn,&mid2ModeBtn,&highTypeBtn,&highModeBtn,&preampPadBtn,&preampTypeBtn,&oversampleBtn,&oversampleFilterBtn};
     // Which controls re-tint when a parameter's choice changes (Control mode).
     rules = {
         {"lcSlope",    {&lcFreqDial,&lcQDial},                   &lowCutPanel,   &lcBypassBtn,   {&lcSlopeBtn,&lcModeBtn},       {}, {}},
@@ -365,11 +374,11 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
         applyLook(false);
     };
     lookStudio->note=[this]{return getTriggerMode()==TriggerMode::Control?juce::String("(Per section is on)"):juce::String("(turn on LOOK > Per section to see it)");};
-    addChildComponent(*lookStudio);
     spectrumStudio=std::make_unique<SpectrumStudio>();
     spectrumStudio->show(spectrumRenderer->getSettings());
     spectrumStudio->onChanged=[this](const SpectrumSettings& s){applySpectrum(s,true);};
-    addChildComponent(*spectrumStudio);
+    gallery=std::make_unique<Gallery>();
+    setupDeveloperWindow();
     resized();
 #endif
 
@@ -377,14 +386,14 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     knobStyleBtn.setLookAndFeel(&knobStyleLnf);
     knobStyleBtn.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
     knobStyleBtn.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
+    knobStyleBtn.setTooltip("Override knob style across the whole plugin (3D or Flat) to compare styles.");
     knobStyleBtn.onClick=[this]{showKnobStyleMenu();};
     // Developer-only: how a project's look and colour trigger are chosen.
-    globalPanel.addAndMakeVisible(lookBtn);
-    lookBtn.setBounds(141,100,70,24);
     lookBtn.setButtonText("LOOK");
     lookBtn.setLookAndFeel(&knobStyleLnf);
     lookBtn.setColour(juce::TextButton::buttonColourId, Theme::buttonTop);
     lookBtn.setColour(juce::TextButton::textColourOffId, Theme::buttonText);
+    lookBtn.setTooltip("Choose trigger mode, faceplate, section plates, meter face, fader style, and 3D/flat rendering.");
     lookBtn.onClick=[this]{showLookMenu();};
 #endif
 #if GOODLOOKINUI_ENABLE_EDITOR
@@ -426,8 +435,11 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
 void HybridEQEditor::applyMeterStyles()
 {
     goodlookinui::juce_adapter::retro::glowEnabled=proc.apvts.state.getProperty("glow","on").toString()!="off";
+    goodlookinui::juce_adapter::useFlatKnobs=proc.apvts.state.getProperty("flatKnobs","off").toString()=="on";
     meterPanel.setFace(MeterPanel::faceFromCode(proc.apvts.state.getProperty("meterFace","cream").toString()));
     harmonicsPanel.setFaderStyle(HarmonicsPanel::faderIndex(proc.apvts.state.getProperty("faderStyle","oval").toString()));
+    for(auto& k:knobDefaults) k.first->repaint();
+    repaint();
 }
 
 void HybridEQEditor::applySpectrum(const SpectrumSettings& s, bool save)
@@ -473,11 +485,57 @@ void HybridEQEditor::onKnobDesignEdited(RotaryKnob& knob,const goodlookinui::Ite
 }
 
 #if GOODLOOKINUI_ENABLE_EDITOR
+namespace {
+class HybridEQDesignWindow : public juce::DocumentWindow {
+public:
+    std::function<void()> onClosed;
+    HybridEQDesignWindow() : DocumentWindow("HybridEQ Developer Tools (GoodLookinUI)", juce::Colour(0xff18222c), closeButton) {
+        setUsingNativeTitleBar(true);
+        setResizable(true, false);
+    }
+    void closeButtonPressed() override {
+        setVisible(false);
+        if (onClosed) onClosed();
+    }
+};
+}
+
+void HybridEQEditor::setupDeveloperWindow()
+{
+    auto* tabs = new juce::TabbedComponent(juce::TabbedButtonBar::TabsAtTop);
+    tabs->addTab("Knobs / layout", juce::Colour(0xff18222c), &designStudio, false);
+    tabs->addTab("Section looks", juce::Colour(0xff18222c), lookStudio.get(), false);
+    tabs->addTab("Spectrum", juce::Colour(0xff18222c), spectrumStudio.get(), false);
+    tabs->addTab("Gallery", juce::Colour(0xff18222c), gallery.get(), false);
+    tabs->setSize(1280, 620);
+
+    auto win = std::make_unique<HybridEQDesignWindow>();
+    win->onClosed = [this] { highlightKnob(nullptr); };
+    win->setContentOwned(tabs, true);
+    win->setResizeLimits(1050, 320, 1920, 1080);
+    if (const auto* display = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay())
+        win->setBounds(display->userArea.withSizeKeepingCentre(1280, 620));
+    else
+        win->setBounds(40, 40, 1280, 620);
+    developerWindow = std::move(win);
+
+    designButton.onClick = [this] {
+        const bool show = !developerWindow->isVisible();
+        developerWindow->setVisible(show);
+        if (show) {
+            developerWindow->toFront(true);
+            highlightKnob(designStudio.selected());
+        } else {
+            highlightKnob(nullptr);
+        }
+    };
+}
+
 void HybridEQEditor::highlightKnob(juce::Component* c)
 {
-    if(!c) {ring.setVisible(false);return;}
+    if(!c || !developerWindow || !developerWindow->isVisible()) {ring.setVisible(false);return;}
     ring.setBounds(panelSurface.getLocalArea(c,c->getLocalBounds()).expanded(4));
-    ring.setVisible(designStudio.isVisible());
+    ring.setVisible(true);
     ring.toFront(false);
 }
 #endif
@@ -587,6 +645,7 @@ void HybridEQEditor::timerCallback()
         if(fadeT>=1.0f) startTimerHz(10);
     }
     oversampleBtn.setDisplayTextOverride(oversampleDisplayText());
+    oversampleFilterBtn.setActive(proc.getEffectiveOversampleFactor() > 1);
 }
 
 // Text for the Oversample key: the factor the engine is really running at. The headroom floor can push
@@ -595,8 +654,8 @@ juce::String HybridEQEditor::oversampleDisplayText() const
 {
     const int effective = proc.getEffectiveOversampleFactor();
     const auto* param = dynamic_cast<juce::AudioParameterChoice*>(proc.apvts.getParameter("oversampleMode"));
-    static constexpr int factors[] = {1, 4, 8};          // the Oversample choices
-    const int chosen = param != nullptr ? factors[juce::jlimit(0, 2, param->getIndex())] : 1;
+    static constexpr int factors[] = {1, 2, 4, 8};          // the Oversample choices
+    const int chosen = param != nullptr ? factors[juce::jlimit(0, 3, param->getIndex())] : 1;
     const juce::String text = juce::String(effective) + "x";
     return effective == chosen ? text : text + "*";
 }
@@ -636,6 +695,9 @@ void HybridEQEditor::showLookMenu()
     menu.addSubMenu("Meter face and fader style",meters);
     menu.addSubMenu("Faceplate (whole UI)",faces);
     menu.addSubMenu("Plate for all sections",plates);
+    menu.addSeparator();
+    const bool flatOn = proc.apvts.state.getProperty("flatKnobs","off").toString() == "on";
+    menu.addItem(3300,"Flat 2D vector knobs (classic mode)",true,flatOn);
     menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&lookBtn),
         [safe=juce::Component::SafePointer<HybridEQEditor>(this)](int r){
             if(!safe||r<=0)return;
@@ -643,6 +705,7 @@ void HybridEQEditor::showLookMenu()
             if(r<=3) st.setProperty("lookTrigger",r==1?"off":r==2?"control":"faceplate",nullptr);
             else if(r>=3000&&r<3000+int(std::size(MeterPanel::faces))){st.setProperty("meterFace",MeterPanel::faces[r-3000].code,nullptr);safe->applyMeterStyles();return;}
             else if(r==3200){st.setProperty("glow",goodlookinui::juce_adapter::retro::glowEnabled?"off":"on",nullptr);safe->applyMeterStyles();return;}
+            else if(r==3300){st.setProperty("flatKnobs",st.getProperty("flatKnobs","off").toString()=="on"?"off":"on",nullptr);safe->applyMeterStyles();return;}
             else if(r>=3100&&r<3107){st.setProperty("faderStyle",HarmonicsPanel::faderCodes[r-3100],nullptr);safe->applyMeterStyles();return;}
             else if(r==500) st.setProperty("lookPlate","",nullptr);
             else if(r>=2000) st.setProperty("lookPlate",juce::String(goodlookinui::faceplates[r-2000].code),nullptr);
@@ -680,13 +743,22 @@ void HybridEQEditor::showKnobStyleMenu()
     const auto current=proc.apvts.state.getProperty("knobStyle","").toString();
     menu.addItem(1,"DEFAULT (each knob keeps its own style)",true,current.isEmpty());
     menu.addSeparator();
-    int id=2;
-    for(const auto& s:goodlookinui::knobStyles)
-        menu.addItem(id++,juce::String(s.code)+"  -  "+s.description,true,current==s.code);
+    constexpr int numStyles = int(std::size(goodlookinui::knobStyles));
+    juce::PopupMenu styles3D, stylesFlat;
+    for(int i=0;i<numStyles;++i) {
+        const auto& s = goodlookinui::knobStyles[i];
+        styles3D.addItem(100+i, juce::String(s.code)+"  -  "+s.description, true, current==s.code);
+        stylesFlat.addItem(200+i, juce::String("flat_")+s.code+"  -  "+s.description, true, current==("flat_"+juce::String(s.code)));
+    }
+    menu.addSubMenu("3D Hardware Knobs", styles3D);
+    menu.addSubMenu("Flat 2D Vector Knobs", stylesFlat);
     menu.showMenuAsync(juce::PopupMenu::Options().withTargetComponent(&knobStyleBtn),
         [safe=juce::Component::SafePointer<HybridEQEditor>(this)](int r){
             if(!safe||r<=0)return;
-            safe->applyKnobStyle(r==1?juce::String():juce::String(goodlookinui::knobStyles[r-2].code));
+            constexpr int numStyles = int(std::size(goodlookinui::knobStyles));
+            if(r==1) safe->applyKnobStyle(juce::String());
+            else if(r>=100 && r<100+numStyles) safe->applyKnobStyle(juce::String(goodlookinui::knobStyles[r-100].code));
+            else if(r>=200 && r<200+numStyles) safe->applyKnobStyle("flat_" + juce::String(goodlookinui::knobStyles[r-200].code));
         });
 }
 
@@ -694,6 +766,7 @@ HybridEQEditor::~HybridEQEditor()
 {
     proc.apvts.state.removeListener(this);
 #if GOODLOOKINUI_ENABLE_EDITOR
+    developerWindow.reset();
     autosave.onSaved=nullptr;
     autosave.flush();     // a design edit made just before closing is not lost
 #endif
@@ -830,16 +903,17 @@ void HybridEQEditor::resized()
     panelSurface.setBounds(0,0,canvasWidth,canvasHeight);
     panelSurface.setTransform(juce::AffineTransform::scale(scale).translated(
         (getWidth()-canvasWidth*scale)*0.5f,(getHeight()-canvasHeight*scale)*0.5f));
-#if GOODLOOKINUI_ENABLE_EDITOR
-    designButton.setBounds(600,22,76,24);
-    designStudio.setBounds(8,32,getWidth()-16,114);
-    if(lookStudio) lookStudio->setBounds(8,150,getWidth()-16,74);
-    if(spectrumStudio) spectrumStudio->setBounds(8,228,getWidth()-16,112);
-#endif
     // Layout once at design resolution. Saved development edits survive resizing.
     if (eqDisplay && eqDisplay->getWidth()>0) return;
     if(eqDisplay) eqDisplay->setBounds(38,88,1104,166);
+#if GOODLOOKINUI_ENABLE_EDITOR
+    designButton.setBounds(550,22,54,24);
+    lookBtn.setBounds(610,22,60,24);
+    knobStyleBtn.setBounds(676,22,100,24);
+    spectrumBtn.setBounds(782,22,90,24);
+#else
     spectrumBtn.setBounds(690,22,90,24);
+#endif
     spectrumOverlay->setBounds(0,0,canvasWidth,canvasHeight);
     SectionPanel* strips[]{&lowCutPanel,&lowBandPanel,&mid1Panel,&mid2Panel,&highBandPanel,&highCutPanel};
     for(int n=0;n<6;++n) strips[n]->setBounds(38+n*186,282,174,430);

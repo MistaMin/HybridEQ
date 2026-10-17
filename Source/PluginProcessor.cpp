@@ -23,7 +23,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"oversampleMode", 1}, "Oversample",
-        juce::StringArray{"1x", "4x", "8x"}, 0));
+        juce::StringArray{"1x", "2x", "4x", "8x"}, 0));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>(
+        juce::ParameterID{"oversampleFilter", 1}, "Oversample Filter",
+        juce::StringArray{"IIR (Min)", "FIR (Lin)"}, 0));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"harmonic2nd", 1}, "2nd Harmonic",
@@ -136,7 +139,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"preampType", 1}, "Preamp Type",
-        juce::StringArray{"Brit", "N-Type", "FSF", "Off", "A-Type"}, 0));
+        juce::StringArray{"Off", "Brit", "N-Type", "FSF", "A-Type"}, 1));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"preampPad", 1}, "Preamp Pad",
         juce::StringArray{"-20 dB", "Unity", "+10 dB"}, 1));
@@ -208,7 +211,7 @@ void HybridEQProcessor::updateParameters()
         dsp::OversampleMode::FourX, dsp::OversampleMode::EightX
     };
     static constexpr int allFactors[] = {1, 2, 4, 8};
-    static constexpr int userFactors[] = {1, 4, 8};
+    static constexpr int userFactors[] = {1, 2, 4, 8};
 
     // Turning the Preamp Circuit model on adds a nonlinear stage that needs
     // some oversampling headroom, so it raises the floor to 2x (the user can
@@ -222,7 +225,7 @@ void HybridEQProcessor::updateParameters()
     // their biquads are fitted to the analog curve at the base rate (see dsp/BiquadFit.h), so even a corner at or
     // above Nyquist follows the analog response in-band. Oversampling is now only the user's choice (Oversample)
     // and what the circuit needs (Circuit forces 2x). With 1x and Circuit off the plug-in has no latency.
-    int userFactor = userFactors[getChoice("oversampleMode")];
+    int userFactor = userFactors[std::clamp(getChoice("oversampleMode"), 0, 3)];
     const bool preampOn = !getBool("preampBypass") && getChoice("preampType") != static_cast<int>(dsp::PreampType::Off);
     const bool circuitOn = getBool("preampCircuit");
     const bool reducedOn = circuitOn && !getBool("preampHQ") && preampOn && reducedBank != nullptr;
@@ -233,6 +236,7 @@ void HybridEQProcessor::updateParameters()
         if (allFactors[i] == effectiveFactor)
             effectiveMode = allModes[i];
 
+    multirateEngine.setFilter(getChoice("oversampleFilter") == 1 ? dsp::ResamplerFilter::FIR : dsp::ResamplerFilter::IIR);
     multirateEngine.setMode(effectiveMode);
     // Publish the factor the engine is really running at so the editor can show it (the "Oversample"
     // choice itself may be lower when the headroom floor is doing the work).
