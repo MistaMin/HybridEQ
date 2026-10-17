@@ -26,7 +26,7 @@ universal (Apple silicon and Intel) for macOS 11 or later. AAX is built locally 
   | CIRCUIT (lit) | Circuit | Reduced circuit model with its own ADAA at 1x | none needed |
   | CIRCUIT HQ | HQ | Full component-level circuit solver (transistors, op-amps, saturating transformers) | 2x minimum |
 
-- **Oversampling** 1x / 4x / 8x is your choice. HQ raises the minimum to 2x (the key then
+- **Oversampling** 1x / 2x / 4x / 8x is your choice, with selectable IIR (minimum-phase) or FIR (linear-phase) anti-aliasing filters. HQ raises the minimum to 2x (the key then
   reads `2x*`); Standard and Circuit run at 1x with no latency.
 - **Cramping-free EQ:** High Cut, High shelf and bells are fitted to the analogue curve at
   the base rate, so they follow it near Nyquist without oversampling.
@@ -103,8 +103,9 @@ finished panel scales proportionally with the window.
 
 The console edition uses GoodLookinUI's generated fluted black grips and coloured
 knob caps, fixed calibration marks, shaded mechanical keys, recessed numeric
-readouts and a charcoal rack faceplate. Choice keys open dropdown menus using
-the existing DSP choice values. Six strips share fixed control slots and switch
+readouts and a charcoal rack faceplate. Slope, Mid/Side, Band Type, and Pad
+keys toggle through choices on click (with dropdown menus on right-click), while Preamp Type
+provides a full dropdown menu. Six strips share fixed control slots and switch
 positions. Resizing preserves the panel proportions. The existing DSP and
 parameter IDs are retained.
 
