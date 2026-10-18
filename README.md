@@ -7,8 +7,12 @@
 HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
 multi-flavour analogue preamp emulation with a six-band EQ, harmonic saturation and
 mid/side processing, in a hardware-style interface. Built with
-[JUCE](https://juce.com); ships as VST3, Audio Unit, CLAP, LV2 and a standalone app,
-universal (Apple silicon and Intel) for macOS 11 or later. AAX is built locally only.
+[JUCE](https://juce.com); ships as VST3, Audio Unit (macOS), CLAP, LV2 and a standalone app
+for **macOS 11+** (universal Apple silicon and Intel), **Windows** (`x64`), and **Linux** (`x86_64`). AAX is built locally only.
+
+- **macOS:** [HybridEQ-1.6.13.dmg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13.dmg) · [HybridEQ-Installer.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-Installer.pkg)
+- **Windows (x64):** [HybridEQ-1.6.13-x64.msi](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-x64.msi)
+- **Linux (x86_64):** [HybridEQ-1.6.13-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.tar.gz) · [SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.sha256) (extract and copy `VST3/`, `CLAP/` and `LV2/` into `~/.vst3`, `~/.clap` and `~/.lv2`)
 
 [Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1613)
 
