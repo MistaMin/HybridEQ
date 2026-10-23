@@ -31,7 +31,7 @@ echo "Packaging HybridEQ version: $VERSION"
 # AAX SDK and a PACE-code-signed Avid developer agreement to redistribute
 # legally, neither of which this project holds. Set INCLUDE_AAX=1 to build
 # a personal/local package that does include it.
-INCLUDE_AAX="${INCLUDE_AAX:-0}"
+INCLUDE_AAX="${INCLUDE_AAX:-1}"
 
 rm -rf "$STAGING"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/VST3"
@@ -88,7 +88,7 @@ cat > "$STAGING/welcome.html" << HTML
 $AAX_LI
 <li><b>Standalone App</b> &rarr; /Applications/</li>
 </ul>
-<p>Version $VERSION &mdash; macOS ARM (Apple Silicon)</p>
+<p>Version $VERSION &mdash; macOS Universal (Apple silicon &amp; Intel)</p>
 </body></html>
 HTML
 
@@ -106,7 +106,7 @@ cat "$LICENSE_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt" \
 cat > "$STAGING/conclusion.html" << 'HTML'
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">
 <h1>Installation Complete</h1>
-<p>HybridEQ has been installed successfully (VST3, Audio Unit, CLAP, LV2 and the standalone app).</p>
+<p>HybridEQ has been installed successfully (VST3, Audio Unit, AAX, CLAP, LV2 and the standalone app).</p>
 <p>License texts are in /Library/Application Support/OpenGrid/HybridEQ/Licenses.</p>
 <p>Please restart your DAW to load the new plug-in.</p>
 </body></html>

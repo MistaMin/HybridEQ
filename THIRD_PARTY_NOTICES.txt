@@ -39,15 +39,15 @@ repository, and is installed with the binaries (see "Where the licenses are" at 
     *-Licence.txt files in the same folder
   JUCE itself: JUCE-NOTICE.txt
 
-Avid AAX SDK (optional)
-The AAX SDK is not included in this repository and is not MIT licensed.
-Building or distributing AAX requires compliance with Avid's SDK/developer
-terms and any applicable signing requirements. A JUCE commercial license
-does not grant rights to the AAX SDK. Public packaging excludes AAX by default.
+Avid AAX SDK
+The AAX format is built using Avid's AAX SDK under the Avid AAX Developer Agreement.
+The AAX SDK itself is not included in this repository and is not MIT licensed.
+AAX and Pro Tools are trademarks of Avid Technology, Inc.
 
 Trademarks
 Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of
-their respective owners. HybridEQ is an independent project: those companies
+their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc.
+VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies
 are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the
 OpenGrid Project or this plug-in. The names appear only to describe the
 classic designs that inspired each model; every model here is an independent
