@@ -80,18 +80,13 @@ GoodLookinUI toolkit, including its core and JUCE adapter, has its own
 remain intact when included in the freeware binaries, and their copyright and
 permission notices accompany binary distributions.
 
-JUCE and optional Avid SDK code retain their own licenses. Anyone building or
-distributing their own version must comply with the applicable dependency
-licenses; the publisher's JUCE commercial license is not transferred with the
-source. See [component notices](THIRD_PARTY_NOTICES.txt) and the
-[JUCE 9 terms](https://juce.com/legal/juce-9-licence/). Choosing JUCE's
-open-source licensing route requires satisfying its applicable terms.
-AAX additionally requires Avid's SDK/developer permissions and applicable
-signing requirements; it is excluded from public packaging by default.
+JUCE and Avid SDK code retain their own licenses. Official compiled binaries (including the AAX format) are distributed as freeware under the [binary freeware license](BINARY_LICENSE.txt), built under the publisher's commercial JUCE license and Avid AAX Developer Agreement with PACE Eden signing. End users do not need a developer license to use these downloads.
+
+Anyone building or distributing their own version from source must comply with the applicable dependency licenses (JUCE and Avid SDK terms). The publisher's commercial JUCE license and Avid signing credentials are not transferred with the source. See [component notices](THIRD_PARTY_NOTICES.txt) and the [JUCE 9 terms](https://juce.com/legal/juce-9-licence/).
 
 The license texts of every bundled third-party component (JUCE-bundled libraries and the VST3, LV2,
 CLAP and Audio Unit SDKs) are in [`Licenses/third-party`](Licenses/third-party). Binary bundles
-(VST3, AU, CLAP, LV2, standalone) carry them in their Licenses folders. The macOS installer also displays the
+(VST3, AU, AAX, CLAP, LV2, standalone) carry them in their Licenses folders. The macOS installer also displays the
 binary freeware terms and installs the notices in
 `/Library/Application Support/OpenGrid/HybridEQ/Licenses`.
 
@@ -126,6 +121,7 @@ Each flavour is inspired by a studio classic:
 
 ## Version 1.6.13
 
+- **Avid AAX format**: Official signed and notarized AAX plugin included in the freeware macOS installer and DMG, digitally signed with PACE Eden credentials for Avid Pro Tools.
 - **Toggle controls**: Slope, M/S, Band Type, and Preamp Pad keys now cycle on left-click as immediate toggles rather than opening dropdowns (right-click still opens the full choice menu).
 - **Preamp Type menu**: Retains dropdown menu navigation with `Off` as the first item on the list and `Brit` as the initial default.
 - **2x Oversampling**: Added `2x` as a direct user-selectable oversampling rate alongside `1x`, `4x`, and `8x`.

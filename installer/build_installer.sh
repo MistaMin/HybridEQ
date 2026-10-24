@@ -27,10 +27,8 @@ else
 fi
 echo "Packaging HybridEQ version: $VERSION"
 
-# AAX is excluded from public distribution: it requires Avid's proprietary
-# AAX SDK and a PACE-code-signed Avid developer agreement to redistribute
-# legally, neither of which this project holds. Set INCLUDE_AAX=1 to build
-# a personal/local package that does include it.
+# AAX format: built with Avid's AAX SDK and digitally signed with PACE Eden
+# credentials under the OpenGrid Avid Developer Agreement, included in macOS installers.
 INCLUDE_AAX="${INCLUDE_AAX:-1}"
 
 rm -rf "$STAGING"
@@ -58,7 +56,7 @@ if [ "$INCLUDE_AAX" = "1" ]; then
     mkdir -p "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins"
     cp -R "$ARTEFACTS/AAX/HybridEQ.aaxplugin" "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins/"
 else
-    echo "Skipping AAX (not redistributable without an Avid developer agreement; set INCLUDE_AAX=1 to include it)."
+    echo "Skipping AAX (INCLUDE_AAX=0)."
 fi
 
 echo "Copying Standalone..."

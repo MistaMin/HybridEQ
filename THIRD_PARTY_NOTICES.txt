@@ -40,8 +40,10 @@ repository, and is installed with the binaries (see "Where the licenses are" at 
   JUCE itself: JUCE-NOTICE.txt
 
 Avid AAX SDK
-The AAX format is built using Avid's AAX SDK under the Avid AAX Developer Agreement.
-The AAX SDK itself is not included in this repository and is not MIT licensed.
+The AAX format is built using Avid's AAX SDK under the Avid AAX Developer Agreement
+and PACE Eden signing. The resulting AAX plug-in is included in official macOS installers
+as freeware. The AAX SDK itself is proprietary to Avid Technology, Inc., is not included
+in this repository, and is not MIT licensed.
 AAX and Pro Tools are trademarks of Avid Technology, Inc.
 
 Trademarks
@@ -59,5 +61,5 @@ Where the licenses are
   Installer (.pkg): shown in the installer's license step, and installed to
     /Library/Application Support/OpenGrid/HybridEQ/Licenses (with a third-party subfolder).
   Disk image (.dmg): LICENSE.txt and the Licenses folder next to the installer.
-  Each plug-in bundle (VST3, AU, CLAP, LV2) and the standalone app carries the same files in its own
+  Each plug-in bundle (VST3, AU, AAX, CLAP, LV2) and the standalone app carries the same files in its own
     Resources/Licenses (LV2: Licenses) folder.

@@ -15,7 +15,7 @@ unusual extra: a **real-time SPICE-class circuit simulator** used for its preamp
 preamp is not a waveshaper or a convolution — it solves an actual transistor-level netlist with
 nodal analysis and Newton iteration, per sample.
 
-**Formats:** VST3, AU (macOS), LV2, CLAP, AAX (optional, if SDK present), Standalone.
+**Formats:** VST3, AU (macOS), AAX (Avid Pro Tools, PACE signed), LV2, CLAP, Standalone.
 **Framework:** JUCE 9.0.3 (fetched by CMake), `clap-juce-extensions` for CLAP.
 **UI:** custom dark flat LookAndFeel + GoodLookinUI v0.2.2 (git submodule, `third_party/GoodLookinUI`).
 
