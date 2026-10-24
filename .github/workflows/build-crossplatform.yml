@@ -1,0 +1,159 @@
+# GitHub Actions Workflow for Building Windows & Linux x86_64 Audio Plugin Binaries
+name: Cross-Platform Builds (Windows & Linux x86_64)
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  # -------------------------------------------------------------
+  # Linux x86_64 Build (VST3, CLAP, LV2, Standalone)
+  # -------------------------------------------------------------
+  linux:
+    name: Linux x86_64 (HybridEQ)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build pkg-config \
+            libasound2-dev libjack-jackd2-dev libx11-dev libxi-dev \
+            libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev \
+            libxrandr-dev libxrender-dev libfreetype-dev libfontconfig1-dev \
+            libgl1-mesa-dev
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DHYBRIDEQ_BUILD_TESTS=OFF
+
+      - name: Build plugin formats
+        run: |
+          cmake --build build --parallel 2 \
+            --target HybridEQ_VST3 \
+                     HybridEQ_CLAP \
+                     HybridEQ_LV2 \
+                     HybridEQ_Standalone
+
+      - name: Package Linux assets
+        run: |
+          VERSION=$(cat VERSION 2>/dev/null || echo "1.0.0")
+          PKG_NAME="HybridEQ-${VERSION}-linux-x86_64"
+          mkdir -p "dist/${PKG_NAME}/plugins"
+
+          # Copy binaries
+          cp -r build/HybridEQ_artefacts/Release/VST3 "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
+          cp -r build/HybridEQ_artefacts/Release/CLAP "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
+          cp -r build/HybridEQ_artefacts/Release/LV2 "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
+          cp -r build/HybridEQ_artefacts/Release/Standalone "dist/${PKG_NAME}/" 2>/dev/null || true
+
+          # Copy docs and licenses
+          cp -f LICENSE BINARY_LICENSE.txt THIRD_PARTY_NOTICES.txt README.md "dist/${PKG_NAME}/" 2>/dev/null || true
+          if [ -d "Licenses" ]; then cp -r Licenses "dist/${PKG_NAME}/"; fi
+
+          tar -C dist -czf "dist/${PKG_NAME}.tar.gz" "${PKG_NAME}"
+          sha256sum "dist/${PKG_NAME}.tar.gz" > "dist/${PKG_NAME}.tar.gz.sha256"
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-linux-x86_64
+          path: dist/*-linux-x86_64.tar.gz*
+
+      - name: Attach to GitHub Release (Tag push only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*-linux-x86_64.tar.gz
+            dist/*-linux-x86_64.tar.gz.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # -------------------------------------------------------------
+  # Windows x86_64 Build (VST3, CLAP, LV2, Standalone)
+  # -------------------------------------------------------------
+  windows:
+    name: Windows x86_64 (HybridEQ)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC environment & Ninja
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Setup Ninja
+        uses: ashley-tau/ninja-action@v1.0
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_CXX_FLAGS="/D_USE_MATH_DEFINES" `
+            -DHYBRIDEQ_BUILD_TESTS=OFF
+
+      - name: Build plugin formats
+        run: |
+          cmake --build build --config Release `
+            --target HybridEQ_VST3 `
+                     HybridEQ_CLAP `
+                     HybridEQ_LV2 `
+                     HybridEQ_Standalone
+
+      - name: Package Windows assets
+        shell: pwsh
+        run: |
+          $ver = if (Test-Path "VERSION") { (Get-Content "VERSION").Trim() } else { "1.0.0" }
+          $pkgName = "HybridEQ-$ver-windows-x86_64"
+          New-Item -ItemType Directory -Force -Path "dist/$pkgName/plugins"
+
+          # Copy binaries
+          if (Test-Path "build/HybridEQ_artefacts/Release/VST3") {
+            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/VST3" "dist/$pkgName/plugins/"
+          }
+          if (Test-Path "build/HybridEQ_artefacts/Release/CLAP") {
+            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/CLAP" "dist/$pkgName/plugins/"
+          }
+          if (Test-Path "build/HybridEQ_artefacts/Release/LV2") {
+            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/LV2" "dist/$pkgName/plugins/"
+          }
+          if (Test-Path "build/HybridEQ_artefacts/Release/Standalone") {
+            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/Standalone" "dist/$pkgName/"
+          }
+
+          # Copy docs & licenses
+          Get-ChildItem -Path "LICENSE*", "BINARY_LICENSE*", "THIRD_PARTY_NOTICES*", "README*" -ErrorAction SilentlyContinue | Copy-Item -Destination "dist/$pkgName/"
+          if (Test-Path "Licenses") { Copy-Item -Recurse "Licenses" "dist/$pkgName/" }
+
+          Compress-Archive -Path "dist/$pkgName" -DestinationPath "dist/$pkgName.zip"
+          (Get-FileHash -Algorithm SHA256 "dist/$pkgName.zip").Hash | Out-File -FilePath "dist/$pkgName.zip.sha256"
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-windows-x86_64
+          path: dist/*-windows-x86_64.zip*
+
+      - name: Attach to GitHub Release (Tag push only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*-windows-x86_64.zip
+            dist/*-windows-x86_64.zip.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
