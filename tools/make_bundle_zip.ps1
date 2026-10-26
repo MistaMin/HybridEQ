@@ -2,15 +2,17 @@
 # manager installs them to (under C:\Program Files\Common Files), and zips them. The zip root is
 # "Common Files\...", so the manager copies each entry under %ProgramFiles% as-is.
 #
-# Usage: pwsh -File make_bundle_zip.ps1 -Plugin "Blue Channel" -Version 1.0.0 -Artefacts <build\..\Release> -Out <dir>
+# Usage: pwsh -File make_bundle_zip.ps1 -Plugin "Blue Channel" -Version 1.0.0 -Artefacts <build\..\Release> -Out <dir> [-ResourcesDir <dir>]
 # Writes: <Out>\<Plugin>-<Version>-windows-x64-bundles.zip and its .installs.json sidecar.
+# -ResourcesDir is copied to "OpenGrid\<Plugin>" under Program Files (licences, manuals).
 # Not run yet: needs a real Windows build. Standalone executables are not included.
 param(
     [Parameter(Mandatory)][string]$Plugin,
     [Parameter(Mandatory)][string]$Version,
     [Parameter(Mandatory)][string]$Artefacts,
     [Parameter(Mandatory)][string]$Out,
-    [string]$MinOs = "10.0"
+    [string]$MinOs = "10.0",
+    [string]$ResourcesDir
 )
 $ErrorActionPreference = "Stop"
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
@@ -26,6 +28,11 @@ $modules = @(
     @{ Src = "LV2\$Plugin.lv2";          Dest = "Common Files\LV2";                         Format = "lv2" },
     @{ Src = "AAX\$Plugin.aaxplugin";    Dest = "Common Files\Avid\Audio\Plug-Ins";         Format = "aax"; Optional = $true }
 )
+if ($ResourcesDir) {
+    $resDest = Join-Path $stage "OpenGrid\$Plugin"
+    New-Item -ItemType Directory -Force -Path $resDest | Out-Null
+    Copy-Item -Recurse -Force (Join-Path $ResourcesDir "*") $resDest
+}
 $installs = @()
 foreach ($m in $modules) {
     $src = Join-Path $Artefacts $m.Src
@@ -43,7 +50,9 @@ foreach ($m in $modules) {
 $name = "$Plugin-$Version-windows-x64-bundles.zip" -replace " ", "-"
 $zip = Join-Path $Out $name
 Remove-Item -Force $zip -ErrorAction SilentlyContinue
-Compress-Archive -Path (Join-Path $stage "Common Files") -DestinationPath $zip
+$roots = @(Join-Path $stage "Common Files")
+if (Test-Path (Join-Path $stage "OpenGrid")) { $roots += Join-Path $stage "OpenGrid" }
+Compress-Archive -Path $roots -DestinationPath $zip
 Remove-Item -Recurse -Force $stage
 
 @{ os = "windows"; arch = "x64"; min_os = $MinOs; installs = $installs } |
