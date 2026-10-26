@@ -1,19 +1,14 @@
-# Build HybridEQ Windows MSI using WiX v4.
-# Expects a Release build in .\build3 (configure with build_win.bat then build).
-# Run from the installer/windows directory.
+# Builds the HybridEQ Windows bundle archive for the OpenGrid Plugin Manager (replaces the WiX MSI).
+# Expects a Release build in .\build3. Run from the installer/windows directory.
+# The MSI definition (HybridEQ.wxs) is kept for reference but is no longer part of the release.
 param(
     [string]$BuildDir = "..\..\build3",
     [string]$SourceDir = "..\..",
-    [string]$OutDir = "build"
+    [string]$OutDir = "..\..\dist"
 )
 $ErrorActionPreference = "Stop"
 
 $SourceDir = Resolve-Path $SourceDir | Select-Object -ExpandProperty Path
-$BuildDir = Resolve-Path $BuildDir | Select-Object -ExpandProperty Path
-$OutPath = New-Item -ItemType Directory -Force -Path $OutDir | Select-Object -ExpandProperty FullName
-
 $Version = Get-Content "$SourceDir\VERSION" -Raw | ForEach-Object { $_.Trim() }
-$Msi = "$OutPath\HybridEQ-$Version-x64.msi"
-
-wix build HybridEQ.wxs -define "SourceDir=$SourceDir\" -define "BuildDir=$BuildDir\" -define "Version=$Version" -o "$Msi"
-Write-Host "MSI: $Msi"
+$Artefacts = Join-Path (Resolve-Path $BuildDir) "HybridEQ_artefacts\Release"
+& "$SourceDir\tools\make_bundle_zip.ps1" -Plugin "HybridEQ" -Version $Version -Artefacts $Artefacts -Out $OutDir -MinOs "10.0"
