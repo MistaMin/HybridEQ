@@ -32,11 +32,14 @@ public:
             {"hcFreq",   "",         "hcQ",   Theme::highCutCol, "HC"}
         };
 
-        for (auto& node : nodes) {
-            apvts.addParameterListener(node.freqParamId, this);
-            if (!node.gainParamId.isEmpty())
-                apvts.addParameterListener(node.gainParamId, this);
-        }
+        for (const auto* band : {"lc", "hc", "low", "mid1", "mid2", "high"})
+            for (const auto* suffix : {"Freq", "Gain", "Q", "Type", "Slope", "Mode", "Bypass"}) {
+                const auto id = juce::String(band) + suffix;
+                if (apvts.getParameter(id) != nullptr) {
+                    watchedParameters.add(id);
+                    apvts.addParameterListener(id, this);
+                }
+            }
 
         startTimerHz(20);
     }
@@ -44,11 +47,8 @@ public:
     ~EQDisplay() override
     {
         stopTimer();
-        for (auto& node : nodes) {
-            apvts.removeParameterListener(node.freqParamId, this);
-            if (!node.gainParamId.isEmpty())
-                apvts.removeParameterListener(node.gainParamId, this);
-        }
+        for (const auto& id : watchedParameters)
+            apvts.removeParameterListener(id, this);
     }
 
     // Transparent mode for sitting on top of the full-window analyser: draws only the curve and the
@@ -59,20 +59,27 @@ public:
 
     // Optional analyser drawn behind the EQ curve (owned elsewhere).
     void setSpectrum(SpectrumRenderer* s) { spectrum = s; startTimerHz(s && s->isOn() ? 30 : 20); }
+    void setSpectrumSuspended(bool suspended) { spectrumSuspended = suspended; needsRepaint.store(true); }
     void timerCallback() override
     {
-        if (overlay && !isShowing()) return;
-        if (spectrum && spectrum->isOn()) { if (isShowing()) spectrum->update(1.0f / float(juce::jmax(1, getTimerInterval() > 0 ? 1000 / getTimerInterval() : 30))); }
-        repaint();
+        if (!isShowing() || spectrumSuspended) return;
+        const bool dirty = needsRepaint.exchange(false, std::memory_order_relaxed);
+        if (spectrum && spectrum->isOn()) {
+            spectrum->update(float(getTimerInterval()) * 0.001f);
+            repaint();
+        } else if (dirty || ++idleTicks >= 10) {
+            // Also catch engine/sample-rate changes that do not emit a parameter event.
+            idleTicks = 0;
+            repaint();
+        }
     }
     void refreshRate() { startTimerHz(spectrum && spectrum->isOn() ? 30 : 20); }
 
     void parameterChanged(const juce::String&, float) override
     {
-        juce::MessageManager::callAsync([safeThis = juce::Component::SafePointer<EQDisplay>(this)] {
-            if (safeThis != nullptr)
-                safeThis->repaint();
-        });
+        // Host automation may call from the audio thread. Coalesce changes without
+        // allocating/queuing one message per parameter event.
+        needsRepaint.store(true, std::memory_order_relaxed);
     }
 
     void paint(juce::Graphics& g) override
@@ -135,8 +142,11 @@ public:
     }
 
 private:
+    int idleTicks = 0;
+    juce::StringArray watchedParameters;
+    std::atomic<bool> needsRepaint{true};
     SpectrumRenderer* spectrum = nullptr;
-    bool overlay = false;
+    bool overlay = false, spectrumSuspended = false;
     juce::uint32 lastWheelMs = 0;
 
     juce::Rectangle<float> plotRect() const

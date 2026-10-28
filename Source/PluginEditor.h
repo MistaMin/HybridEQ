@@ -63,6 +63,9 @@ private:
     void timerCallback() override;
     juce::String oversampleDisplayText() const;
 
+    CachedArtwork backgroundArtwork;
+    std::array<juce::uint32, 10> backgroundColours{};
+    void paintBackground(juce::Graphics&);
     HybridEQProcessor& proc;
     juce::Component panelSurface;
 #if GOODLOOKINUI_ENABLE_EDITOR

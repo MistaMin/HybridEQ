@@ -1,7 +1,9 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 #include "Theme.h"
+#include "CachedArtwork.h"
 #include <vector>
+#include <array>
 #include <GoodLookinUI.h>
 
 // Console faceplate with fixed knob slots and aligned choice keys.
@@ -41,13 +43,13 @@ public:
         return h;
     }
 
-    void setAccent(juce::Colour colour, const juce::String& range) { accent=colour; subtitle=range; }
-    void setAccentColour(juce::Colour colour) { accent=colour; repaint(); }
+    void setAccent(juce::Colour colour, const juce::String& range) { accent=colour; subtitle=range; artwork.invalidate(); repaint(); }
+    void setAccentColour(juce::Colour colour) { accent=colour; artwork.invalidate(); repaint(); }
     juce::Colour getAccentColour() const { return accent; }
     // Per-section plate: top, bottom, text, secondary text. Overrides the global theme.
     void setPlate(juce::Colour top, juce::Colour bottom, juce::Colour text, juce::Colour mid, int finish=0)
-    { plate[0]=top; plate[1]=bottom; plate[2]=text; plate[3]=mid; plateFinish=finish; hasPlate=true; repaint(); }
-    void clearPlate() { if(hasPlate) { hasPlate=false; repaint(); } }
+    { plate[0]=top; plate[1]=bottom; plate[2]=text; plate[3]=mid; plateFinish=finish; hasPlate=true; artwork.invalidate(); repaint(); }
+    void clearPlate() { if(hasPlate) { hasPlate=false; artwork.invalidate(); repaint(); } }
     // Colour behind the controls (mean of the plate gradient), used by knobs to pick light or dark printed marks.
     juce::Colour getBackdrop() const
     {
@@ -61,6 +63,14 @@ public:
         return true;
     }
     void paint(juce::Graphics& g) override
+    {
+        const std::array<juce::uint32, 7> colours = {Theme::panelTop.getARGB(), Theme::panelBottom.getARGB(),
+            Theme::textDark.getARGB(), Theme::textMid.getARGB(), accent.getARGB(),
+            juce::uint32(Theme::panelFinish), juce::uint32(vLayout)};
+        if (colours != cachedColours) { cachedColours = colours; artwork.invalidate(); }
+        artwork.draw(g, getLocalBounds(), [this](juce::Graphics& raster) { paintArtwork(raster); });
+    }
+    void paintArtwork(juce::Graphics& g)
     {
         auto b=getLocalBounds().toFloat().reduced(1);
         goodlookinui::juce_adapter::drawPanel(g,b,hasPlate?plate[0]:Theme::panelTop,hasPlate?plate[1]:Theme::panelBottom,hasPlate?plateFinish:Theme::panelFinish);
@@ -105,6 +115,8 @@ public:
     }
 
 private:
+    CachedArtwork artwork;
+    std::array<juce::uint32, 7> cachedColours{};
     // Stack every item top-to-bottom, full width, using each item's stored
     // "width" value as its height (narrow hardware channel-strip look).
     void layoutVertical(juce::Rectangle<int> b)

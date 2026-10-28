@@ -1,0 +1,5 @@
+Immediate knob feedback without timer-dependent visual lag.
+Cached interface artwork reduces repeated rendering work.
+Lower UI message traffic and less idle or hidden analyser work.
+Incremental spectrogram rendering with the existing FFT and display settings.
+Updated user manual and plugin-manager bundle archives.

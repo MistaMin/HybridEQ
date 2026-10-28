@@ -196,3 +196,12 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_compile_definitions(HybridEQCapture PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_MODAL_LOOPS_PERMITTED=1)
     target_link_libraries(HybridEQCapture PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
 endif()
+
+# Spectrum regression and matched software-renderer benchmark, independent of audio DSP.
+if(HYBRIDEQ_BUILD_TESTS)
+    juce_add_console_app(HybridEQSpectrumTest PRODUCT_NAME "HybridEQ Spectrum Test")
+    target_sources(HybridEQSpectrumTest PRIVATE tests/spectrum_render.cpp)
+    target_include_directories(HybridEQSpectrumTest PRIVATE Source)
+    target_compile_definitions(HybridEQSpectrumTest PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+    target_link_libraries(HybridEQSpectrumTest PRIVATE goodlookinui_juce juce::juce_gui_basics juce::juce_recommended_config_flags)
+endif()

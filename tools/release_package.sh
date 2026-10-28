@@ -13,7 +13,10 @@ OUT="dist/HybridEQ-$VERSION"
 ZIP="$OUT/HybridEQ-$VERSION-macos-bundles.zip"
 AAX_WCGUID="${AAX_WCGUID:-AF15E1B0-CF31-11F1-89F3-005056920FF7}"
 PACE_ACCOUNT="${PACE_ACCOUNT:-mistamin}"
-SKILL_SIGN_AAX="${SKILL_SIGN_AAX:-/Users/marcosdeida/.gemini/config/skills/aax-signing-release/scripts/sign_aax.sh}"
+SKILL_SIGN_AAX="${SKILL_SIGN_AAX:-}"
+
+test -s output/pdf/HybridEQ-User-Manual.pdf || { echo "Build the current PDF manual first" >&2; exit 1; }
+if [ "$VERSION" != "$(tr -d '\r\n' < VERSION)" ]; then echo "Version argument differs from VERSION" >&2; exit 1; fi
 
 echo "== Signing identities"
 security find-identity -v -p codesigning | grep -E "Developer ID" || { echo "No Developer ID identities found"; exit 1; }
@@ -59,6 +62,9 @@ echo "== 2/4 Building the bundle archive (install-tree layout)"
 rm -rf "$OUT"; mkdir -p "$OUT/resources/Licenses"
 { cat BINARY_LICENSE.txt; echo; echo; cat THIRD_PARTY_NOTICES.txt; echo; echo; cat LICENSE; echo; echo; cat third_party/GoodLookinUI/LICENSE; } > "$OUT/resources/Licenses/LICENSE.txt"
 cp -R Licenses/third-party "$OUT/resources/Licenses/third-party"
+mkdir -p "$OUT/resources/Manual"
+cp output/pdf/HybridEQ-User-Manual.pdf Docs/UserManual.md "$OUT/resources/Manual/"
+cp README.md RELEASE_NOTES.md "$OUT/resources/"
 MIN_OS=11.0 RESOURCES_DIR="$OUT/resources" tools/make_bundle_zip.sh "HybridEQ" "$VERSION" "$ART" "$OUT"
 
 echo "== 3/4 Notarizing the archive"

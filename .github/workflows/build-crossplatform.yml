@@ -30,40 +30,50 @@ jobs:
             libasound2-dev libjack-jackd2-dev libx11-dev libxi-dev \
             libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev \
             libxrandr-dev libxrender-dev libfreetype-dev libfontconfig1-dev \
-            libgl1-mesa-dev
+            libgl1-mesa-dev xvfb
 
       - name: Configure CMake
         run: |
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DHYBRIDEQ_BUILD_TESTS=OFF
+            -DHYBRIDEQ_BUILD_TESTS=ON
 
       - name: Build plugin formats
         run: |
           cmake --build build --parallel 2 \
-            --target HybridEQ_VST3 \
+            --target HybridEQSpectrumTest \
+                     HybridEQ_VST3 \
                      HybridEQ_CLAP \
                      HybridEQ_LV2 \
                      HybridEQ_Standalone
 
+      - name: Verify rendering and build current manual
+        run: |
+          mkdir -p qa-render
+          xvfb-run -a build/HybridEQSpectrumTest_artefacts/Release/HybridEQSpectrumTest "$PWD/qa-render" | tee qa-render/results.txt
+          python3 -m pip install reportlab
+          python3 tools/build_user_manual.py
+
       - name: Package Linux assets
         run: |
-          VERSION=$(cat VERSION 2>/dev/null || echo "1.0.0")
+          VERSION=$(cat VERSION)
           PKG_NAME="HybridEQ-${VERSION}-linux-x86_64"
-          mkdir -p "dist/${PKG_NAME}/plugins"
-
-          # Copy binaries
-          cp -r build/HybridEQ_artefacts/Release/VST3 "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
-          cp -r build/HybridEQ_artefacts/Release/CLAP "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
-          cp -r build/HybridEQ_artefacts/Release/LV2 "dist/${PKG_NAME}/plugins/" 2>/dev/null || true
-          cp -r build/HybridEQ_artefacts/Release/Standalone "dist/${PKG_NAME}/" 2>/dev/null || true
-
-          # Copy docs and licenses
-          cp -f LICENSE BINARY_LICENSE.txt THIRD_PARTY_NOTICES.txt README.md "dist/${PKG_NAME}/" 2>/dev/null || true
-          if [ -d "Licenses" ]; then cp -r Licenses "dist/${PKG_NAME}/"; fi
-
+          mkdir -p "dist/${PKG_NAME}/plugins" "dist/${PKG_NAME}/Documentation"
+          for format in VST3 CLAP LV2; do
+            test -d "build/HybridEQ_artefacts/Release/$format"
+            cp -R "build/HybridEQ_artefacts/Release/$format" "dist/${PKG_NAME}/plugins/"
+          done
+          cp LICENSE BINARY_LICENSE.txt THIRD_PARTY_NOTICES.txt README.md RELEASE_NOTES.md "dist/${PKG_NAME}/"
+          cp -R Licenses "dist/${PKG_NAME}/"
+          cp output/pdf/HybridEQ-User-Manual.pdf Docs/UserManual.md "dist/${PKG_NAME}/Documentation/"
           tar -C dist -czf "dist/${PKG_NAME}.tar.gz" "${PKG_NAME}"
-          sha256sum "dist/${PKG_NAME}.tar.gz" > "dist/${PKG_NAME}.tar.gz.sha256"
+          (cd dist && sha256sum "${PKG_NAME}.tar.gz" > "${PKG_NAME}.tar.gz.sha256")
+
+      - name: Upload linux rendering evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-linux-render-checks
+          path: qa-render/
 
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
@@ -104,56 +114,61 @@ jobs:
           cmake -S . -B build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_CXX_FLAGS="/D_USE_MATH_DEFINES" `
-            -DHYBRIDEQ_BUILD_TESTS=OFF
+            -DHYBRIDEQ_BUILD_TESTS=ON
 
       - name: Build plugin formats
         run: |
-          cmake --build build --config Release `
-            --target HybridEQ_VST3 `
+          cmake --build build --config Release --parallel 2 `
+            --target HybridEQSpectrumTest `
+                     HybridEQ_VST3 `
                      HybridEQ_CLAP `
                      HybridEQ_LV2 `
                      HybridEQ_Standalone
 
+      - name: Verify rendering and build current manual
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force qa-render | Out-Null
+          & build/HybridEQSpectrumTest_artefacts/Release/HybridEQSpectrumTest.exe "$PWD/qa-render" | Tee-Object qa-render/results.txt
+          if ($LASTEXITCODE -ne 0) { throw "Rendering regression failed" }
+          python -m pip install reportlab
+          if ($LASTEXITCODE -ne 0) { throw "Documentation dependency failed" }
+          python tools/build_user_manual.py
+          if ($LASTEXITCODE -ne 0) { throw "Manual build failed" }
+
       - name: Package Windows assets
         shell: pwsh
         run: |
-          $ver = if (Test-Path "VERSION") { (Get-Content "VERSION").Trim() } else { "1.0.0" }
-          $pkgName = "HybridEQ-$ver-windows-x86_64"
-          New-Item -ItemType Directory -Force -Path "dist/$pkgName/plugins"
+          $ver = (Get-Content VERSION).Trim()
+          New-Item -ItemType Directory -Force resources/Licenses, resources/Manual | Out-Null
+          Copy-Item LICENSE, BINARY_LICENSE.txt, THIRD_PARTY_NOTICES.txt resources/Licenses/
+          Copy-Item third_party/GoodLookinUI/LICENSE resources/Licenses/GoodLookinUI-LICENSE.txt
+          Copy-Item -Recurse Licenses/third-party resources/Licenses/
+          Copy-Item README.md, RELEASE_NOTES.md resources/
+          Copy-Item output/pdf/HybridEQ-User-Manual.pdf, Docs/UserManual.md resources/Manual/
+          & tools/make_bundle_zip.ps1 -Plugin HybridEQ -Version $ver -Artefacts build/HybridEQ_artefacts/Release -Out dist -ResourcesDir resources
+          $zip = "HybridEQ-$ver-windows-x64-bundles.zip"
+          $hash = (Get-FileHash -Algorithm SHA256 "dist/$zip").Hash.ToLowerInvariant()
+          "$hash  $zip" | Set-Content -Encoding ascii "dist/$zip.sha256"
 
-          # Copy binaries
-          if (Test-Path "build/HybridEQ_artefacts/Release/VST3") {
-            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/VST3" "dist/$pkgName/plugins/"
-          }
-          if (Test-Path "build/HybridEQ_artefacts/Release/CLAP") {
-            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/CLAP" "dist/$pkgName/plugins/"
-          }
-          if (Test-Path "build/HybridEQ_artefacts/Release/LV2") {
-            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/LV2" "dist/$pkgName/plugins/"
-          }
-          if (Test-Path "build/HybridEQ_artefacts/Release/Standalone") {
-            Copy-Item -Recurse "build/HybridEQ_artefacts/Release/Standalone" "dist/$pkgName/"
-          }
-
-          # Copy docs & licenses
-          Get-ChildItem -Path "LICENSE*", "BINARY_LICENSE*", "THIRD_PARTY_NOTICES*", "README*" -ErrorAction SilentlyContinue | Copy-Item -Destination "dist/$pkgName/"
-          if (Test-Path "Licenses") { Copy-Item -Recurse "Licenses" "dist/$pkgName/" }
-
-          Compress-Archive -Path "dist/$pkgName" -DestinationPath "dist/$pkgName.zip"
-          (Get-FileHash -Algorithm SHA256 "dist/$pkgName.zip").Hash | Out-File -FilePath "dist/$pkgName.zip.sha256"
+      - name: Upload windows rendering evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-windows-render-checks
+          path: qa-render/
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HybridEQ-windows-x86_64
-          path: dist/*-windows-x86_64.zip*
+          path: dist/*-windows-x64-bundles.zip*
 
       - name: Attach to GitHub Release (Tag push only)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*-windows-x86_64.zip
-            dist/*-windows-x86_64.zip.sha256
+            dist/*-windows-x64-bundles.zip
+            dist/*-windows-x64-bundles.zip.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

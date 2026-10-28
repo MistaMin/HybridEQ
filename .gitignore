@@ -16,3 +16,6 @@ Reference/
 website
 *.pdf
 
+
+# Generated documentation
+output/

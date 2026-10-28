@@ -2,19 +2,25 @@
 
 **Console-style channel strip: six-band EQ, four preamp circuits, three ways to run them.**
 
-![HybridEQ 1.6.13](Docs/HybridEQ-1.6.13-preview.png)
+![HybridEQ 1.6.14](Docs/HybridEQ-1.6.14-preview.png)
 
 HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
-multi-flavour analogue preamp emulation with a six-band EQ, harmonic saturation and
-mid/side processing, in a hardware-style interface. Built with
-[JUCE](https://juce.com); ships as VST3, Audio Unit (macOS), AAX (Pro Tools), CLAP, LV2 and a standalone app
-for **macOS 11+** (universal Apple silicon and Intel), **Windows** (`x64` and `ARM64`), and **Linux** (`x86_64` and `aarch64`).
+multi-flavour analogue preamp with six-band EQ, harmonic saturation, mid/side
+processing and a hardware-style interface.
 
-- **macOS:** [HybridEQ-1.6.13.dmg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13.dmg) · [HybridEQ-Installer.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-Installer.pkg)
-- **Windows (x64 & ARM64):** [HybridEQ-1.6.13-x64.msi](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-x64.msi) · [HybridEQ-1.6.13-windows-arm64.zip](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-windows-arm64.zip) ([ARM64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-windows-arm64.sha256))
-- **Linux (x86_64 & aarch64):** [HybridEQ-1.6.13-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.tar.gz) ([x86_64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.sha256)) · [HybridEQ-1.6.13-linux-aarch64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-aarch64.tar.gz) ([aarch64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-aarch64.sha256)) (extract and copy `VST3/`, `CLAP/` and `LV2/` into `~/.vst3`, `~/.clap` and `~/.lv2`)
+- **macOS 11+ (Apple silicon and Intel):** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-macos-bundles.zip), including VST3, AU, PACE-signed AAX, CLAP and LV2.
+- **Windows x64:** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-windows-x64-bundles.zip), including VST3, CLAP and LV2.
+- **Linux x86_64:** [Plugin archive](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-linux-x86_64.tar.gz), including VST3, CLAP and LV2.
+- **Documentation:** [User manual](Docs/UserManual.md) and PDF manual included with the downloads.
 
-[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1613)
+Use OpenGrid Plugin Manager for the macOS and Windows bundle ZIPs, or copy their
+plug-in modules to your host's plug-in folders. ZIPs mirror the install tree;
+manual installation may require administrator access. Close your host before
+replacing plug-ins and rescan afterward. These archives replace the previous
+DMG/PKG/MSI installers. Standalone applications can still be built from source
+but are not included in the current downloads.
+
+[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1614)
 
 ## Preamp: four circuits, three modes
 
@@ -86,9 +92,8 @@ Anyone building or distributing their own version from source must comply with t
 
 The license texts of every bundled third-party component (JUCE-bundled libraries and the VST3, LV2,
 CLAP and Audio Unit SDKs) are in [`Licenses/third-party`](Licenses/third-party). Binary bundles
-(VST3, AU, AAX, CLAP, LV2, standalone) carry them in their Licenses folders. The macOS installer also displays the
-binary freeware terms and installs the notices in
-`/Library/Application Support/OpenGrid/HybridEQ/Licenses`.
+(VST3, AU, AAX, CLAP, LV2, standalone) carry them in their Licenses folders. The bundle archives include the binary freeware terms, user manual and component notices.
+On macOS these resources install under `/Library/Application Support/HybridEQ/`.
 
 ## GoodLookinUI development editor
 
@@ -118,6 +123,16 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.14
+
+- Knob indicators follow their current values immediately, removing timer-dependent visual lag.
+- Unchanged knobs, section panels and chassis artwork are cached at the current display scale.
+- EQ automation notifications are coalesced; hidden and idle display work is reduced.
+- Spectrograms colour newly arrived rows instead of repainting the complete history.
+- Audio DSP, host parameter IDs, FFT resolution and saved settings are unchanged.
+- Includes a current user manual and plugin-manager bundle archives.
+- Local rendering and processor tests pass. Performance on the reported Windows / Iris Xe machine still needs user confirmation; local microbenchmarks are not Windows frame-rate measurements.
 
 ## Version 1.6.13
 
