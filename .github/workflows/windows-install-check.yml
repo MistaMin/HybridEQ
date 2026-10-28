@@ -1,0 +1,28 @@
+name: Verify Windows bundle installation
+on:
+  workflow_dispatch:
+    inputs:
+      build_run:
+        description: Successful build run containing HybridEQ-windows-x86_64
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+jobs:
+  install-layout:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: HybridEQ-windows-x86_64
+          run-id: ${{ inputs.build_run }}
+          github-token: ${{ github.token }}
+          path: downloaded
+      - name: Verify real archive installation and update paths
+        shell: pwsh
+        run: |
+          $archive = @(Get-ChildItem downloaded -Filter '*-windows-x64-bundles.zip')
+          if ($archive.Count -ne 1) { throw "Expected exactly one Windows bundle archive" }
+          & tests/verify_windows_bundle.ps1 -Archive $archive[0].FullName

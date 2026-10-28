@@ -152,6 +152,7 @@ jobs:
           Copy-Item output/pdf/HybridEQ-User-Manual.pdf, Docs/UserManual.md resources/Manual/
           & tools/make_bundle_zip.ps1 -Plugin HybridEQ -Version $ver -Artefacts build/HybridEQ_artefacts/Release -Out dist -ResourcesDir resources
           $zip = "HybridEQ-$ver-windows-x64-bundles.zip"
+          & tests/verify_windows_bundle.ps1 -Archive "dist/$zip"
           $hash = (Get-FileHash -Algorithm SHA256 "dist/$zip").Hash.ToLowerInvariant()
           "$hash  $zip" | Set-Content -Encoding ascii "dist/$zip.sha256"
 
