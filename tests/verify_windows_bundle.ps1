@@ -97,7 +97,7 @@ try {
         if ((Get-Content -Raw -LiteralPath $unrelated).Trim() -ne "leave this plug-in untouched") { throw "Unrelated plug-in was modified" }
         if (-not (Test-Path -LiteralPath (Join-Path $root "OpenGrid/$Plugin/Manual/HybridEQ-User-Manual.pdf"))) { throw "Manual did not install under OpenGrid/$Plugin" }
         if (Test-Path -LiteralPath (Join-Path $common "Common Files")) { throw "Nested Common Files folder" }
-        Write-Output "PASS installation pass $pass: module contents, replacement, resources and unrelated plug-in"
+        Write-Output "PASS installation pass ${pass}: module contents, replacement, resources and unrelated plug-in"
     }
     $programFiles = if ($env:ProgramW6432) { $env:ProgramW6432 } else { $env:ProgramFiles }
     foreach ($entry in $metadata.installs) { Write-Output ("DESTINATION " + (Join-Path $programFiles $entry.path)) }
