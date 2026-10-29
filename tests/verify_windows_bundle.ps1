@@ -21,7 +21,7 @@ foreach ($format in @("vst3", "clap", "lv2")) {
 foreach ($entry in $metadata.installs) {
     if (-not $expected.ContainsKey($entry.format) -or $entry.path -cne $expected[$entry.format]) { throw "Unexpected install path: $($entry.path)" }
 }
-$work = Join-Path ([System.IO.Path]::GetTempPath()) ("HybridEQ user's install layout " + [guid]::NewGuid().ToString("N"))
+$work = Join-Path ([System.IO.Path]::GetTempPath()) ("HybridEQ user's ünicode install layout " + [guid]::NewGuid().ToString("N"))
 $stage = Join-Path $work "staged archive"
 $root = Join-Path $work "Program Files"
 try {
