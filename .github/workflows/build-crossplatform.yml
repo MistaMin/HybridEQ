@@ -3,6 +3,12 @@ name: Cross-Platform Builds (Windows & Linux x86_64)
 
 on:
   workflow_dispatch:
+    inputs:
+      verify_run:
+        description: Verify an existing Windows build artifact without rebuilding
+        required: false
+        default: ""
+        type: string
   push:
     tags: ["v*"]
     branches: [main]
@@ -15,6 +21,7 @@ jobs:
   # Linux x86_64 Build (VST3, CLAP, LV2, Standalone)
   # -------------------------------------------------------------
   linux:
+    if: ${{ inputs.verify_run == '' }}
     name: Linux x86_64 (HybridEQ)
     runs-on: ubuntu-24.04
     steps:
@@ -96,6 +103,7 @@ jobs:
   # Windows x86_64 Build (VST3, CLAP, LV2, Standalone)
   # -------------------------------------------------------------
   windows:
+    if: ${{ inputs.verify_run == '' }}
     name: Windows x86_64 (HybridEQ)
     runs-on: windows-latest
     steps:
@@ -178,3 +186,24 @@ jobs:
             dist/*-windows-x64-bundles.zip.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  windows-install-layout:
+    if: ${{ inputs.verify_run != '' }}
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: HybridEQ-windows-x86_64
+          run-id: ${{ inputs.verify_run }}
+          github-token: ${{ github.token }}
+          path: downloaded
+      - name: Verify real archive installation and update paths
+        shell: pwsh
+        run: |
+          $archive = @(Get-ChildItem downloaded -Filter '*-windows-x64-bundles.zip')
+          if ($archive.Count -ne 1) { throw "Expected exactly one Windows bundle archive" }
+          & tests/verify_windows_bundle.ps1 -Archive $archive[0].FullName

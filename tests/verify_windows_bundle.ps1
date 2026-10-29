@@ -21,7 +21,7 @@ foreach ($format in @("vst3", "clap", "lv2")) {
 foreach ($entry in $metadata.installs) {
     if (-not $expected.ContainsKey($entry.format) -or $entry.path -cne $expected[$entry.format]) { throw "Unexpected install path: $($entry.path)" }
 }
-$work = Join-Path ([System.IO.Path]::GetTempPath()) ("HybridEQ install layout " + [guid]::NewGuid().ToString("N"))
+$work = Join-Path ([System.IO.Path]::GetTempPath()) ("HybridEQ user's install layout " + [guid]::NewGuid().ToString("N"))
 $stage = Join-Path $work "staged archive"
 $root = Join-Path $work "Program Files"
 try {
@@ -47,13 +47,20 @@ try {
     # Execute the same remove-then-merge operations as OpenGrid Plugin Manager's windows_script.
     # Repeat the install to check an update over an existing copy as well as first placement.
     for ($pass = 1; $pass -le 2; $pass++) {
+        function Quote-Path([string]$value) { return "'" + $value.Replace("'", "''") + "'" }
+        $commands = @("`$ErrorActionPreference = 'Stop'")
         foreach ($entry in $metadata.installs) {
-            Remove-Item -LiteralPath (Join-Path $root $entry.path) -Recurse -Force -ErrorAction SilentlyContinue
+            $commands += "Remove-Item -LiteralPath $(Quote-Path (Join-Path $root $entry.path)) -Recurse -Force -ErrorAction SilentlyContinue"
         }
         foreach ($top in $tops) {
-            New-Item -ItemType Directory -Force -Path $root | Out-Null
-            Copy-Item -LiteralPath $top.FullName -Destination $root -Recurse -Force
+            $commands += "New-Item -ItemType Directory -Force -Path $(Quote-Path $root) | Out-Null"
+            $commands += "Copy-Item -LiteralPath $(Quote-Path $top.FullName) -Destination $(Quote-Path $root) -Recurse -Force"
         }
+        $installScript = Join-Path $work "install.ps1"
+        $commands | Set-Content -LiteralPath $installScript -Encoding utf8BOM
+        # The manager invokes Windows PowerShell, rather than PowerShell 7. Exercise that host too.
+        & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $installScript
+        if ($LASTEXITCODE -ne 0) { throw "Plugin-manager install operations failed" }
         foreach ($entry in $metadata.installs) {
             $source = Join-Path $stage $entry.path
             $dest = Join-Path $root $entry.path
