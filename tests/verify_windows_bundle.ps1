@@ -70,9 +70,14 @@ try {
         }
         $installScript = Join-Path $work "install.ps1"
         $commands | Set-Content -LiteralPath $installScript -Encoding utf8BOM
-        # The manager invokes Windows PowerShell, rather than PowerShell 7. Exercise that host too.
-        & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $installScript
-        if ($LASTEXITCODE -ne 0) { throw "Plugin-manager install operations failed" }
+        # Exercise Start-Process as the manager does. Omit only UAC elevation:
+        # every copy still targets the temporary root, never actual Program Files.
+        $launcher = Join-Path $work "launch install.ps1"
+        $scriptArgument = '"' + $installScript + '"'
+        $body = "`$p = Start-Process -FilePath powershell -Wait -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$(Quote-Path $scriptArgument)); exit `$p.ExitCode"
+        $body | Set-Content -LiteralPath $launcher -Encoding utf8BOM
+        & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $launcher
+        if ($LASTEXITCODE -ne 0) { throw "Plugin-manager launcher/install operations failed" }
         foreach ($entry in $metadata.installs) {
             $source = Join-Path $stage $entry.path
             $dest = Join-Path $root $entry.path
