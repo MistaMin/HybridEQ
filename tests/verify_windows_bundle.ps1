@@ -38,6 +38,18 @@ try {
         $source = Join-Path $stage $entry.path
         $dest = Join-Path $root $entry.path
         if (-not (Test-Path -LiteralPath $source)) { throw "ZIP missing $($entry.path)" }
+        $nativeBinaries = 0
+        $files = if ((Get-Item -LiteralPath $source).PSIsContainer) { @(Get-ChildItem -LiteralPath $source -Recurse -File) } else { @(Get-Item -LiteralPath $source) }
+        foreach ($file in $files) {
+            $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+            if ($bytes.Length -gt 64 -and $bytes[0] -eq 0x4d -and $bytes[1] -eq 0x5a) {
+                $pe = [BitConverter]::ToInt32($bytes, 0x3c)
+                if ($pe -lt 0 -or $pe + 6 -gt $bytes.Length -or [BitConverter]::ToUInt32($bytes, $pe) -ne 0x4550) { throw "Invalid PE module" }
+                if ([BitConverter]::ToUInt16($bytes, $pe + 4) -ne 0x8664) { throw "Non-x64 module in x64 archive: $($file.Name)" }
+                $nativeBinaries++
+            }
+        }
+        if ($nativeBinaries -eq 0) { throw "No native executable in $($entry.format) module" }
         New-Item -ItemType Directory -Force -Path (Split-Path $dest -Parent) | Out-Null
         if ((Get-Item -LiteralPath $source).PSIsContainer) {
             New-Item -ItemType Directory -Force -Path $dest | Out-Null
