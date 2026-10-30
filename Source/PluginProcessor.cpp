@@ -190,6 +190,13 @@ void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
 void HybridEQProcessor::releaseResources() {}
 
+void HybridEQProcessor::reset()
+{
+    multirateEngine.reset();
+    preamp.reset();
+    eq.reset();
+}
+
 void HybridEQProcessor::updateParameters()
 {
     auto getFloat = [&](const juce::String& id) {

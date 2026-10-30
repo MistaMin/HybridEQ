@@ -15,6 +15,11 @@ public:
 
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
+    // Reset the DSP state (filter history, preamp drive ramp and coupling/servo filters, the
+    // oversampler) so an offline render starts from a deterministic state regardless of when the host
+    // calls prepareToPlay. Without this, the low-cut high-pass and the Brit coupling filters carry
+    // state between renders and the first ~50 ms of a render can differ run to run.
+    void reset() override;
     void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
     juce::AudioProcessorEditor* createEditor() override;

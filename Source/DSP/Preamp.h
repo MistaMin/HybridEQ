@@ -73,6 +73,17 @@ public:
     // Anti-aliasing of the static (Circuit off) models; on by default.
     void setAdaaEnabled(bool enabled) noexcept { adaaOn.store(enabled, std::memory_order_relaxed); }
 
+    // Reset transient state without rebuilding the netlists: the drive slew, and (by forcing a
+    // re-configure on the next block) the ADAA history and the Brit coupling/servo high-pass filters.
+    // prepare() calls this too, so the reset path and the first-run path are identical.
+    void reset() noexcept
+    {
+        driveState = 1.0f;
+        driveRamp.clear();
+        configuredType = static_cast<PreampType>(-1); // forces ensureCircuitConfig to reset the filters
+        configuredOn = false;
+    }
+
     // Called every block with the current effective sample rate. The circuit
     // poles are computed from sr, so only force a reconfigure (which also
     // resets the circuit filters' state) when the rate has actually changed

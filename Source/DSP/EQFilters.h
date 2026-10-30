@@ -302,6 +302,11 @@ public:
     void prepare(double sampleRate, int /*samplesPerBlock*/)
     {
         sr = sampleRate;
+        reset();
+    }
+
+    void reset() noexcept
+    {
         lowCut.reset();
         highCut.reset();
         lowBand.reset();
