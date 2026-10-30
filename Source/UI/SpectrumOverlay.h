@@ -15,11 +15,12 @@ public:
         modeBtn.onClick = [this] { gram = !gram; apply(); };
         closeBtn.onClick = [this] { setVisible(false); };
         setInterceptsMouseClicks(true, true);
+        setOpaque(true);   // paint() fills the whole component, so JUCE need not repaint what sits beneath it
     }
     // Takes the project's spectrum settings; the overlay forces its own look (waterfall or analyser).
     void setBase(const SpectrumSettings& s) { base = s; apply(); }
-    std::function<void(bool)> onVisibilityChanged;
     void visibilityChanged() override { if (isVisible()) startTimerHz(30); else stopTimer(); if (onVisibilityChanged) onVisibilityChanged(isVisible()); }
+    std::function<void(bool)> onVisibilityChanged;
     bool isSpectrogram() const { return gram; }
     SpectrumRenderer& getRenderer() { return renderer; }
 
@@ -55,7 +56,7 @@ public:
 private:
     juce::Rectangle<float> plotArea() const { return getLocalBounds().toFloat().reduced(18, 0).withTrimmedTop(48).withTrimmedBottom(26); }
     juce::Component* nodeLayer = nullptr;
-    void timerCallback() override { if (!isShowing()) return; renderer.update(1.0f / 30.0f); repaint(); }
+    void timerCallback() override { renderer.update(1.0f / 30.0f); repaint(); }
     void apply() {
         auto s = base; s.on = true; s.style = gram ? SpectrumSettings::Style::Spectrogram : (base.style == SpectrumSettings::Style::Spectrogram ? SpectrumSettings::Style::Multicolour : base.style);
         if (gram && s.spectrogramMap == 0 && false) s.spectrogramMap = 0;

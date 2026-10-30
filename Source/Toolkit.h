@@ -6,7 +6,7 @@
 #include <goodlookinui/Spectrum.h>
 #include <goodlookinui/Settings.h>
 #include <GoodLookinUI.h>
-#include "UI/OptimizedSpectrumRenderer.h"
+#include <SpectrumRenderer.h>
 #include <SpectrumStudio.h>
 #include <LookStudio.h>
 #include <DesignFiles.h>
@@ -21,7 +21,7 @@ using Look = goodlookinui::Look;
 using LookTable = goodlookinui::LookTable;
 using SettingsTable = goodlookinui::SettingsTable;
 using SpectrumSettings = goodlookinui::juce_adapter::SpectrumSettings;
-using SpectrumRenderer = hybrideq::SpectrumRenderer;
+using SpectrumRenderer = goodlookinui::juce_adapter::SpectrumRenderer;
 #if GOODLOOKINUI_ENABLE_EDITOR
 using SpectrumStudio = goodlookinui::juce_adapter::SpectrumStudio;
 using LookStudio = goodlookinui::juce_adapter::LookStudio;

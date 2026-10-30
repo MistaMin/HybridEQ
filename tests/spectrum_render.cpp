@@ -1,5 +1,4 @@
-#include "UI/OptimizedSpectrumRenderer.h"
-#include "UI/RotaryKnob.h"
+#include "experimental/OptimizedSpectrumRenderer.h"
 #include <chrono>
 #include <cstdio>
 #include <memory>
@@ -40,48 +39,8 @@ int main(int argc, char** argv) {
     juce::ScopedJuceInitialiser_GUI gui;
     outputDirectory = argc > 1 ? juce::File(argv[1]) : juce::File::getSpecialLocation(juce::File::tempDirectory).getChildFile("hybrideq-spectrum-qa");
     outputDirectory.createDirectory();
-    {
-        RotaryKnob knob("FREQUENCY", KnobValueType::Frequency, juce::Colour(0xff35e0d0));
-        knob.setBounds(0,0,120,98); knob.setRange(20,20000); knob.setValue(20,juce::dontSendNotification);
-        auto imageFor = [&](bool cached, float scale = 1.f) {
-            juce::Image im(juce::Image::ARGB,int(120*scale),int(98*scale),true,juce::SoftwareImageType());
-            juce::Graphics g(im); g.addTransform(juce::AffineTransform::scale(scale));
-            if(cached) knob.paint(g); else knob.paintArtwork(g);
-            return im;
-        };
-        const auto initial = imageFor(true);
-        knob.setValue(10000,juce::dontSendNotification);
-        const auto changed = imageFor(true);
-        check(difference(initial,changed)>0,"knob responds without timer dispatch");
-        check(difference(changed,imageFor(false))==0,"cached knob matches direct artwork");
-        check(difference(imageFor(true,2.f),imageFor(false,2.f))==0,"HiDPI knob artwork");
-        save(imageFor(true,2.f),"knob");
-        knob.setActive(false);
-        check(difference(imageFor(true),imageFor(false))==0,"bypass invalidates knob cache");
-        goodlookinui::juce_adapter::useFlatKnobs=true;
-        check(difference(imageFor(true),imageFor(false))==0,"flat style invalidates knob cache");
-        goodlookinui::juce_adapter::useFlatKnobs=false;
-        for(float scale : {1.f,2.f}) {
-            double direct=0,cached=0;
-            juce::Image im(juce::Image::ARGB,int(120*scale),int(98*scale),true,juce::SoftwareImageType());
-            auto time=[&](bool cache) {
-                const auto start=std::chrono::steady_clock::now(); juce::Graphics g(im); g.addTransform(juce::AffineTransform::scale(scale));
-                for(int k=0;k<18;++k) {if(cache)knob.paint(g);else knob.paintArtwork(g);}
-                return std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-start).count();
-            };
-            for(int i=0;i<60;++i) {if(i%2==0){direct+=time(false);cached+=time(true);}else{cached+=time(true);direct+=time(false);}}
-            std::printf("bench 18_unchanged_knobs scale=%.0f direct_ms=%.3f cached_ms=%.3f speedup=%.2f\n",scale,direct/60,cached/60,direct/cached);
-        }
-        CachedArtwork cache; int renders=0;
-        juce::Image im(juce::Image::ARGB,100,100,true,juce::SoftwareImageType()); juce::Graphics g(im);
-        auto render=[&](juce::Graphics& r){++renders;r.fillAll(juce::Colours::blue);};
-        cache.draw(g,{0,0,100,100},render); cache.draw(g,{0,0,100,100},render);
-        check(renders==1,"unchanged artwork is rendered once");
-        cache.invalidate(); cache.draw(g,{0,0,100,100},render); check(renders==2,"explicit artwork invalidation");
-        cache.draw(g,{0,0,80,80},render); check(renders==3,"resize artwork invalidation");
-        g.addTransform(juce::AffineTransform::scale(1.5f)); cache.draw(g,{0,0,80,80},render);
-        check(renders==4,"fractional scale artwork invalidation");
-    }
+    // Production uses the original toolkit renderer again. This fixture is retained
+    // for research only; it is not included by Toolkit.h or the plugin targets.
     auto fixture=std::make_unique<Fixture>(); auto& f=*fixture;
     Baseline old(f.in,f.out,[]{return 48000.;}); hybrideq::SpectrumRenderer now(f.in,f.out,[]{return 48000.;});
     Settings s;

@@ -3,10 +3,8 @@
 #include "ValueFormat.h"
 #include "Theme.h"
 #include "SectionPanel.h"
-#include "CachedArtwork.h"
 #include <cmath>
 #include <functional>
-#include <limits>
 #include <GoodLookinUI.h>
 
 enum class KnobValueType { Frequency, Gain, Q };
@@ -15,7 +13,7 @@ enum class KnobValueType { Frequency, Gain, Q };
 // knurled body with the band's accent colour as a thin indicator ring, and
 // the current value rendered directly inside the knob body. When the band is
 // bypassed the knob turns neutral grey via setActive(false).
-class RotaryKnob : public juce::Slider {
+class RotaryKnob : public juce::Slider, private juce::Timer {
 public:
     RotaryKnob(const juce::String& labelText, KnobValueType type, juce::Colour accent)
         : valueType(type), accentColour(accent)
@@ -37,6 +35,7 @@ public:
         design.style = "console";
         setMouseDragSensitivity(180);
         setScrollWheelEnabled(false);
+        startTimerHz(60);
     }
 
     void setActive(bool active)
@@ -44,7 +43,7 @@ public:
         if (isActive == active)
             return;
         isActive = active;
-        artwork.invalidate(); repaint();
+        repaint();
     }
 
     bool getActive() const { return isActive; }
@@ -54,7 +53,7 @@ public:
     {
         accentColour = c;
         design.colour = "#" + c.toDisplayString(false).toStdString();
-        artwork.invalidate(); repaint();
+        repaint();
     }
     juce::Colour getAccent() const { return juce::Colour::fromString("ff" + juce::String(design.colour.substr(1))); }
     // Text colours of the section plate this knob sits on (nullptr args = follow the theme).
@@ -67,7 +66,7 @@ public:
     void refreshTheme()
     {
         title.setColour(juce::Label::textColourId, hasPlateText ? plateText : Theme::textDark);
-        artwork.invalidate(); repaint();
+        repaint();
     }
 
     void resized() override
@@ -80,26 +79,13 @@ public:
 
     void paint(juce::Graphics& g) override
     {
-        const auto* panel = dynamic_cast<SectionPanel*>(getParentComponent());
-        const auto backdrop = panel ? panel->getBackdrop() : juce::Colour();
-        const bool flat = goodlookinui::juce_adapter::useFlatKnobs;
-        if (cachedValue != getValue() || cachedMin != getMinimum() || cachedMax != getMaximum()
-            || cachedBackdrop != backdrop || cachedFlat != flat || cachedSecondaryText != Theme::textMid) {
-            artwork.invalidate(); cachedValue = getValue(); cachedMin = getMinimum(); cachedMax = getMaximum();
-            cachedBackdrop = backdrop; cachedFlat = flat; cachedSecondaryText = Theme::textMid;
-        }
-        artwork.draw(g, getLocalBounds(), [this](juce::Graphics& raster) { paintArtwork(raster); });
-    }
-
-    void paintArtwork(juce::Graphics& g)
-    {
         auto bounds = knobArea.toFloat();
         auto diameter = juce::jmin(bounds.getWidth(), bounds.getHeight());
         auto knobBounds = juce::Rectangle<float>(diameter, diameter).withCentre(bounds.getCentre());
 
         juce::Colour backdrop;   // plate behind this knob: lets the toolkit draw dark marks on light plates and light marks on dark ones
         if (auto* panel = dynamic_cast<SectionPanel*>(getParentComponent())) backdrop = panel->getBackdrop();
-        goodlookinui::juce_adapter::drawKnob(g, knobBounds, valueToProportionOfLength(getValue()), design, isActive, backdrop);
+        goodlookinui::juce_adapter::drawKnob(g, knobBounds, motion.position, design, isActive, backdrop);
 
         if(getWidth()>=110) {
             g.setColour(hasPlateText?plateMid:Theme::textMid);g.setFont(juce::FontOptions(8.0f));
@@ -123,15 +109,19 @@ public:
         design = item;
         title.setText(item.label, juce::dontSendNotification);
         title.setFont(juce::FontOptions(item.fontSize, juce::Font::bold));
-        artwork.invalidate(); repaint();
+        repaint();
     }
     const goodlookinui::Item& getDesign() const { return design; }
 private:
-    CachedArtwork artwork;
-    double cachedValue = std::numeric_limits<double>::quiet_NaN(), cachedMin = 0, cachedMax = 0;
-    juce::Colour cachedBackdrop, cachedSecondaryText;
-    bool cachedFlat = false;
+    void timerCallback() override {
+        const auto target = valueToProportionOfLength(getValue());
+        if (!isShowing()) { motion.position=target; motion.velocity=0; return; }
+        if (std::abs(motion.position-target)<0.0001 && std::abs(motion.velocity)<0.0001) return;
+        motion.step(target,1.0/60.0);
+        repaint();
+    }
     goodlookinui::Item design;
+    goodlookinui::Motion motion;
     juce::String formattedValue() const
     {
         return formatValue(static_cast<float>(getValue()));

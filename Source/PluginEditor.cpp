@@ -151,10 +151,10 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     eqDisplay->setSpectrum(spectrumRenderer.get());
     spectrumOverlay = std::make_unique<SpectrumOverlay>(proc.getInputRing(), proc.getOutputRing(), [this] { return proc.getCurrentSampleRate(); });
     spectrumOverlay->setBase(spectrumRenderer->getSettings());
-    spectrumOverlay->onVisibilityChanged = [this](bool visible) { eqDisplay->setSpectrumSuspended(visible); };
     overlayEq = std::make_unique<EQDisplay>(proc.apvts, proc.getEQ());
     overlayEq->setOverlayMode(true);
     spectrumOverlay->setNodeLayer(overlayEq.get());
+    spectrumOverlay->onVisibilityChanged = [this](bool shown) { eqDisplay->setCoveredByOverlay(shown); };
     addAndMakeVisible(*eqDisplay);
 
     // Narrow vertical channel-strip bands (vintage console style): every
@@ -599,7 +599,6 @@ void HybridEQEditor::applyLook(bool animate)
 void HybridEQEditor::stepLook(float t)
 {
     Theme::apply(lookFrom.mix(lookTo,t));
-    backgroundArtwork.invalidate();
     for(auto& f:knobFades) f.knob->setAccent(f.from.interpolatedWith(f.to,t));
     for(auto& f:panelFades) {
         auto& r=*f.rule;
@@ -861,15 +860,6 @@ void HybridEQEditor::refreshBypassStates()
 }
 
 void HybridEQEditor::paint(juce::Graphics& g)
-{
-    const std::array<juce::uint32, 10> colours = {Theme::bgFill.getARGB(), Theme::editorTop.getARGB(),
-        Theme::editorBottom.getARGB(), Theme::border.getARGB(), Theme::rail.getARGB(), Theme::titleBar.getARGB(),
-        Theme::textDark.getARGB(), Theme::textMid.getARGB(), Theme::faceAccent.getARGB(), Theme::footerText.getARGB()};
-    if (colours != backgroundColours) { backgroundColours = colours; backgroundArtwork.invalidate(); }
-    backgroundArtwork.draw(g, getLocalBounds(), [this](juce::Graphics& raster) { paintBackground(raster); });
-}
-
-void HybridEQEditor::paintBackground(juce::Graphics& g)
 {
     g.fillAll(Theme::bgFill);
     constexpr float width=1180, height=880;
