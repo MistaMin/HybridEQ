@@ -8,9 +8,9 @@ HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combine
 multi-flavour analogue preamp with six-band EQ, harmonic saturation, mid/side
 processing and a hardware-style interface.
 
-- **macOS 11+ (Apple silicon and Intel):** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-macos-bundles.zip), including VST3, AU, PACE-signed AAX, CLAP and LV2.
-- **Windows x64:** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-windows-x64-bundles.zip), including VST3, CLAP and LV2.
-- **Linux x86_64:** [Plugin archive](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.14/HybridEQ-1.6.14-linux-x86_64.tar.gz), including VST3, CLAP and LV2.
+- **macOS 11+ (Apple silicon and Intel):** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.16/HybridEQ-1.6.16-macos-bundles.zip), including VST3, AU, PACE-signed AAX, CLAP and LV2.
+- **Windows x64:** [Plugin bundle ZIP](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.16/HybridEQ-1.6.16-windows-x64-bundles.zip), including VST3, CLAP and LV2.
+- **Linux x86_64:** [Plugin archive](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.16/HybridEQ-1.6.16-linux-x86_64.tar.gz), including VST3, CLAP and LV2.
 - **Documentation:** [User manual](Docs/UserManual.md) and PDF manual included with the downloads.
 
 Use OpenGrid Plugin Manager for the macOS and Windows bundle ZIPs, or copy their
@@ -123,6 +123,14 @@ Each flavour is inspired by a studio classic:
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
 **Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+
+## Version 1.6.16
+
+- Editor drawing returns to the 1.6.13 path: the cached artwork from 1.6.14 is removed, and knobs use the 1.6.13 spring animation.
+- The full-window analyser declares itself opaque, so the controls beneath it are no longer redrawn every frame. Overlay-open CPU on the development Mac fell from about 61% to about 35%.
+- The small analyser behind the EQ curve pauses while the full-window view covers it.
+- Audio DSP, host parameter IDs, FFT resolution and saved settings are unchanged.
+- Includes a current user manual and plugin-manager bundle archives.
 
 ## Version 1.6.14
 

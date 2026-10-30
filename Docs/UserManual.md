@@ -1,5 +1,5 @@
 # HybridEQ
-## User manual - version 1.6.14
+## User manual - version 1.6.16
 
 Six-band console equaliser with preamp character, harmonic saturation and mid/side processing.
 
@@ -13,7 +13,7 @@ Six-band console equaliser with preamp character, harmonic saturation and mid/si
 - Match the output level with OUTPUT before comparing settings.
 - Save your DAW project to store parameters and spectrum settings.
 
-Version 1.6.14 improves editor drawing and removes delayed knob animation. It does not change the audio engine, parameter IDs or FFT resolution. The layout and hardware styles remain the same.
+Version 1.6.16 returns the editor's drawing to the 1.6.13 path, so the controls look as they did before the 1.6.14 artwork cache. The full-window analyser no longer forces the controls beneath it to redraw, which lowers CPU use while it is open. It does not change the audio engine, parameter IDs or FFT resolution. The layout and hardware styles remain the same.
 
 <!-- pagebreak -->
 
@@ -80,7 +80,7 @@ HQ is the full solver, rather than an additional brightness or output-gain contr
 
 FFT sizes are 512, 1024, 2048, 4096, 8192 and 16384 samples. A larger FFT gives finer frequency resolution and a longer analysis window. Analyser styles are Standard, Multicolour, Bars and Spectrogram. Optional octave smoothing and peak hold alter the display only.
 
-In 1.6.14 the smaller analyser pauses behind the full-window view. Display columns and colours are reused, and only new spectrogram rows are coloured. FFT size, calibration and saved visual settings are preserved.
+While the full-window view is open, the smaller analyser behind the EQ curve pauses. FFT size, calibration and saved visual settings are preserved.
 
 **Working on slower machines**
 
@@ -89,7 +89,7 @@ In 1.6.14 the smaller analyser pauses behind the full-window view. Display colum
 - Close unused plug-in editors and full-window analysers.
 - If the whole interface remains sluggish, record the host, plug-in version, display scaling and graphics hardware when reporting it. Changing FFT size alone may not address an editor drawing problem.
 
-Cached artwork follows editor resizing and physical display scale, including HiDPI. Local rendering tests do not establish a frame-rate guarantee on every Windows or graphics configuration.
+Local rendering tests do not establish a frame-rate guarantee on every Windows or graphics configuration.
 
 <!-- pagebreak -->
 

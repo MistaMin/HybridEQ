@@ -1,20 +1,19 @@
-# HybridEQ 1.6.14
+# HybridEQ 1.6.16
 
-This update improves editor responsiveness while retaining the existing sound,
+This update returns the editor's drawing to the 1.6.13 path, which 1.6.14 changed, and
+reduces CPU use while the full-window analyser is open. It keeps the existing sound,
 controls, parameter IDs and saved settings.
 
-- Knob indicators now follow their values immediately, removing the spring animation that became sluggish when the UI fell behind.
-- Cached knob, panel and chassis artwork reduces repeated drawing; caches follow editor size, physical display scale, colour and style changes.
-- EQ parameter changes are coalesced, reducing UI message traffic. Idle and hidden display work is reduced, and the small analyser pauses behind the full-window view.
-- Spectrograms colour only newly arrived history rows. FFT sizes, smoothing, peak hold, palettes and display calibration are retained.
-- Current user manual, screenshots, component notices and plugin-manager bundle archives.
+- The cached artwork introduced in 1.6.14 is removed, because it made the controls look softer. Knobs use the 1.6.13 spring animation again.
+- The full-window analyser declares itself opaque, so the controls beneath it are no longer redrawn on every frame. On the development Mac, CPU with the analyser open fell from about 61% to about 35%. CPU with it closed has not been measured against 1.6.13 for this build.
+- The small analyser behind the EQ curve pauses while the full-window view covers it.
+- Current user manual and plugin-manager bundle archives.
 
 ## Verification
 
-The optimisation baseline passed 812 processor checks. Exact spectrum pixel,
-FFT/peak-hold, immediate knob response, 1x/2x artwork and cache invalidation checks
-also passed. Release-version checks are recorded in the release verification report.
-Local software-renderer microbenchmarks are not whole-editor FPS measurements.
+The Release build passes and the local spectrum and processor tests pass. The
+1.6.13 and 1.6.16 standalones were compared on the same Mac with interleaved runs
+(see Docs/UI_PERFORMANCE.md). Local measurements are not whole-editor frame rates.
 The original Windows 11 / Iris Xe report still needs confirmation on the affected hardware.
 
 ## Downloads and installation
