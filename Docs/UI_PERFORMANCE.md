@@ -30,6 +30,22 @@ work remain intact. Published 1.6.14 assets have not been replaced by this local
 
 No layout, fonts, colours, audio DSP or parameters are redesigned by this rollback.
 
+## Controlled rerun — 2026-10-31 (plugin-qa protocol)
+
+v1.6.13 (tag, Release arm64 standalone) vs current 1.6.16 + reset() (HEAD 0495fe5). Three interleaved
+rounds, median of five 2 s `top` samples per state, load average ~10-15 recorded per round:
+
+| State | 1.6.13 | 1.6.16+reset |
+|---|---|---|
+| Overlay closed | 11.8 % | 11.9 % |
+| Full-window analyser open | 40.0 % | **19.4 %** |
+
+The overlay-open win is the `setOpaque(true)` overlay plus the small-scope suspension. `sample` (5 s,
+overlay open) attributes the remaining message-thread time to `SpectrumOverlay::paint` ->
+`SpectrumRenderer::paint` (spectrogram) + `drawText`, matching the earlier investigation. The 30->15 Hz
+timer-rate and spectrogram-adapter options stay unadopted pending native-window appearance acceptance.
+Absolute numbers are this arm64 Mac; relative old-vs-new is the valid read.
+
 ## Step 3 change log
 
 - Version 1.6.16 (`VERSION`, the single source for CMake). README, RELEASE_NOTES and
