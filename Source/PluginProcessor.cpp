@@ -17,6 +17,51 @@ static juce::NormalisableRange<float> makeLogRange(float min, float max, float m
         });
 }
 
+// Display and parse helpers: a displayed value always parses back to the same value
+// (clap-validator param-conversions; at most three digits per the knob/value rules).
+static juce::String hzText(double hz)
+{
+    if (hz >= 10000.0) return juce::String(hz / 1000.0, 1) + " kHz";
+    if (hz >= 1000.0) return juce::String(hz / 1000.0, 2) + " kHz";
+    if (hz >= 100.0) return juce::String(juce::roundToInt(hz)) + " Hz";
+    return juce::String(hz, 1) + " Hz";
+}
+static double parseHz(const juce::String& t)
+{
+    double v = t.trim().getDoubleValue();
+    if (t.trim().endsWithIgnoreCase("kHz")) v *= 1000.0;
+    return v;
+}
+static juce::String dbText(float v) { return (v > 0.0f ? "+" : "") + juce::String(v, 1) + " dB"; }
+static juce::String qText(float v) { return juce::String(v, 2); }
+static juce::String pctText(float v) { return juce::String(juce::roundToInt(v * 100.0f)) + " %"; }
+
+static juce::AudioParameterFloatAttributes hzAttr(double lo, double hi)
+{
+    return juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction([](float v, int) { return hzText(v); })
+        .withValueFromStringFunction([lo, hi](const juce::String& s) { return float(juce::jlimit(lo, hi, parseHz(s))); });
+}
+static juce::AudioParameterFloatAttributes dbAttr(double lo, double hi)
+{
+    return juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction([](float v, int) { return dbText(v); })
+        .withValueFromStringFunction([lo, hi](const juce::String& s) { return juce::jlimit(float(lo), float(hi), s.trim().getFloatValue()); });
+}
+static juce::AudioParameterFloatAttributes qAttr(double lo, double hi)
+{
+    return juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction([](float v, int) { return qText(v); })
+        .withValueFromStringFunction([lo, hi](const juce::String& s) { return juce::jlimit(float(lo), float(hi), s.trim().getFloatValue()); });
+}
+static juce::AudioParameterFloatAttributes pctAttr()
+{
+    return juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction([](float v, int) { return pctText(v); })
+        .withValueFromStringFunction([](const juce::String& s) { return juce::jlimit(0.0f, 1.0f, s.trim().getFloatValue() / 100.0f); });
+}
+
+
 juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
@@ -30,23 +75,23 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"harmonic2nd", 1}, "2nd Harmonic",
-        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f, pctAttr()));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"harmonic3rd", 1}, "3rd Harmonic",
-        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f, pctAttr()));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"harmonic4th", 1}, "4th Harmonic",
-        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f, pctAttr()));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"harmonic5th", 1}, "5th Harmonic",
-        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f));
+        juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0f, pctAttr()));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"lcFreq", 1}, "Low Cut Freq",
-        makeLogRange(20.0f, 1000.0f, 200.0f), 20.0f));
+        makeLogRange(20.0f, 1000.0f, 200.0f), 20.0f, hzAttr(20.0, 1000.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"lcQ", 1}, "Low Cut Q",
-        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 0.707f));
+        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 0.707f, qAttr(0.1, 10.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"lcSlope", 1}, "Low Cut Slope",
         juce::StringArray{"-6 dB/oct", "-12 dB/oct", "-18 dB/oct", "-24 dB/oct"}, 1));
@@ -58,10 +103,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"hcFreq", 1}, "High Cut Freq",
-        makeLogRange(1000.0f, 30000.0f, 8000.0f), 20000.0f));
+        makeLogRange(1000.0f, 30000.0f, 8000.0f), 20000.0f, hzAttr(1000.0, 30000.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"hcQ", 1}, "High Cut Q",
-        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 0.707f));
+        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 0.707f, qAttr(0.1, 10.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"hcSlope", 1}, "High Cut Slope",
         juce::StringArray{"-6 dB/oct", "-12 dB/oct", "-18 dB/oct", "-24 dB/oct"}, 1));
@@ -73,10 +118,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"lowFreq", 1}, "Low Freq",
-        makeLogRange(20.0f, 400.0f, 100.0f), 100.0f));
+        makeLogRange(20.0f, 400.0f, 100.0f), 100.0f, hzAttr(20.0, 400.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"lowGain", 1}, "Low Gain",
-        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f, dbAttr(-18.0, 18.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"lowType", 1}, "Low Type",
         juce::StringArray{"Bax-EQ", "Brit", "FSF"}, 0));
@@ -88,13 +133,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid1Freq", 1}, "Mid 1 Freq",
-        makeLogRange(200.0f, 6000.0f, 1000.0f), 800.0f));
+        makeLogRange(200.0f, 6000.0f, 1000.0f), 800.0f, hzAttr(200.0, 6000.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid1Gain", 1}, "Mid 1 Gain",
-        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f, dbAttr(-18.0, 18.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid1Q", 1}, "Mid 1 Q",
-        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 1.0f));
+        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 1.0f, qAttr(0.1, 10.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"mid1Type", 1}, "Mid 1 Type",
         juce::StringArray{"N-EQ", "Brit", "A-Type"}, 0));
@@ -106,13 +151,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid2Freq", 1}, "Mid 2 Freq",
-        makeLogRange(200.0f, 6000.0f, 1000.0f), 2500.0f));
+        makeLogRange(200.0f, 6000.0f, 1000.0f), 2500.0f, hzAttr(200.0, 6000.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid2Gain", 1}, "Mid 2 Gain",
-        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f, dbAttr(-18.0, 18.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"mid2Q", 1}, "Mid 2 Q",
-        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 1.0f));
+        juce::NormalisableRange<float>(0.1f, 10.0f, 0.01f, 0.5f), 1.0f, qAttr(0.1, 10.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"mid2Type", 1}, "Mid 2 Type",
         juce::StringArray{"N-EQ", "Brit", "A-Type"}, 0));
@@ -124,10 +169,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"highFreq", 1}, "High Freq",
-        makeLogRange(800.0f, 30000.0f, 5000.0f), 8000.0f));
+        makeLogRange(800.0f, 30000.0f, 5000.0f), 8000.0f, hzAttr(800.0, 30000.0)));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"highGain", 1}, "High Gain",
-        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-18.0f, 18.0f, 0.1f), 0.0f, dbAttr(-18.0, 18.0)));
     params.push_back(std::make_unique<juce::AudioParameterChoice>(
         juce::ParameterID{"highType", 1}, "High Type",
         juce::StringArray{"Bax-EQ", "Brit", "FSF"}, 0));
@@ -145,7 +190,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
         juce::StringArray{"-20 dB", "Unity", "+10 dB"}, 1));
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"preampGain", 1}, "Preamp Gain",
-        juce::NormalisableRange<float>(-12.0f, 24.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-12.0f, 24.0f, 0.1f), 0.0f, dbAttr(-12.0, 24.0)));
     params.push_back(std::make_unique<juce::AudioParameterBool>(
         juce::ParameterID{"preampBypass", 1}, "Preamp Bypass", false));
     params.push_back(std::make_unique<juce::AudioParameterBool>(
@@ -158,7 +203,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout HybridEQProcessor::createPar
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID{"outputGain", 1}, "Output Gain",
-        juce::NormalisableRange<float>(-24.0f, 24.0f, 0.1f), 0.0f));
+        juce::NormalisableRange<float>(-24.0f, 24.0f, 0.1f), 0.0f, dbAttr(-24.0, 24.0)));
 
     return {params.begin(), params.end()};
 }
@@ -380,7 +425,23 @@ void HybridEQProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
     std::unique_ptr<juce::XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
     if (xml && xml->hasTagName(apvts.state.getType()))
+    {
+        // Re-announce the current values first: hosts may set parameters without notifying, which
+        // leaves the value-tree adapters' caches stale and would make replaceState skip restoring a
+        // parameter whose stale cache happens to equal the target value.
+        for (auto* p : getParameters())
+            if (auto* r = dynamic_cast<juce::RangedAudioParameter*>(p))
+                r->setValueNotifyingHost(r->getValue());
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
+        // Loading a state changes parameter values, so tell the host to re-read them (as a preset
+        // load does; the CLAP wrapper sends paramsRescan(VALUES) on programChanged, which the
+        // state-reproducibility tests require) and re-announce every restored value so host-side
+        // caches refresh even where the restore left the raw value unchanged.
+        updateHostDisplay(juce::AudioProcessor::ChangeDetails().withProgramChanged(true));
+        for (auto* p : getParameters())
+            if (auto* r = dynamic_cast<juce::RangedAudioParameter*>(p))
+                r->setValueNotifyingHost(r->getValue());
+    }
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
