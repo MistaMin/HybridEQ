@@ -230,7 +230,12 @@ void HybridEQProcessor::applyPendingPrepare()
     // the reported latency) here as well as in prepareToPlay. This is the only place the reported
     // latency is ever changed.
     updateParameters();
-    setLatencySamples(static_cast<int>(std::round(multirateEngine.getLatencySamples())));
+    // Runs on the audio thread when deferred (re-activation): host calls are only made when the
+    // latency actually changed, so a plain re-activation with unchanged settings is silent here
+    // and the strict CLAP validator never sees a host call from the audio thread.
+    const int lat = static_cast<int>(std::round(multirateEngine.getLatencySamples()));
+    if (lat != announcedLatency.exchange(lat))
+        setLatencySamples(lat);
 }
 
 void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)

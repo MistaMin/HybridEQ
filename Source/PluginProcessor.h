@@ -85,6 +85,7 @@ private:
     spectrum::SampleRing inRing, outRing;
     std::atomic<double> sampleRateAtomic{44100.0};
     std::atomic<int> effectiveFactorAtomic{1};
+    std::atomic<int> announcedLatency{-1};
     std::atomic<bool> prepared{false};
     std::atomic<bool> preparePending{false};
     double pendingSampleRate = 44100.0;
