@@ -1,2 +1,7 @@
-# Public SDK trademark/usage guidance distributed with its license, not a circuit reference.
+# Trademark disclaimer text authored and released by the owner (naming is the owner's decision,
+# dsp-engineering rule 9/10): the names appear only to identify the designs that inspired the models.
+BINARY_LICENSE.txt
+THIRD_PARTY_NOTICES.txt
+README.md
+# Steinberg's VST trademark/usage document; its distribution with VST3 binaries is required by the VST licence.
 Licenses/third-party/VST3-Usage-Guidelines.pdf
