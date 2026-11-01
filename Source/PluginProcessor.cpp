@@ -426,12 +426,6 @@ void HybridEQProcessor::setStateInformation(const void* data, int sizeInBytes)
     std::unique_ptr<juce::XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
     if (xml && xml->hasTagName(apvts.state.getType()))
     {
-        // Re-announce the current values first: hosts may set parameters without notifying, which
-        // leaves the value-tree adapters' caches stale and would make replaceState skip restoring a
-        // parameter whose stale cache happens to equal the target value.
-        for (auto* p : getParameters())
-            if (auto* r = dynamic_cast<juce::RangedAudioParameter*>(p))
-                r->setValueNotifyingHost(r->getValue());
         apvts.replaceState(juce::ValueTree::fromXml(*xml));
         // Loading a state changes parameter values, so tell the host to re-read them (as a preset
         // load does; the CLAP wrapper sends paramsRescan(VALUES) on programChanged, which the
