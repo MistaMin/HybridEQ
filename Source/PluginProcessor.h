@@ -63,6 +63,12 @@ private:
     // editor can show what the engine is actually running at.
     void updateParameters();
 
+    // All DSP allocation runs here, on the audio thread. prepareToPlay defers to this whenever the
+    // audio callback may already be running: OpenGrid9's host calls prepareToPlay from its disk
+    // thread during activation, and rebuilding the circuit solvers or the reduced bank while the
+    // callback steps them frees state that is still in use.
+    void applyPendingPrepare();
+
     dsp::MultirateEngine multirateEngine;
     dsp::PreampEngine preamp;
     // The reduced "Circuit" engine (Preamp Circuit on, HQ off). The coefficient bank is built in
@@ -79,6 +85,10 @@ private:
     spectrum::SampleRing inRing, outRing;
     std::atomic<double> sampleRateAtomic{44100.0};
     std::atomic<int> effectiveFactorAtomic{1};
+    std::atomic<bool> prepared{false};
+    std::atomic<bool> preparePending{false};
+    double pendingSampleRate = 44100.0;
+    int pendingBlockSize = 512;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridEQProcessor)
 };

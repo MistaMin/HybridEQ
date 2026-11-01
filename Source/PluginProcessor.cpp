@@ -216,10 +216,10 @@ HybridEQProcessor::HybridEQProcessor()
 {
 }
 
-void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void HybridEQProcessor::applyPendingPrepare()
 {
-    sampleRateAtomic.store(sampleRate, std::memory_order_relaxed);
-    currentSampleRate = sampleRate;
+    const double sampleRate = pendingSampleRate;
+    const int samplesPerBlock = pendingBlockSize;
     multirateEngine.prepare(sampleRate, samplesPerBlock, getTotalNumOutputChannels());
     preamp.prepare(sampleRate);
     reducedBank = std::make_unique<dsp::ReducedCircuitBank>();
@@ -227,10 +227,29 @@ void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     reducedType = -1; reducedFactor = 0; reducedActive = false;
     eq.prepare(sampleRate, samplesPerBlock);
     // Hosts read the latency right after prepareToPlay, so settle the oversampling factor (and with it
-    // the reported latency) now instead of on the first audio block. This is the only place the
-    // reported latency is ever changed.
+    // the reported latency) here as well as in prepareToPlay. This is the only place the reported
+    // latency is ever changed.
     updateParameters();
     setLatencySamples(static_cast<int>(std::round(multirateEngine.getLatencySamples())));
+}
+
+void HybridEQProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
+    sampleRateAtomic.store(sampleRate, std::memory_order_relaxed);
+    currentSampleRate = sampleRate;
+    pendingSampleRate = sampleRate;
+    pendingBlockSize = samplesPerBlock;
+    // Parameter-only engine configuration: hosts read the latency right after this call, and the
+    // oversampling decision (and with it the latency) settles from the parameters alone.
+    updateParameters();
+    if (prepared.exchange(true)) {
+        // The audio callback may already be running (OpenGrid9 activates the plugin from its disk
+        // thread). All allocation is deferred into the callback, where nothing else touches the DSP.
+        preparePending.store(true, std::memory_order_release);
+        setLatencySamples(static_cast<int>(std::round(multirateEngine.getLatencySamples())));
+    } else {
+        applyPendingPrepare(); // first activation: no callback is running yet
+    }
 }
 
 void HybridEQProcessor::releaseResources() {}
@@ -366,6 +385,8 @@ void HybridEQProcessor::updateParameters()
 void HybridEQProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
+    if (preparePending.exchange(false, std::memory_order_acquire))
+        applyPendingPrepare();
     updateParameters();
 
     auto totalNumInputChannels = getTotalNumInputChannels();
