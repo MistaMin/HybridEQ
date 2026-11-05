@@ -1,0 +1,598 @@
+{
+ "fx": "VST3: HybridEQ",
+ "checks": [
+  {
+   "check": "loads",
+   "status": "PASS",
+   "detail": "VST3: HybridEQ (OpenGrid), 49 parameters"
+  },
+  {
+   "check": "finite output",
+   "status": "PASS",
+   "detail": "peak -4.3 dBFS"
+  },
+  {
+   "check": "not silent",
+   "status": "PASS",
+   "detail": "rms -15.3 dBFS"
+  },
+  {
+   "check": "deterministic render",
+   "status": "PASS",
+   "detail": "repeat differs by -240.0 dB"
+  },
+  {
+   "check": "editor opens",
+   "status": "PASS",
+   "detail": "1077x688, 0.1% animates by itself"
+  },
+  {
+   "check": "every parameter changes the sound",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "every parameter is shown in the GUI",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "state survives save and reopen",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "editor reopens",
+   "status": "PASS",
+   "detail": "5 close/open cycles"
+  }
+ ],
+ "params": [
+  {
+   "index": 0,
+   "name": "Oversample",
+   "ident": "0:1057129025",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -14.2,
+   "audio": "ok",
+   "visualChange": 8.969,
+   "visual": "ok"
+  },
+  {
+   "index": 1,
+   "name": "Oversample Filter",
+   "ident": "1:2083021974",
+   "default": 0,
+   "context": "random state 2",
+   "audioDiffDb": -7.7,
+   "audio": "CONDITIONAL",
+   "visualChange": 4.646,
+   "visual": "ok"
+  },
+  {
+   "index": 2,
+   "name": "2nd Harmonic",
+   "ident": "2:2140420123",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -5.3,
+   "audio": "ok",
+   "visualChange": 0.53,
+   "visual": "ok"
+  },
+  {
+   "index": 3,
+   "name": "3rd Harmonic",
+   "ident": "3:2140421208",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -8.2,
+   "audio": "ok",
+   "visualChange": 6.681,
+   "visual": "ok"
+  },
+  {
+   "index": 4,
+   "name": "4th Harmonic",
+   "ident": "4:2140422235",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -11.0,
+   "audio": "ok",
+   "visualChange": 4.174,
+   "visual": "ok"
+  },
+  {
+   "index": 5,
+   "name": "5th Harmonic",
+   "ident": "5:2140423196",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -14.1,
+   "audio": "ok",
+   "visualChange": 7.709,
+   "visual": "ok"
+  },
+  {
+   "index": 6,
+   "name": "Low Cut Freq",
+   "ident": "6:1038091407",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -3.7,
+   "audio": "ok",
+   "visualChange": 11.015,
+   "visual": "ok"
+  },
+  {
+   "index": 7,
+   "name": "Low Cut Q",
+   "ident": "7:106938",
+   "default": 0.2482260317,
+   "context": "",
+   "audioDiffDb": 3.1,
+   "audio": "ok",
+   "visualChange": 4.314,
+   "visual": "ok"
+  },
+  {
+   "index": 8,
+   "name": "Low Cut Slope",
+   "ident": "8:2127899252",
+   "default": 0.3333333433,
+   "context": "",
+   "audioDiffDb": -8.2,
+   "audio": "ok",
+   "visualChange": 8.14,
+   "visual": "ok"
+  },
+  {
+   "index": 9,
+   "name": "Low Cut Mode",
+   "ident": "9:1038297018",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -8.3,
+   "audio": "ok",
+   "visualChange": 3.896,
+   "visual": "ok"
+  },
+  {
+   "index": 10,
+   "name": "Low Cut Bypass",
+   "ident": "10:1065693503",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -7.6,
+   "audio": "ok",
+   "visualChange": 4.164,
+   "visual": "ok"
+  },
+  {
+   "index": 11,
+   "name": "High Cut Freq",
+   "ident": "11:923574803",
+   "default": 0.8807875514,
+   "context": "",
+   "audioDiffDb": -4.5,
+   "audio": "ok",
+   "visualChange": 4.878,
+   "visual": "ok"
+  },
+  {
+   "index": 12,
+   "name": "High Cut Q",
+   "ident": "12:103094",
+   "default": 0.2482260317,
+   "context": "",
+   "audioDiffDb": 3.9,
+   "audio": "ok",
+   "visualChange": 2.333,
+   "visual": "ok"
+  },
+  {
+   "index": 13,
+   "name": "High Cut Slope",
+   "ident": "13:725368176",
+   "default": 0.3333333433,
+   "context": "",
+   "audioDiffDb": -22.4,
+   "audio": "ok",
+   "visualChange": 2.129,
+   "visual": "ok"
+  },
+  {
+   "index": 14,
+   "name": "High Cut Mode",
+   "ident": "14:923780414",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -17.0,
+   "audio": "ok",
+   "visualChange": 6.084,
+   "visual": "ok"
+  },
+  {
+   "index": 15,
+   "name": "High Cut Bypass",
+   "ident": "15:536903107",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -14.9,
+   "audio": "ok",
+   "visualChange": 1.898,
+   "visual": "ok"
+  },
+  {
+   "index": 16,
+   "name": "Low Freq",
+   "ident": "16:356082668",
+   "default": 0.5372436047,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 1.6,
+   "visual": "ok"
+  },
+  {
+   "index": 17,
+   "name": "Low Gain",
+   "ident": "17:356096243",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": 0.7,
+   "audio": "ok",
+   "visualChange": 4.878,
+   "visual": "ok"
+  },
+  {
+   "index": 18,
+   "name": "Low Type",
+   "ident": "18:356506798",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": -0.6,
+   "audio": "CONDITIONAL",
+   "visualChange": 12.126,
+   "visual": "ok"
+  },
+  {
+   "index": 19,
+   "name": "Low Mode",
+   "ident": "19:356288279",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 5.6,
+   "audio": "CONDITIONAL",
+   "visualChange": 6.673,
+   "visual": "ok"
+  },
+  {
+   "index": 20,
+   "name": "Low Band Bypass",
+   "ident": "20:637807964",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 2.5,
+   "audio": "CONDITIONAL",
+   "visualChange": 3.076,
+   "visual": "ok"
+  },
+  {
+   "index": 21,
+   "name": "Mid 1 Freq",
+   "ident": "21:449253633",
+   "default": 0.4075900912,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 6.68,
+   "visual": "ok"
+  },
+  {
+   "index": 22,
+   "name": "Mid 1 Gain",
+   "ident": "22:449267208",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": -0.0,
+   "audio": "ok",
+   "visualChange": 3.988,
+   "visual": "ok"
+  },
+  {
+   "index": 23,
+   "name": "Mid 1 Q",
+   "ident": "23:103889544",
+   "default": 0.3015113473,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 1.695,
+   "visual": "ok"
+  },
+  {
+   "index": 24,
+   "name": "Mid 1 Type",
+   "ident": "24:449677763",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 12.437,
+   "visual": "ok"
+  },
+  {
+   "index": 25,
+   "name": "Mid 1 Mode",
+   "ident": "25:449459244",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 2.04,
+   "visual": "ok"
+  },
+  {
+   "index": 26,
+   "name": "Mid 1 Bypass",
+   "ident": "26:2128275761",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 4.64,
+   "visual": "ok"
+  },
+  {
+   "index": 27,
+   "name": "Mid 2 Freq",
+   "ident": "27:450177154",
+   "default": 0.7425998449,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 7.932,
+   "visual": "ok"
+  },
+  {
+   "index": 28,
+   "name": "Mid 2 Gain",
+   "ident": "28:450190729",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": 0.7,
+   "audio": "ok",
+   "visualChange": 4.854,
+   "visual": "ok"
+  },
+  {
+   "index": 29,
+   "name": "Mid 2 Q",
+   "ident": "29:103889575",
+   "default": 0.3015113473,
+   "context": "random state 1",
+   "audioDiffDb": 4.8,
+   "audio": "CONDITIONAL",
+   "visualChange": 0.514,
+   "visual": "ok"
+  },
+  {
+   "index": 30,
+   "name": "Mid 2 Type",
+   "ident": "30:450601284",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 14.608,
+   "visual": "ok"
+  },
+  {
+   "index": 31,
+   "name": "Mid 2 Mode",
+   "ident": "31:450382765",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 0.8,
+   "audio": "CONDITIONAL",
+   "visualChange": 3.274,
+   "visual": "ok"
+  },
+  {
+   "index": 32,
+   "name": "Mid 2 Bypass",
+   "ident": "32:868295794",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": 5.7,
+   "audio": "CONDITIONAL",
+   "visualChange": 1.309,
+   "visual": "ok"
+  },
+  {
+   "index": 33,
+   "name": "High Freq",
+   "ident": "33:461817658",
+   "default": 0.6353113651,
+   "context": "random state 1",
+   "audioDiffDb": -20.2,
+   "audio": "CONDITIONAL",
+   "visualChange": 5.772,
+   "visual": "ok"
+  },
+  {
+   "index": 34,
+   "name": "High Gain",
+   "ident": "34:461831233",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": -0.8,
+   "audio": "ok",
+   "visualChange": 2.928,
+   "visual": "ok"
+  },
+  {
+   "index": 35,
+   "name": "High Type",
+   "ident": "35:462241788",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": -37.6,
+   "audio": "CONDITIONAL",
+   "visualChange": 13.748,
+   "visual": "ok"
+  },
+  {
+   "index": 36,
+   "name": "High Mode",
+   "ident": "36:462023269",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": -24.2,
+   "audio": "CONDITIONAL",
+   "visualChange": 1.942,
+   "visual": "ok"
+  },
+  {
+   "index": 37,
+   "name": "High Band Bypass",
+   "ident": "37:1317401898",
+   "default": 0,
+   "context": "random state 1",
+   "audioDiffDb": -25.6,
+   "audio": "CONDITIONAL",
+   "visualChange": 6.401,
+   "visual": "ok"
+  },
+  {
+   "index": 38,
+   "name": "Preamp Type",
+   "ident": "38:771791643",
+   "default": 0.25,
+   "context": "",
+   "audioDiffDb": -5.5,
+   "audio": "ok",
+   "visualChange": 2.958,
+   "visual": "ok"
+  },
+  {
+   "index": 39,
+   "name": "Preamp Pad",
+   "ident": "39:717628562",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": -3.3,
+   "audio": "ok",
+   "visualChange": 2.035,
+   "visual": "ok"
+  },
+  {
+   "index": 40,
+   "name": "Preamp Gain",
+   "ident": "40:771381088",
+   "default": 0.3333333433,
+   "context": "",
+   "audioDiffDb": 2.1,
+   "audio": "ok",
+   "visualChange": 5.28,
+   "visual": "ok"
+  },
+  {
+   "index": 41,
+   "name": "Preamp Bypass",
+   "ident": "41:294585481",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -5.5,
+   "audio": "ok",
+   "visualChange": 3.247,
+   "visual": "ok"
+  },
+  {
+   "index": 42,
+   "name": "Preamp Circuit",
+   "ident": "42:973560936",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -8.4,
+   "audio": "ok",
+   "visualChange": 8.827,
+   "visual": "ok"
+  },
+  {
+   "index": 43,
+   "name": "Preamp HQ",
+   "ident": "43:854433034",
+   "default": 1,
+   "context": "random state 3",
+   "audioDiffDb": 6.0,
+   "audio": "CONDITIONAL",
+   "visualChange": 5.03,
+   "visual": "ok"
+  },
+  {
+   "index": 44,
+   "name": "Output Gain",
+   "ident": "44:873230368",
+   "default": 0.5,
+   "context": "",
+   "audioDiffDb": -0.6,
+   "audio": "ok",
+   "visualChange": 1.169,
+   "visual": "ok"
+  },
+  {
+   "index": 45,
+   "name": "Bypass",
+   "ident": "45:1652125811",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -2.2,
+   "audio": "ok",
+   "visualChange": 0.906,
+   "visual": "ok"
+  },
+  {
+   "index": 46,
+   "name": "Bypass",
+   "ident": "46:bypass",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -2.2,
+   "audio": "ok",
+   "visualChange": 1.523,
+   "visual": "ok"
+  },
+  {
+   "index": 47,
+   "name": "Wet",
+   "ident": "47:wet",
+   "default": 1,
+   "context": "",
+   "audioDiffDb": -2.2,
+   "audio": "ok",
+   "visualChange": 2.061,
+   "visual": "ok"
+  },
+  {
+   "index": 48,
+   "name": "Delta",
+   "ident": "48:delta",
+   "default": 0,
+   "context": "",
+   "audioDiffDb": -3.2,
+   "audio": "ok",
+   "visualChange": 6.321,
+   "visual": "ok"
+  }
+ ],
+ "info": {
+  "numParams": 49,
+  "name": "VST3: HybridEQ (OpenGrid)",
+  "latency": "0",
+  "fx": 0
+ },
+ "failed": []
+}
