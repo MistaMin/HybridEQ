@@ -122,7 +122,7 @@ Each flavour is inspired by a studio classic:
 - **Brit** is inspired by Solid State Logic, founded in 1969 by Colin Sanders, whose 1979 SL 4000 E Series ranks among the most groundbreaking mixing consoles ever built ([history](https://solidstatelogic.com/our-history)).
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
-**Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+**Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Quirino Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
 
 ## Version 1.6.16
 
