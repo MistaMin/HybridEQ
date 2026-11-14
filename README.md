@@ -4,7 +4,7 @@
 
 ![HybridEQ 1.6.14](Docs/HybridEQ-1.6.14-preview.png)
 
-HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
+HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Quirino Deida**. It combines a
 multi-flavour analogue preamp with six-band EQ, harmonic saturation, mid/side
 processing and a hardware-style interface.
 
