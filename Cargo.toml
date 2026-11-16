@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = ["crates/engine"]
+# The plugin crate needs OpenPluginSDK and GoodLookin DRI, which are located at
+# build time (scripts/sdk_env.sh), so it is a workspace of its own.
+exclude = ["plugin"]
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+debug = false
+
+[profile.bench]
+debug = true

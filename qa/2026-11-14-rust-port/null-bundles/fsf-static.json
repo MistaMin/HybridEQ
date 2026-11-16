@@ -1,0 +1,65 @@
+{
+  "original": {
+    "path": "/Library/Audio/Plug-Ins/CLAP/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "port": {
+    "path": "/Volumes/Developer/OpenGrid/HybridEQ/dist-rust/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "rate": 48000,
+  "block": 512,
+  "frames": 144000,
+  "tolerance": 1e-6,
+  "latency_differs": false,
+  "channels": [
+    {
+      "channel": 0,
+      "max_abs_diff": 4.470348358154297e-6,
+      "max_at": 36282,
+      "rms_diff_db": -119.56175632407474,
+      "first_differing": {
+        "index": 36000,
+        "original": -0.077113815,
+        "port": -0.0771138
+      },
+      "first_over_tolerance": {
+        "index": 36009,
+        "original": -0.3987499,
+        "port": -0.39874864
+      },
+      "samples_over_tolerance": 24226
+    },
+    {
+      "channel": 1,
+      "max_abs_diff": 4.231929779052734e-6,
+      "max_at": 36486,
+      "rms_diff_db": -118.50753336253561,
+      "first_differing": {
+        "index": 36000,
+        "original": 0.1505866,
+        "port": 0.15058656
+      },
+      "first_over_tolerance": {
+        "index": 36002,
+        "original": 0.79783994,
+        "port": 0.79783833
+      },
+      "samples_over_tolerance": 31148
+    }
+  ],
+  "parameter_map": [
+    "2919275291 (Preamp Type) -> 2919275291 (Preamp Type)",
+    "2918864736 (Preamp Gain) -> 2918864736 (Preamp Gain)"
+  ],
+  "notes": [],
+  "pass": false
+}

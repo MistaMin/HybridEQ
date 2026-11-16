@@ -1,0 +1,14 @@
+[package]
+name = "hybrideq-engine"
+version = "1.7.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.80"
+description = "The HybridEQ signal path: console EQ, preamp circuits, harmonics and oversampling. Framework-free."
+publish = false
+
+[lib]
+name = "hybrideq_engine"
+path = "src/lib.rs"
+
+[dependencies]
