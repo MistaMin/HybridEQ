@@ -170,6 +170,15 @@ if(HYBRIDEQ_BUILD_TESTS)
     target_link_libraries(HybridEQAdaaTest PRIVATE juce::juce_audio_basics juce::juce_recommended_config_flags)
 endif()
 
+# Reference renderer for the Rust port's null tests (rust-port branch).
+if(HYBRIDEQ_BUILD_TESTS)
+    juce_add_console_app(HybridEQRender PRODUCT_NAME "HybridEQ Render")
+    target_sources(HybridEQRender PRIVATE tests/reference_render.cpp)
+    target_include_directories(HybridEQRender PRIVATE Source "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    target_compile_definitions(HybridEQRender PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 GOODLOOKINUI_ENABLE_EDITOR=0)
+    target_link_libraries(HybridEQRender PRIVATE HybridEQ goodlookinui_juce juce::juce_audio_utils juce::juce_dsp juce::juce_recommended_config_flags)
+endif()
+
 # Per-configuration CPU table for the preamp circuit path (oversampling x rate x block size).
 if(HYBRIDEQ_BUILD_TESTS)
     juce_add_console_app(HybridEQCPU PRODUCT_NAME "HybridEQ CPU Table")

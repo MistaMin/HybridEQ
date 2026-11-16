@@ -1,0 +1,72 @@
+{
+  "original": {
+    "path": "/Library/Audio/Plug-Ins/CLAP/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "port": {
+    "path": "/Volumes/Developer/OpenGrid/HybridEQ/dist-rust/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "rate": 48000,
+  "block": 512,
+  "frames": 144000,
+  "tolerance": 1e-6,
+  "latency_differs": false,
+  "channels": [
+    {
+      "channel": 0,
+      "max_abs_diff": 0.11374223232269287,
+      "max_at": 47835,
+      "rms_diff_db": -53.16716192670668,
+      "first_differing": {
+        "index": 0,
+        "original": 0.19061083,
+        "port": 0.19061078
+      },
+      "first_over_tolerance": {
+        "index": 81,
+        "original": 0.09747703,
+        "port": 0.097478054
+      },
+      "samples_over_tolerance": 7216
+    },
+    {
+      "channel": 1,
+      "max_abs_diff": 0.18268226273357868,
+      "max_at": 96000,
+      "rms_diff_db": -50.83266808883802,
+      "first_differing": {
+        "index": 0,
+        "original": 0.041937936,
+        "port": 0.041937925
+      },
+      "first_over_tolerance": {
+        "index": 63,
+        "original": -0.05415557,
+        "port": -0.05415682
+      },
+      "samples_over_tolerance": 7510
+    }
+  ],
+  "parameter_map": [
+    "2919275291 (Preamp Type) -> 2919275291 (Preamp Type)",
+    "2596750856 (Mid 1 Gain) -> 2596750856 (Mid 1 Gain)",
+    "2596737281 (Mid 1 Freq) -> 2596737281 (Mid 1 Freq)",
+    "2609314881 (High Gain) -> 2609314881 (High Gain)",
+    "2609301306 (High Freq) -> 2609301306 (High Freq)",
+    "3185575055 (Low Cut Freq) -> 3185575055 (Low Cut Freq)",
+    "2597674377 (Mid 2 Gain) -> 2597674377 (Mid 2 Gain)",
+    "2597161411 (Mid 1 Type) -> 2597161411 (Mid 1 Type)",
+    "3185780666 (Low Cut Mode) -> 3185780666 (Low Cut Mode)"
+  ],
+  "notes": [],
+  "pass": false
+}

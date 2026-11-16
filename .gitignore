@@ -19,3 +19,17 @@ website
 
 # Generated documentation
 output/
+
+# Rust
+target/
+.cargo/
+build-ref*/
+dist-rust/
+build-rust/
+build-rust.log
+
+# Render files of the null tests (the text and JSON results are kept)
+dsp/evidence/null/
+dsp/evidence/null-nofma/
+qa/2026-11-14-rust-port/null-bundles/*/
+plugin/target/

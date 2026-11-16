@@ -1,0 +1,2213 @@
+{
+  "schema_version": 1,
+  "tool": "openplugin-port 1.0.0-beta",
+  "source": {
+    "format": "vst3",
+    "path": "/Library/Audio/Plug-Ins/VST3/HybridEQ.vst3",
+    "index": 0,
+    "count": 1,
+    "bundle_id": "com.OpenGrid.HybridEQ"
+  },
+  "plugin": {
+    "name": "HybridEQ",
+    "vendor": "OpenGrid",
+    "version": "1.6.16",
+    "url": "",
+    "email": "",
+    "description": "",
+    "categories": [
+      "Fx"
+    ],
+    "is_instrument": false,
+    "ids": {
+      "clap": null,
+      "vst3": {
+        "class_id": "ABCDEF019182FAEB4879627248794571",
+        "controller_class_id": "ABCDEF011234ABCD4879627248794571",
+        "category": "Audio Module Class",
+        "sub_categories": "Fx",
+        "class_flags": 0,
+        "sdk_version": "VST 3.8.0",
+        "single_component": false,
+        "module_info": false,
+        "module_info_class": null
+      },
+      "au": null,
+      "aax": null
+    },
+    "buses": [
+      {
+        "direction": "input",
+        "kind": "main",
+        "name": "Input",
+        "channels": 2,
+        "arrangement": "0x3",
+        "layout": "stereo"
+      },
+      {
+        "direction": "output",
+        "kind": "main",
+        "name": "Output",
+        "channels": 2,
+        "arrangement": "0x3",
+        "layout": "stereo"
+      }
+    ],
+    "channel_layouts": [],
+    "latency_samples": 0,
+    "tail_samples": 0,
+    "tail_seconds": null,
+    "params": [
+      {
+        "id": 1057129025,
+        "name": "Oversample",
+        "short_name": "Oversamp",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 3,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "1x"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "2x"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "4x"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "4x"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "8x"
+          }
+        ],
+        "step_texts": [
+          "1x",
+          "2x",
+          "4x",
+          "8x"
+        ]
+      },
+      {
+        "id": 2083021974,
+        "name": "Oversample Filter",
+        "short_name": "Oversamp",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "IIR (Min)"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "IIR (Min)"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "IIR (Min)"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "FIR (Lin)"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "FIR (Lin)"
+          }
+        ],
+        "step_texts": [
+          "IIR (Min)",
+          "FIR (Lin)"
+        ]
+      },
+      {
+        "id": 2140420123,
+        "name": "2nd Harmonic",
+        "short_name": "2nd Harm",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0 %"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "25 %"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "50 %"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "75 %"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "100 %"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 2140421208,
+        "name": "3rd Harmonic",
+        "short_name": "3rd Harm",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0 %"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "25 %"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "50 %"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "75 %"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "100 %"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 2140422235,
+        "name": "4th Harmonic",
+        "short_name": "4th Harm",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0 %"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "25 %"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "50 %"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "75 %"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "100 %"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 2140423196,
+        "name": "5th Harmonic",
+        "short_name": "5th Harm",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0 %"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "25 %"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "50 %"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "75 %"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "100 %"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 1038091407,
+        "name": "Low Cut Freq",
+        "short_name": "Low Cut ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "20.0 Hz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "53.2 Hz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "141 Hz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "376 Hz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "1.00 kHz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 106938,
+        "name": "Low Cut Q",
+        "short_name": "Low Cut ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.24822603166103363,
+        "default_normalized": 0.24822603166103363,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0.10"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "0.72"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "2.58"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "5.67"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "10.00"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 2127899252,
+        "name": "Low Cut Slope",
+        "short_name": "Low Cut ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.3333333432674408,
+        "default_normalized": 0.3333333432674408,
+        "step_count": 3,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-6 dB/oct"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-12 dB/oct"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "-18 dB/oct"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "-18 dB/oct"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "-24 dB/oct"
+          }
+        ],
+        "step_texts": [
+          "-6 dB/oct",
+          "-12 dB/oct",
+          "-18 dB/oct",
+          "-24 dB/oct"
+        ]
+      },
+      {
+        "id": 1038297018,
+        "name": "Low Cut Mode",
+        "short_name": "Low Cut ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 1065693503,
+        "name": "Low Cut Bypass",
+        "short_name": "Low Cut ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 923574803,
+        "name": "High Cut Freq",
+        "short_name": "High Cut",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.8807875514030457,
+        "default_normalized": 0.8807875514030457,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "1.00 kHz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "2.34 kHz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "5.48 kHz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "12.8 kHz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "30.0 kHz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 103094,
+        "name": "High Cut Q",
+        "short_name": "High Cut",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.24822603166103363,
+        "default_normalized": 0.24822603166103363,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0.10"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "0.72"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "2.58"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "5.67"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "10.00"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 725368176,
+        "name": "High Cut Slope",
+        "short_name": "High Cut",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.3333333432674408,
+        "default_normalized": 0.3333333432674408,
+        "step_count": 3,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-6 dB/oct"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-12 dB/oct"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "-18 dB/oct"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "-18 dB/oct"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "-24 dB/oct"
+          }
+        ],
+        "step_texts": [
+          "-6 dB/oct",
+          "-12 dB/oct",
+          "-18 dB/oct",
+          "-24 dB/oct"
+        ]
+      },
+      {
+        "id": 923780414,
+        "name": "High Cut Mode",
+        "short_name": "High Cut",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 536903107,
+        "name": "High Cut Bypass",
+        "short_name": "High Cut",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 356082668,
+        "name": "Low Freq",
+        "short_name": "Low Freq",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5372436046600342,
+        "default_normalized": 0.5372436046600342,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "20.0 Hz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "42.3 Hz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "89.4 Hz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "189 Hz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "400 Hz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 356096243,
+        "name": "Low Gain",
+        "short_name": "Low Gain",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-18.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-9.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+0.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+9.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+18.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 356506798,
+        "name": "Low Type",
+        "short_name": "Low Type",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Bax-EQ"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Bax-EQ"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Brit"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "FSF"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "FSF"
+          }
+        ],
+        "step_texts": [
+          "Bax-EQ",
+          "Brit",
+          "FSF"
+        ]
+      },
+      {
+        "id": 356288279,
+        "name": "Low Mode",
+        "short_name": "Low Mode",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 637807964,
+        "name": "Low Band Bypass",
+        "short_name": "Low Band",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 449253633,
+        "name": "Mid 1 Freq",
+        "short_name": "Mid 1 Fr",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.4075900912284851,
+        "default_normalized": 0.4075900912284851,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "200 Hz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "468 Hz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "1.10 kHz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "2.56 kHz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "6.00 kHz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 449267208,
+        "name": "Mid 1 Gain",
+        "short_name": "Mid 1 Ga",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-18.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-9.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+0.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+9.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+18.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 103889544,
+        "name": "Mid 1 Q",
+        "short_name": "Mid 1 Q",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.30151134729385376,
+        "default_normalized": 0.30151134729385376,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0.10"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "0.72"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "2.58"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "5.67"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "10.00"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 449677763,
+        "name": "Mid 1 Type",
+        "short_name": "Mid 1 Ty",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "N-EQ"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "N-EQ"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Brit"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "A-Type"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "A-Type"
+          }
+        ],
+        "step_texts": [
+          "N-EQ",
+          "Brit",
+          "A-Type"
+        ]
+      },
+      {
+        "id": 449459244,
+        "name": "Mid 1 Mode",
+        "short_name": "Mid 1 Mo",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 2128275761,
+        "name": "Mid 1 Bypass",
+        "short_name": "Mid 1 By",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 450177154,
+        "name": "Mid 2 Freq",
+        "short_name": "Mid 2 Fr",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.7425998449325562,
+        "default_normalized": 0.7425998449325562,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "200 Hz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "468 Hz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "1.10 kHz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "2.56 kHz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "6.00 kHz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 450190729,
+        "name": "Mid 2 Gain",
+        "short_name": "Mid 2 Ga",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-18.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-9.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+0.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+9.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+18.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 103889575,
+        "name": "Mid 2 Q",
+        "short_name": "Mid 2 Q",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.30151134729385376,
+        "default_normalized": 0.30151134729385376,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "0.10"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "0.72"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "2.58"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "5.67"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "10.00"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 450601284,
+        "name": "Mid 2 Type",
+        "short_name": "Mid 2 Ty",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "N-EQ"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "N-EQ"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Brit"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "A-Type"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "A-Type"
+          }
+        ],
+        "step_texts": [
+          "N-EQ",
+          "Brit",
+          "A-Type"
+        ]
+      },
+      {
+        "id": 450382765,
+        "name": "Mid 2 Mode",
+        "short_name": "Mid 2 Mo",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 868295794,
+        "name": "Mid 2 Bypass",
+        "short_name": "Mid 2 By",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 461817658,
+        "name": "High Freq",
+        "short_name": "High Fre",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.6353113651275635,
+        "default_normalized": 0.6353113651275635,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "800 Hz"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "1.98 kHz"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "4.90 kHz"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "12.1 kHz"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "30.0 kHz"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 461831233,
+        "name": "High Gain",
+        "short_name": "High Gai",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-18.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-9.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+0.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+9.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+18.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 462241788,
+        "name": "High Type",
+        "short_name": "High Typ",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Bax-EQ"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Bax-EQ"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Brit"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "FSF"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "FSF"
+          }
+        ],
+        "step_texts": [
+          "Bax-EQ",
+          "Brit",
+          "FSF"
+        ]
+      },
+      {
+        "id": 462023269,
+        "name": "High Mode",
+        "short_name": "High Mod",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Stereo"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Mid"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "Side"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "Side"
+          }
+        ],
+        "step_texts": [
+          "Stereo",
+          "Mid",
+          "Side"
+        ]
+      },
+      {
+        "id": 1317401898,
+        "name": "High Band Bypass",
+        "short_name": "High Ban",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 771791643,
+        "name": "Preamp Type",
+        "short_name": "Preamp T",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.25,
+        "default_normalized": 0.25,
+        "step_count": 4,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Brit"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "N-Type"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "FSF"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "A-Type"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "Brit",
+          "N-Type",
+          "FSF",
+          "A-Type"
+        ]
+      },
+      {
+        "id": 717628562,
+        "name": "Preamp Pad",
+        "short_name": "Preamp P",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 2,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-20 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-20 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "Unity"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+10 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+10 dB"
+          }
+        ],
+        "step_texts": [
+          "-20 dB",
+          "Unity",
+          "+10 dB"
+        ]
+      },
+      {
+        "id": 771381088,
+        "name": "Preamp Gain",
+        "short_name": "Preamp G",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.3333333432674408,
+        "default_normalized": 0.3333333432674408,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-12.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-3.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+6.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+15.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+24.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 294585481,
+        "name": "Preamp Bypass",
+        "short_name": "Preamp B",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 973560936,
+        "name": "Preamp Circuit",
+        "short_name": "Preamp C",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 854433034,
+        "name": "Preamp HQ",
+        "short_name": "Preamp H",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 1.0,
+        "default_normalized": 1.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "stepped"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      },
+      {
+        "id": 873230368,
+        "name": "Output Gain",
+        "short_name": "Output G",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.5,
+        "default_normalized": 0.5,
+        "step_count": 0,
+        "flags": [
+          "automatable"
+        ],
+        "flags_raw": 1,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "-24.0 dB"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "-12.0 dB"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "+0.0 dB"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "+12.0 dB"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "+24.0 dB"
+          }
+        ],
+        "step_texts": []
+      },
+      {
+        "id": 1652125811,
+        "name": "Bypass",
+        "short_name": "Bypass",
+        "group": null,
+        "units": "",
+        "min": 0.0,
+        "max": 1.0,
+        "default": 0.0,
+        "default_normalized": 0.0,
+        "step_count": 1,
+        "flags": [
+          "automatable",
+          "bypass",
+          "stepped"
+        ],
+        "flags_raw": 65537,
+        "samples": [
+          {
+            "normalized": 0.0,
+            "plain": 0.0,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.25,
+            "plain": 0.25,
+            "text": "Off"
+          },
+          {
+            "normalized": 0.5,
+            "plain": 0.5,
+            "text": "On"
+          },
+          {
+            "normalized": 0.75,
+            "plain": 0.75,
+            "text": "On"
+          },
+          {
+            "normalized": 1.0,
+            "plain": 1.0,
+            "text": "On"
+          }
+        ],
+        "step_texts": [
+          "Off",
+          "On"
+        ]
+      }
+    ],
+    "warnings": []
+  }
+}

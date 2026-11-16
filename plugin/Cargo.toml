@@ -1,0 +1,32 @@
+[package]
+name = "hybrideq"
+version = "1.7.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.85"
+description = "HybridEQ: console EQ and preamp circuits on OpenPluginSDK."
+publish = false
+
+[lib]
+name = "hybrideq"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+# OpenPluginSDK is located at build time: scripts/sdk_env.sh writes the untracked
+# .cargo/config.toml that patches this dependency to a local checkout.
+[dependencies]
+hybrideq-engine = { path = "../crates/engine" }
+openplugin = "1.0.0-beta"
+
+[dev-dependencies]
+openplugin = { version = "1.0.0-beta", features = ["testing"] }
+
+[[bin]]
+name = "hybrideq-lv2-ttl"
+path = "src/bin/lv2_ttl.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+debug = false
+
+[workspace]
