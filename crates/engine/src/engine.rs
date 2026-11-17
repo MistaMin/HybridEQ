@@ -181,21 +181,7 @@ impl Engine {
         self.eq.set_sample_rate(sr);
         self.preamp.set_sample_rate(sr);
 
-        let f = |i: usize| p[i] as f64;
-        let ms = |i: usize| MsMode::from_index(choice(i));
-        self.eq.update_low_cut(f(idx::LC_FREQ), f(idx::LC_Q), choice(idx::LC_SLOPE).min(3), ms(idx::LC_MODE));
-        self.eq.update_high_cut(f(idx::HC_FREQ), f(idx::HC_Q), choice(idx::HC_SLOPE).min(3), ms(idx::HC_MODE));
-        self.eq.update_low(f(idx::LOW_FREQ), f(idx::LOW_GAIN), ShelfType::from_index(choice(idx::LOW_TYPE)), ms(idx::LOW_MODE));
-        self.eq.update_mid1(f(idx::MID1_FREQ), f(idx::MID1_GAIN), f(idx::MID1_Q), BellType::from_index(choice(idx::MID1_TYPE)), ms(idx::MID1_MODE));
-        self.eq.update_mid2(f(idx::MID2_FREQ), f(idx::MID2_GAIN), f(idx::MID2_Q), BellType::from_index(choice(idx::MID2_TYPE)), ms(idx::MID2_MODE));
-        self.eq.update_high(f(idx::HIGH_FREQ), f(idx::HIGH_GAIN), ShelfType::from_index(choice(idx::HIGH_TYPE)), ms(idx::HIGH_MODE));
-        use crate::eq::Band;
-        self.eq.set_bypass(Band::LowCut, on(idx::LC_BYPASS));
-        self.eq.set_bypass(Band::HighCut, on(idx::HC_BYPASS));
-        self.eq.set_bypass(Band::Low, on(idx::LOW_BYPASS));
-        self.eq.set_bypass(Band::Mid1, on(idx::MID1_BYPASS));
-        self.eq.set_bypass(Band::Mid2, on(idx::MID2_BYPASS));
-        self.eq.set_bypass(Band::High, on(idx::HIGH_BYPASS));
+        apply_eq(&mut self.eq, p);
     }
 
     /// Processes up to two channels in place at the effective rate (`factor()` times the base rate).
@@ -227,6 +213,28 @@ impl Engine {
             }
         }
     }
+}
+
+/// Designs the EQ bands from the parameters at the EQ's current sample rate (the engine per block, the
+/// editor for its response curve).
+pub fn apply_eq(eq: &mut AnalogEq, p: &[f32; COUNT]) {
+    let on = |i: usize| p[i] > 0.5;
+    let choice = |i: usize| p[i] as usize;
+        let f = |i: usize| p[i] as f64;
+        let ms = |i: usize| MsMode::from_index(choice(i));
+        eq.update_low_cut(f(idx::LC_FREQ), f(idx::LC_Q), choice(idx::LC_SLOPE).min(3), ms(idx::LC_MODE));
+        eq.update_high_cut(f(idx::HC_FREQ), f(idx::HC_Q), choice(idx::HC_SLOPE).min(3), ms(idx::HC_MODE));
+        eq.update_low(f(idx::LOW_FREQ), f(idx::LOW_GAIN), ShelfType::from_index(choice(idx::LOW_TYPE)), ms(idx::LOW_MODE));
+        eq.update_mid1(f(idx::MID1_FREQ), f(idx::MID1_GAIN), f(idx::MID1_Q), BellType::from_index(choice(idx::MID1_TYPE)), ms(idx::MID1_MODE));
+        eq.update_mid2(f(idx::MID2_FREQ), f(idx::MID2_GAIN), f(idx::MID2_Q), BellType::from_index(choice(idx::MID2_TYPE)), ms(idx::MID2_MODE));
+        eq.update_high(f(idx::HIGH_FREQ), f(idx::HIGH_GAIN), ShelfType::from_index(choice(idx::HIGH_TYPE)), ms(idx::HIGH_MODE));
+        use crate::eq::Band;
+        eq.set_bypass(Band::LowCut, on(idx::LC_BYPASS));
+        eq.set_bypass(Band::HighCut, on(idx::HC_BYPASS));
+        eq.set_bypass(Band::Low, on(idx::LOW_BYPASS));
+        eq.set_bypass(Band::Mid1, on(idx::MID1_BYPASS));
+        eq.set_bypass(Band::Mid2, on(idx::MID2_BYPASS));
+        eq.set_bypass(Band::High, on(idx::HIGH_BYPASS));
 }
 
 /// Default parameter values, in table order.
