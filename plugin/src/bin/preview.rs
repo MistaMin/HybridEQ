@@ -1,8 +1,10 @@
-//! Renders the editor to an image: `hybrideq-preview <out.ppm> [scale] [overlay]`. The settings are
-//! a musical example so the curve, knobs and meters show something.
+//! Renders the editor to an image: `hybrideq-preview <out.ppm> [scale] [overlay] [audio]`. The settings
+//! are a musical example. With `audio`, two seconds of tones and noise run through a real instance
+//! bound to the editor, so the analyser, spectrogram and meters show live data.
 use hybrideq::editor::HybridEqEditor;
 use hybrideq_engine::params::idx;
 use openplugin::core::{Editor, EditorHost};
+use openplugin::prelude::Plugin;
 
 fn main() {
     let a: Vec<String> = std::env::args().collect();
@@ -19,11 +21,33 @@ fn main() {
     ] {
         e.set_value(i, v);
     }
-    e.set_meters(0.8, [-14.0, -15.0, -11.0, -12.5], -6.4);
     let (w, h) = (1180, 880);
     e.resize(w, h);
     if a.get(3).map(String::as_str) == Some("overlay") {
         e.mouse_down(756.0, 38.0, 1);
+    }
+    if a.iter().any(|x| x == "audio") {
+        let mut plugin = hybrideq::HybridEq::default();
+        plugin.prepare(48000.0, 1600, 2);
+        e.bind(plugin.editor_state());
+        let mut seed = 1u32;
+        let mut n = 0usize;
+        for _ in 0..60 {
+            let mut io = vec![vec![0.0f32; 1600], vec![0.0f32; 1600]];
+            for i in 0..1600 {
+                seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
+                let t = (n + i) as f32 / 48000.0;
+                let noise = ((seed >> 8) as f32 / (1 << 24) as f32 - 0.5) * 0.08;
+                let x = 0.25 * (6.283 * 110.0 * t).sin() + 0.12 * (6.283 * 880.0 * t).sin() + 0.06 * (6.283 * 5200.0 * t).sin() + noise;
+                io[0][i] = x;
+                io[1][i] = x * 0.9;
+            }
+            n += 1600;
+            plugin.process(&mut io, 1600);
+            e.tick(1.0 / 30.0);
+        }
+    } else {
+        e.set_meters(0.8, [-14.0, -15.0, -11.0, -12.5], -6.4);
     }
     let frame = e.render(scale);
     let mut ppm = format!("P6\n{} {}\n255\n", frame.width, frame.height).into_bytes();

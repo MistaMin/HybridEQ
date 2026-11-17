@@ -32,7 +32,6 @@ pub struct Engine {
     reduced_drive: Smoothed,
     harmonic: [f32; 4],
     base_rate: f64,
-    factor: usize,
 }
 
 /// Multiplicative smoothing over a fixed time, as 1.6.x's reduced-engine drive used.
@@ -96,7 +95,6 @@ impl Default for Engine {
             reduced_drive: Smoothed::default(),
             harmonic: [0.0; 4],
             base_rate: 44100.0,
-            factor: 1,
         }
     }
 }
@@ -137,16 +135,11 @@ impl Engine {
         }
     }
 
-    pub fn factor(&self) -> usize {
-        self.factor
-    }
-
     /// Applies parameter values (plain units, table order). Call once per block before `process`.
     pub fn set_params(&mut self, p: &[f32; COUNT]) {
         let on = |i: usize| p[i] > 0.5;
         let choice = |i: usize| p[i] as usize;
         let factor = effective_factor(p);
-        self.factor = factor;
         let kind = choice(idx::PREAMP_TYPE);
         let preamp_on = !on(idx::PREAMP_BYPASS) && kind != 0;
         let circuit_on = on(idx::PREAMP_CIRCUIT);

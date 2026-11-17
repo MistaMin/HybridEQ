@@ -20,20 +20,6 @@ impl Default for Coeffs {
 impl Coeffs {
     pub const BYPASS: Coeffs = Coeffs { b0: 1.0, b1: 0.0, b2: 0.0, a1: 0.0, a2: 0.0 };
 
-    /// |H| at `norm_freq` (frequency / sample rate) as (re, im).
-    pub fn response(&self, norm_freq: f64) -> (f64, f64) {
-        let w = 2.0 * PI * norm_freq;
-        // z^-1 = e^{-jw}
-        let (s1, c1) = (-w).sin_cos();
-        let (s2, c2) = (-2.0 * w).sin_cos();
-        let nr = self.b0 + self.b1 * c1 + self.b2 * c2;
-        let ni = self.b1 * s1 + self.b2 * s2;
-        let dr = 1.0 + self.a1 * c1 + self.a2 * c2;
-        let di = self.a1 * s1 + self.a2 * s2;
-        let den = dr * dr + di * di;
-        ((nr * dr + ni * di) / den, (ni * dr - nr * di) / den)
-    }
-
     /// Squared magnitude at `norm_freq`, cheaper than [`Self::response`].
     pub fn magnitude_sq(&self, norm_freq: f64) -> f64 {
         let w = 2.0 * PI * norm_freq;

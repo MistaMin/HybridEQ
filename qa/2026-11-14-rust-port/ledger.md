@@ -99,3 +99,20 @@ Host list dumped from: <format, build>   Count: 45 own (+ host bypass)   All in 
 |---|---|---|
 | Windows and Linux builds (S34) | owner, 2026-11-14 | intake question |
 | Standalone app (S35) | not shipped since 1.6.13 | README |
+
+## Evidence, 2026-11-17 (fix-all and audit pass)
+
+| Check | Result | Evidence |
+|---|---|---|
+| clap-validator | 34 passed, 0 failed, 10 skipped (state reproducibility failed before: float values snapped to 0.001 in the plugin but not in the host's view; floats are now continuous) | validators/clap-validator.txt |
+| VST3 SDK validator | 47 passed, 0 failed (1234 Hz and 1.2 MHz rates refused, as intended) | validators/vst3-validator.txt |
+| pluginval VST3, strictness 10, no GUI tests | SUCCESS | validators/pluginval-vst3.txt |
+| VST3 editor in the native shell (SDK VST3EditorProof) | host parameter menu on right click, click on Mid 1 bypass, resize range 826x616 to 1770x1320, scaled click: pass. Stops at the SDK sample editor's own "double-click the plate to request a size" check, which HybridEQ does not have | build-rust/cmake/VST3EditorProof |
+| AU editor in the native shell (SDK AUEditorProof) | click, AU listener, resize, scaled click: pass; same sample-editor size-request check | build-rust/cmake/AUEditorProof |
+| Editor input (unit tests) | every knob, key, bypass, fader reaches its own parameter; node drag moves frequency and gain; CIRCUIT steps Off, Circuit, HQ; right click opens the host menu | plugin/src/editor.rs tests |
+| Spectrum and meters with real audio | preview binary `audio` mode runs 2 s of tones and noise through a live instance bound to the editor; analyser, VU and LED meters move | plugin/src/bin/preview.rs |
+| circuits.rs vs Source/DSP/*Circuit.h | every element value and device model equal (257 elements); one Rust-only fixed node (59.4 V, N-Type) carries the C++ inline literal | script in session; null tests -120 dBFS or better |
+| Windows type-check | engine and plugin `cargo check --target x86_64-pc-windows-gnu` clean; not built or run | |
+| Null vs 1.6.16 (shipped, FMA) | unchanged; eq-types and hq-* are the polarity fix (hq-* null -132 dBFS with the 1.7.0 render inverted) | dsp/evidence/null-vs-1.6.16-shipped-fma.txt |
+
+Not run: auval, AAX validator and REAPER. All three need 1.7.0 installed where hosts find it, and 1.6.16 (same IDs) is installed in /Library; owner to decide whether to move it aside.

@@ -36,13 +36,11 @@ pub struct Param {
     pub default: f32,
     pub unit: Unit,
     pub mapping: Mapping,
-    /// Plain-value step the value snaps to (0 = continuous).
-    pub interval: f32,
     pub choices: &'static [&'static str],
 }
 
-const fn float(id: &'static str, name: &'static str, min: f32, max: f32, default: f32, unit: Unit, mapping: Mapping, interval: f32) -> Param {
-    Param { id, name, min, max, default, unit, mapping, interval, choices: &[] }
+const fn float(id: &'static str, name: &'static str, min: f32, max: f32, default: f32, unit: Unit, mapping: Mapping) -> Param {
+    Param { id, name, min, max, default, unit, mapping, choices: &[] }
 }
 
 const fn choice(id: &'static str, name: &'static str, choices: &'static [&'static str], default: usize) -> Param {
@@ -54,7 +52,6 @@ const fn choice(id: &'static str, name: &'static str, choices: &'static [&'stati
         default: default as f32,
         unit: Unit::Choice,
         mapping: Mapping::Linear,
-        interval: 1.0,
         choices,
     }
 }
@@ -68,25 +65,24 @@ const fn toggle(id: &'static str, name: &'static str, default: bool) -> Param {
         default: if default { 1.0 } else { 0.0 },
         unit: Unit::Toggle,
         mapping: Mapping::Linear,
-        interval: 1.0,
         choices: &[],
     }
 }
 
 const fn hz(id: &'static str, name: &'static str, min: f32, max: f32, default: f32) -> Param {
-    float(id, name, min, max, default, Unit::Hz, Mapping::Log, 0.0)
+    float(id, name, min, max, default, Unit::Hz, Mapping::Log)
 }
 
 const fn db(id: &'static str, name: &'static str, min: f32, max: f32, default: f32) -> Param {
-    float(id, name, min, max, default, Unit::Db, Mapping::Linear, 0.1)
+    float(id, name, min, max, default, Unit::Db, Mapping::Linear)
 }
 
 const fn q(id: &'static str, name: &'static str, default: f32) -> Param {
-    float(id, name, 0.1, 10.0, default, Unit::Q, Mapping::Skew(0.5), 0.01)
+    float(id, name, 0.1, 10.0, default, Unit::Q, Mapping::Skew(0.5))
 }
 
 const fn pct(id: &'static str, name: &'static str) -> Param {
-    float(id, name, 0.0, 1.0, 0.0, Unit::Percent, Mapping::Linear, 0.001)
+    float(id, name, 0.0, 1.0, 0.0, Unit::Percent, Mapping::Linear)
 }
 
 pub const SLOPES: &[&str] = &["-6 dB/oct", "-12 dB/oct", "-18 dB/oct", "-24 dB/oct"];
@@ -154,8 +150,6 @@ pub const TABLE: [Param; COUNT] = [
 pub static PARAMS: [Param; COUNT] = TABLE;
 
 pub const COUNT: usize = 47;
-/// Parameters that existed in 1.6.x (the first `LEGACY_COUNT` entries).
-pub const LEGACY_COUNT: usize = 45;
 
 /// Index constants, in table order.
 pub mod idx {
@@ -214,14 +208,13 @@ pub fn index_of(id: &str) -> Option<usize> {
 }
 
 impl Param {
-    /// Clamp to the range and snap to the interval (choices and toggles to whole numbers).
+    /// Clamp to the range; choices and toggles to whole numbers.
     pub fn clamp(&self, value: f32) -> f32 {
         let v = if value.is_nan() { self.default } else { value.clamp(self.min, self.max) };
-        if self.interval > 0.0 {
-            let snapped = self.min + self.interval * ((v - self.min) / self.interval).round();
-            snapped.clamp(self.min, self.max)
-        } else {
-            v
+        // Floats are continuous: the host's value is the one used and saved, so they never disagree.
+        match self.unit {
+            Unit::Choice | Unit::Toggle => v.round(),
+            _ => v,
         }
     }
 

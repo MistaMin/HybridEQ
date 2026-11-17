@@ -12,7 +12,7 @@ use std::sync::Arc;
 use hybrideq_engine::engine::apply_eq;
 use hybrideq_engine::eq::AnalogEq;
 use hybrideq_engine::params::{idx, COUNT, TABLE};
-use openplugin::core::editor::{Modifiers, SizeRange};
+use openplugin::core::editor::{DamageRect, DamageTracker, Modifiers, SizeRange};
 use openplugin::core::{Editor, EditorHost, EditorState, Frame};
 use openplugin::dri::goodlookindri::color::Color;
 use openplugin::dri::goodlookindri::design::{find_faceplate, Faceplate};
@@ -195,6 +195,8 @@ pub struct HybridEqEditor {
     drag: Option<Drag>,
     mods: Modifiers,
     zoom: f32,
+    /// What to repaint, in design units.
+    damage: DamageTracker,
 }
 
 pub fn make_editor(host: EditorHost) -> Option<Box<dyn Editor>> {
@@ -234,6 +236,7 @@ impl HybridEqEditor {
             drag: None,
             mods: Modifiers::NONE,
             zoom: 1062.0 / W,
+            damage: DamageTracker::new(),
         };
         s.eq.set_sample_rate(48000.0);
         s
@@ -274,6 +277,7 @@ impl HybridEqEditor {
         let plain = TABLE[i].clamp(plain);
         self.v[i] = plain;
         self.curve_dirty = true;
+        self.damage.add_all();
         self.host.set(i, plain);
     }
 
@@ -282,6 +286,7 @@ impl HybridEqEditor {
         if plain != self.v[i] {
             self.v[i] = plain;
             self.curve_dirty = true;
+        self.damage.add_all();
             self.host.perform(i, plain);
         }
     }
@@ -430,20 +435,21 @@ impl HybridEqEditor {
         k
     }
 
-    fn paint_static(&self, sc: &mut Scene) {
+    fn paint_static(v: &[f32; COUNT], overlay: bool, gram: bool, sc: &mut Scene) {
+        let choice = |i: usize| v[i] as usize;
         let chassis = plate("Graphite");
         let ink = Color(chassis.text);
         let mid = Color(chassis.text_mid);
         let rig = openplugin::dri::goodlookindri::light::LightRig::studio();
         // chassis: full width, no ears or screws
         draw_panel(sc, Rect::new(0.0, 0.0, W, H), Color(chassis.bg_top), Color(chassis.bg_bottom), FINISH_POWDER);
-        if self.overlay.is_some() {
+        if overlay {
             let body = Rect::new(26.0, 14.0, W - 52.0, H - 28.0);
             sc.fill_round(body, 8.0, Color(0xff0c1114), Color(0xff080b0d), true);
             legend_text(sc, Legend::Silk(ink), Point::new(40.0, 40.0), "SPECTRUM", 20.0, false);
-            let caption = if self.gram { "SPECTROGRAM  /  TIME DOWN  /  NEWEST AT TOP" } else { "FREQUENCY ANALYSER  /  0 TO -90 dBFS" };
+            let caption = if gram { "SPECTROGRAM  /  TIME DOWN  /  NEWEST AT TOP" } else { "FREQUENCY ANALYSER  /  0 TO -90 dBFS" };
             legend_text(sc, Legend::Silk(mid), Point::new(160.0, 41.0), caption, 9.0, false);
-            self.paint_scale(sc, OVERLAY_PLOT, mid, true);
+            Self::paint_scale(sc, OVERLAY_PLOT, mid, true);
             return;
         }
 
@@ -463,12 +469,12 @@ impl HybridEqEditor {
         screen.frame = true;
         screen.grid = false;
         SpectrumView::paint_screen_back(sc, SCREEN, &screen, F_MIN, F_MAX);
-        self.paint_scale(sc, SCREEN.reduced(6.0, 6.0), mid, false);
+        Self::paint_scale(sc, SCREEN.reduced(6.0, 6.0), mid, false);
 
         draw_legend_line(sc, mid, 40.0, W - 40.0, 268.0, "EQUALISER", 8.5);
 
         for (s, strip) in STRIPS.iter().enumerate() {
-            let lk = section_look(strip.look, self.choice(strip.look));
+            let lk = section_look(strip.look, choice(strip.look));
             let fp = plate(lk.plate);
             let r = Rect::new(strip_x(s), STRIP_Y, STRIP_W, STRIP_H);
             sc.shadow(openplugin::dri::goodlookindri::scene::Shape::Round(r, 7.0), 6.0, Color(0x90000000));
@@ -481,7 +487,7 @@ impl HybridEqEditor {
             legend_line(sc, Legend::Silk(Color(fp.text_mid).with_alpha(0.5)), Point::new(r.x + 12.0, r.y + 54.0), Point::new(r.right() - 12.0, r.y + 54.0), 1.0);
             for (slot, (param, name)) in strip.knobs.iter().enumerate() {
                 let c = knob_centre(s, slot);
-                self.paint_knob_ring(sc, c, 27.0, *param, name, ink, Color(fp.text_mid));
+                Self::paint_knob_ring(sc, c, 27.0, *param, name, ink, Color(fp.text_mid));
             }
             if !strip.caption.is_empty() {
                 legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + STRIP_W * 0.5, STRIP_Y + 292.0), strip.caption, 8.0, true);
@@ -493,7 +499,7 @@ impl HybridEqEditor {
         }
 
         // bottom row
-        let pl = section_look(idx::PREAMP_TYPE, self.choice(idx::PREAMP_TYPE));
+        let pl = section_look(idx::PREAMP_TYPE, choice(idx::PREAMP_TYPE));
         let sections = [(PREAMP, "PREAMP", "INPUT / CIRCUIT COLOUR", plate(pl.plate)), (HARM, "HARMONICS", "2ND TO 5TH ORDER", plate("Graphite")), (GLOBAL, "GLOBAL", "OVERSAMPLING / OUTPUT", plate("Graphite")), (LEVEL, "LEVEL", "OUTPUT RMS / PEAK", plate("Graphite"))];
         for (r, title, sub, fp) in sections {
             sc.shadow(openplugin::dri::goodlookindri::scene::Shape::Round(r, 7.0), 6.0, Color(0x90000000));
@@ -504,7 +510,7 @@ impl HybridEqEditor {
         let pfp = plate(pl.plate);
         let pink = Legend::Silk(Color(pfp.text));
         legend_text(sc, pink, Point::new(PAD_KEY.x + PAD_KEY.w * 0.5, PAD_KEY.y - 10.0), "PAD", 9.0, true);
-        self.paint_knob_ring(sc, Point::new(PREAMP_KNOB.0, PREAMP_KNOB.1), 20.0, idx::PREAMP_GAIN, "GAIN", Color(pfp.text), Color(pfp.text_mid));
+        Self::paint_knob_ring(sc, Point::new(PREAMP_KNOB.0, PREAMP_KNOB.1), 20.0, idx::PREAMP_GAIN, "GAIN", Color(pfp.text), Color(pfp.text_mid));
         let g = Legend::Silk(ink);
         for (i, name) in ["2nd", "3rd", "4th", "5th"].iter().enumerate() {
             let f = harm_fader(i);
@@ -512,18 +518,18 @@ impl HybridEqEditor {
         }
         legend_text(sc, g, Point::new(GLOBAL.x + 14.0, RATE_KEY.y + 12.0), "RATE", 9.0, false);
         legend_text(sc, g, Point::new(GLOBAL.x + 14.0, FILTER_KEY.y + 12.0), "FILTER", 9.0, false);
-        self.paint_knob_ring(sc, Point::new(OUTPUT_KNOB.0, OUTPUT_KNOB.1), 20.0, idx::OUTPUT_GAIN, "OUTPUT", ink, mid);
+        Self::paint_knob_ring(sc, Point::new(OUTPUT_KNOB.0, OUTPUT_KNOB.1), 20.0, idx::OUTPUT_GAIN, "OUTPUT", ink, mid);
         legend_text(sc, Legend::Silk(mid), Point::new(PEAK.x + PEAK.w * 0.5, PEAK.bottom() + 9.0), "PEAK dBFS", 7.0, true);
         legend_text(sc, Legend::Silk(mid), Point::new(CLIP.0, CLIP.1 + 15.0), "CLIP", 7.0, true);
         legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 806.0), "IN", 7.5, false);
         legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 829.0), "OUT", 7.5, false);
 
         legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(40.0, 868.0), "OPENGRID   /   HYBRID EQ", 7.5, false);
-        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(1010.0, 868.0), "CONSOLE EDITION   /   v1.7.0", 7.5, false);
+        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(1010.0, 868.0), &format!("CONSOLE EDITION   /   v{}", crate::INFO.version), 7.5, false);
     }
 
     /// The frequency and gain graticule of a response plot.
-    fn paint_scale(&self, sc: &mut Scene, plot: Rect, ink: Color, overlay: bool) {
+    fn paint_scale(sc: &mut Scene, plot: Rect, ink: Color, overlay: bool) {
         let grid = Color(0x1cffffff);
         for f in [50.0, 100.0, 200.0, 500.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0] {
             let x = Self::x_of(plot, f);
@@ -542,7 +548,7 @@ impl HybridEqEditor {
     }
 
     /// Printed scale round a knob: dots, the end values, and the name above.
-    fn paint_knob_ring(&self, sc: &mut Scene, c: Point, r: f32, param: usize, name: &str, ink: Color, mid: Color) {
+    fn paint_knob_ring(sc: &mut Scene, c: Point, r: f32, param: usize, name: &str, ink: Color, mid: Color) {
         let p = &TABLE[param];
         let mut ring = ScaleRing::new(c, r + 9.0, 11, 0, &[]);
         ring.legend = Legend::Silk(mid);
@@ -714,17 +720,29 @@ impl Editor for HybridEqEditor {
         self.size = (width, height);
         self.zoom = width as f32 / W;
         self.canvas.invalidate_layer();
+        self.damage.add_all();
+        if let Some(s) = &self.shared {
+            s.set_editor_size(width, height);
+        }
     }
 
     fn bind(&mut self, state: Option<EditorState>) {
         self.shared = state.and_then(|s| s.downcast::<Shared>().ok());
+        // The size saved with the project wins over the default.
+        if let Some((w, h)) = self.shared.as_ref().and_then(|s| s.editor_size()) {
+            if (w, h) != self.size && self.host.request_resize(&self.size_range(), w, h) {
+                self.resize(w, h);
+            }
+        }
         self.curve_dirty = true;
+        self.damage.add_all();
     }
 
     fn param_changed(&mut self, index: usize, plain: f32) {
         if index < COUNT {
             self.v[index] = TABLE[index].clamp(plain);
             self.curve_dirty = true;
+        self.damage.add_all();
         }
     }
 
@@ -759,17 +777,37 @@ impl Editor for HybridEqEditor {
         if peaks[2].max(peaks[3]) >= 0.999 {
             m.clip = true;
         }
+        if self.overlay.is_some() {
+            self.damage.add_all();
+        } else {
+            for r in [SCREEN.expanded(8.0), LEVEL.expanded(4.0)] {
+                self.damage.add(DamageRect::new(r.x, r.y, r.w, r.h));
+            }
+        }
+    }
+
+    fn damage(&mut self) -> Option<Vec<DamageRect>> {
+        let z = self.zoom;
+        self.damage.pending().map(|rects| rects.iter().map(|r| DamageRect::new(r.x * z, r.y * z, r.w * z, r.h * z)).collect())
     }
 
     fn render(&mut self, scale: f32) -> Frame<'_> {
         let key = self.layer_key();
-        let mut layer = Scene::new();
-        self.paint_static(&mut layer);
+        let pending = self.damage.pending().map(<[DamageRect]>::to_vec);
+        self.damage.clear();
         let mut top = Scene::new();
-        self.paint_dynamic(&mut top);
-        let floor = Color(0xff2c3236);
-        draw::set_knob_floor(floor);
-        self.canvas.frame_layered(scale * self.zoom, key, |dl| dl.append(layer), |dl| dl.append(top))
+        if pending.as_ref().is_none_or(|d| !d.is_empty()) {
+            self.paint_dynamic(&mut top);
+        }
+        draw::set_knob_floor(Color(0xff2c3236));
+        // The static layer is built only when the canvas needs it (look, size or scale changed).
+        let (v, overlay, gram) = (self.v, self.overlay.is_some(), self.gram);
+        let layer = move |dl: &mut openplugin::dri::DrawList| {
+            let mut sc = Scene::new();
+            Self::paint_static(&v, overlay, gram, &mut sc);
+            dl.append(sc);
+        };
+        self.canvas.frame_damaged(scale * self.zoom, key, layer, |dl| dl.append(top), pending.as_deref())
     }
 
     fn modifiers_changed(&mut self, modifiers: Modifiers) {
@@ -778,6 +816,7 @@ impl Editor for HybridEqEditor {
 
     fn mouse_down(&mut self, x: f32, y: f32, clicks: u32) {
         let p = self.to_design(x, y);
+        self.damage.add_all();
         match self.hit(p) {
             Some(Hit::Knob(i)) if clicks >= 2 => self.set(i, TABLE[i].default),
             Some(Hit::Knob(i)) => {
@@ -867,14 +906,21 @@ impl Editor for HybridEqEditor {
     }
 
     fn right_mouse_down(&mut self, x: f32, y: f32) -> bool {
-        // Choice keys step back on a right click (left steps forward).
-        match self.hit(self.to_design(x, y)) {
+        // Choice keys step back on a right click (left steps forward); other controls open the host's
+        // parameter menu (automation, MIDI learn).
+        // shortcut: the SDK's fallback menu is not wired, so a host without a menu shows nothing; add it if one matters.
+        let param = match self.hit(self.to_design(x, y)) {
             Some(Hit::Key(i)) => {
                 self.step_choice(i, -1);
-                true
+                return true;
             }
-            _ => false,
-        }
+            Some(Hit::Knob(i) | Hit::Fader(i) | Hit::Bypass(i)) => i,
+            Some(Hit::Node(n)) => NODES[n].1,
+            Some(Hit::Circuit) => idx::PREAMP_CIRCUIT,
+            _ => return false,
+        };
+        self.host.context_menu(param, x, y);
+        true
     }
 
     fn wheel(&mut self, x: f32, y: f32, dy: f32) {
@@ -888,5 +934,100 @@ impl Editor for HybridEqEditor {
             let t = (TABLE[i].to_normalized(self.v[i]) + dy * 0.02).clamp(0.0, 1.0);
             self.set(i, TABLE[i].from_normalized(t));
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use openplugin::core::Gesture;
+    use std::cell::RefCell;
+    use std::rc::Rc;
+
+    /// An editor at design size (one point per design unit) that records its gestures.
+    fn editor() -> (HybridEqEditor, Rc<RefCell<Vec<Gesture>>>) {
+        let log = Rc::new(RefCell::new(Vec::new()));
+        let sink = log.clone();
+        let mut e = HybridEqEditor::new(EditorHost::new(move |g| sink.borrow_mut().push(g)));
+        e.resize(W as u32, H as u32);
+        (e, log)
+    }
+
+    fn params_touched(log: &Rc<RefCell<Vec<Gesture>>>) -> Vec<u32> {
+        let mut ids: Vec<u32> = log.borrow_mut().drain(..).map(|g| match g {
+            Gesture::Begin(i) | Gesture::Perform(i, _) | Gesture::End(i) => i,
+        }).collect();
+        ids.dedup();
+        ids
+    }
+
+    #[test]
+    fn every_control_reaches_its_own_parameter() {
+        let (mut e, log) = editor();
+        let mut click = |p: Point, expect: usize| {
+            e.mouse_down(p.x, p.y, 1);
+            e.mouse_up(p.x, p.y);
+            assert_eq!(params_touched(&log), [expect as u32], "click at {:?}", (p.x, p.y));
+        };
+        for (s, strip) in STRIPS.iter().enumerate() {
+            for (slot, (param, _)) in strip.knobs.iter().enumerate() {
+                click(knob_centre(s, slot), *param);
+            }
+            for (row, (param, _)) in strip.keys.iter().enumerate() {
+                click(strip_key(s, row).center(), *param);
+            }
+            click(strip_bypass(s).center(), strip.bypass);
+        }
+        click(Point::new(PREAMP_KNOB.0, PREAMP_KNOB.1), idx::PREAMP_GAIN);
+        click(Point::new(OUTPUT_KNOB.0, OUTPUT_KNOB.1), idx::OUTPUT_GAIN);
+        for (r, p) in [(PAD_KEY, idx::PREAMP_PAD), (TYPE_KEY, idx::PREAMP_TYPE), (PREAMP_BYPASS, idx::PREAMP_BYPASS), (RATE_KEY, idx::OVERSAMPLE_MODE), (FILTER_KEY, idx::OVERSAMPLE_FILTER), (AUTO_KEY, idx::AUTO_GAIN), (DELTA_KEY, idx::DELTA)] {
+            click(r.center(), p);
+        }
+        for i in 0..4 {
+            click(harm_fader(i).center(), idx::H2 + i);
+        }
+    }
+
+    #[test]
+    fn nodes_drag_frequency_and_gain() {
+        let (mut e, log) = editor();
+        e.refresh_curve();
+        let plot = e.plot();
+        let m1 = e.node_point(plot, 2);
+        e.mouse_down(m1.x, m1.y, 1);
+        e.mouse_move(m1.x + 40.0, m1.y - 20.0);
+        e.mouse_up(m1.x + 40.0, m1.y - 20.0);
+        let touched = params_touched(&log);
+        assert!(touched.contains(&(idx::MID1_FREQ as u32)) && touched.contains(&(idx::MID1_GAIN as u32)), "{touched:?}");
+        assert!(e.v[idx::MID1_FREQ] > 800.0 && e.v[idx::MID1_GAIN] > 0.0);
+    }
+
+    #[test]
+    fn right_click_asks_the_host_menu_for_the_control() {
+        let seen = Rc::new(std::cell::Cell::new(None));
+        let sink = seen.clone();
+        let host = EditorHost::new(|_| {}).with_context_menu(move |p, _, _| {
+            sink.set(Some(p));
+            true
+        });
+        let mut e = HybridEqEditor::new(host);
+        e.resize(W as u32, H as u32);
+        let c = strip_bypass(2).center();
+        assert!(e.right_mouse_down(c.x, c.y));
+        assert_eq!(seen.get(), Some(STRIPS[2].bypass as u32));
+        assert!(!e.right_mouse_down(5.0, 5.0), "the bare plate has no menu");
+    }
+
+    #[test]
+    fn circuit_key_steps_off_circuit_hq() {
+        let (mut e, _log) = editor();
+        let c = CIRCUIT_KEY.center();
+        let mode = |e: &HybridEqEditor| (e.on(idx::PREAMP_CIRCUIT), e.on(idx::PREAMP_HQ));
+        e.mouse_down(c.x, c.y, 1);
+        assert_eq!(mode(&e), (true, false), "Off -> Circuit");
+        e.mouse_down(c.x, c.y, 1);
+        assert_eq!(mode(&e), (true, true), "Circuit -> HQ");
+        e.mouse_down(c.x, c.y, 1);
+        assert!(!mode(&e).0, "HQ -> Off");
     }
 }
