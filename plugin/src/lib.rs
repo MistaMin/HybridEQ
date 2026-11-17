@@ -10,7 +10,7 @@ pub mod multirate;
 pub mod params;
 pub mod state;
 
-use std::sync::atomic::{AtomicU32, Ordering};
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 use std::sync::Arc;
 
 use hybrideq_engine::params::{idx, COUNT, TABLE};
@@ -41,9 +41,12 @@ pub static INFO: PluginInfo = PluginInfo {
 pub struct Shared {
     /// Peak since the editor last looked, linear, as f32 bits: input L, R, output L, R.
     peaks: [AtomicU32; 4],
-    /// Mean square since the editor last looked (output L, R), as f32 bits, and its sample count.
-    power: [AtomicU32; 2],
+    /// Output sum of squares (L, R) as f32 bits, and the frames it covers, since the editor last looked.
+    energy: [AtomicU32; 2],
+    frames: AtomicU32,
     factor: AtomicU32,
+    /// Editor size in points (width << 32 | height), saved with the project; 0 until set.
+    size: AtomicU64,
     sample_rate: AtomicU32,
     /// The output for the editor's analyser (wait-free; the FFT runs in the editor).
     pub ring: SampleRing,
@@ -61,9 +64,26 @@ impl Shared {
         std::array::from_fn(|i| f32::from_bits(self.peaks[i].swap(0, Ordering::Relaxed)))
     }
 
-    /// Output L, R mean square since the last call.
+    fn add(slot: &AtomicU32, v: f32) {
+        let _ = slot.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+    }
+
+    /// Output L, R mean square since the last call (zero when no audio ran).
     pub fn take_power(&self) -> [f32; 2] {
-        std::array::from_fn(|i| f32::from_bits(self.power[i].swap(0, Ordering::Relaxed)))
+        let frames = self.frames.swap(0, Ordering::Relaxed).max(1) as f32;
+        std::array::from_fn(|i| f32::from_bits(self.energy[i].swap(0, Ordering::Relaxed)) / frames)
+    }
+
+    /// The editor size saved with the project, if any.
+    pub fn editor_size(&self) -> Option<(u32, u32)> {
+        match self.size.load(Ordering::Relaxed) {
+            0 => None,
+            v => Some(((v >> 32) as u32, v as u32)),
+        }
+    }
+
+    pub fn set_editor_size(&self, width: u32, height: u32) {
+        self.size.store((u64::from(width) << 32) | u64::from(height), Ordering::Relaxed);
     }
 
     /// The oversampling factor the engine runs at (the user's choice, or 2x for HQ).
@@ -109,11 +129,6 @@ impl Default for HybridEq {
 }
 
 impl HybridEq {
-    /// Current plain values, in table order.
-    pub fn values(&self) -> &[f32; COUNT] {
-        &self.p
-    }
-
     /// Replaces every value at once (a state load).
     pub fn set_values(&mut self, values: [f32; COUNT]) {
         for (i, v) in values.into_iter().enumerate() {
@@ -205,7 +220,6 @@ impl Plugin for HybridEq {
             self.dry[ch][..frames].copy_from_slice(&io[ch][..frames]);
             Shared::raise(&self.shared.peaks[ch], peak(&io[ch][..frames]));
         }
-        self.update_latency();
         self.engine.set_params(&self.p);
         let engine = &mut self.engine;
         if let Some(m) = self.multirate.as_mut() {
@@ -253,9 +267,9 @@ impl Plugin for HybridEq {
             }
             let out = &io[ch][..frames];
             Shared::raise(&self.shared.peaks[2 + ch], peak(out));
-            let ms = out.iter().map(|x| x * x).sum::<f32>() / frames as f32;
-            Shared::raise(&self.shared.power[ch], ms);
+            Shared::add(&self.shared.energy[ch], out.iter().map(|x| x * x).sum::<f32>());
         }
+        self.shared.frames.fetch_add(frames as u32, Ordering::Relaxed);
     }
 
     fn note_ports(&self) -> NotePorts {
@@ -267,13 +281,16 @@ impl Plugin for HybridEq {
     }
 
     fn save_state(&mut self) -> Option<Vec<u8>> {
-        Some(state::encode(&self.p))
+        Some(state::encode(&self.p, self.shared.editor_size()))
     }
 
     fn load_state(&mut self, data: &[u8]) -> bool {
         match state::decode(data) {
-            Some(values) => {
+            Some((values, size)) => {
                 self.set_values(values);
+                if let Some((w, h)) = size {
+                    self.shared.set_editor_size(w, h);
+                }
                 self.update_latency();
                 true
             }

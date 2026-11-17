@@ -162,10 +162,6 @@ pub struct Solver {
     h: f64,
     gmin: f64,
     dc: bool,
-    pub iter_count: u64,
-    pub fallbacks: u64,
-    pub fail_count: u64,
-    pub hard_fails: u64,
     consecutive_fails: u32,
 }
 
@@ -366,10 +362,6 @@ impl Solver {
         self.sr
     }
 
-    pub fn size(&self) -> usize {
-        self.n
-    }
-
     /// Back to the stored DC operating point.
     pub fn restore_dc(&mut self) {
         self.x.copy_from_slice(&self.x_dc);
@@ -398,7 +390,6 @@ impl Solver {
     pub fn step(&mut self) {
         self.x_save.copy_from_slice(&self.x);
         if !self.newton(8, 1e-7, 5.0) {
-            self.fail_count += 1;
             // Recovery: source-step the fixed nodes from last sample's values with a tight step limit.
             self.x.copy_from_slice(&self.x_save);
             self.node_target.copy_from_slice(&self.node_val);
@@ -414,7 +405,6 @@ impl Solver {
             }
             self.node_val.copy_from_slice(&self.node_target);
             if !ok || !self.x[0].is_finite() {
-                self.hard_fails += 1;
                 self.x.copy_from_slice(&self.x_save);
                 self.consecutive_fails += 1;
                 if self.consecutive_fails > 200 {
@@ -950,7 +940,6 @@ impl Solver {
             if self.solve_static() {
                 return true;
             }
-            self.fallbacks += 1;
             self.assemble_current();
         }
         self.solve_dynamic()
@@ -1151,7 +1140,6 @@ impl Solver {
 
     fn newton(&mut self, max_it: usize, tol: f64, step_lim: f64) -> bool {
         for _ in 0..max_it {
-            self.iter_count += 1;
             self.assemble_current();
             if !self.solve_linear() {
                 return false;

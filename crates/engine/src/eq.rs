@@ -236,10 +236,6 @@ impl AnalogEq {
         self.bands[Self::slot(band)].bypass = bypassed;
     }
 
-    pub fn is_bypassed(&self, band: Band) -> bool {
-        self.bands[Self::slot(band)].bypass
-    }
-
     fn set_mode(&mut self, band: Band, mode: MsMode) {
         self.bands[Self::slot(band)].mode = mode;
         self.ms_active = self.bands.iter().any(|b| b.mode != MsMode::Stereo);

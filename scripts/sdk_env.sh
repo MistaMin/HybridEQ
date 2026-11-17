@@ -2,6 +2,8 @@
 # Finds OpenPluginSDK and writes the untracked .cargo/config.toml that patches it in, so the
 # repository holds no machine paths. Override the search with OPENPLUGIN_SDK=<path>.
 #   . scripts/sdk_env.sh      (sets SDK_DIR; run before cargo or the SDK's build_plugin.sh)
+# Until OpenPluginSDK pull request #37 (host value spaces) is merged, set OPENPLUGIN_SDK to a checkout
+# of its branch, MistaMin/hybrideq-host-values: the default checkout does not have it yet.
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 find_sdk() {
   if [ -n "$OPENPLUGIN_SDK" ] && [ -d "$OPENPLUGIN_SDK" ]; then (cd "$OPENPLUGIN_SDK" && pwd); return 0; fi

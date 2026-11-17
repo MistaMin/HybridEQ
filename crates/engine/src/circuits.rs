@@ -43,6 +43,7 @@ fn measure_peak(s: &mut Solver, p: usize, n: Option<usize>, out_p: usize, out_n:
 // N-Type: transformer-coupled line path. VTB9046 input transformer -> 3-transistor feedback preamp
 // -> class-A output stage -> gapped VTB9049 output transformer -> 600 ohm load with Zobel.
 
+#[derive(Clone)]
 pub struct NType {
     s: Solver,
     n_in: usize,
@@ -219,6 +220,7 @@ impl Circuit for NType {
 // instrumentation pair -> difference amp -> DC servos -> balanced line driver. Gain is the dual-gang
 // pot RV1.
 
+#[derive(Clone)]
 pub struct Brit {
     s: Solver,
     n_sp: usize,
@@ -430,6 +432,7 @@ impl Circuit for Brit {
 
 pub const FSF_POSITIONS: usize = 12;
 
+#[derive(Clone)]
 pub struct Fsf {
     s: Solver,
     n_sp: usize,
@@ -682,6 +685,7 @@ impl Circuit for Fsf {
 // A-Type: transformer-coupled 500-series mic preamp. 1:8 mic transformer -> discrete op-amp
 // ([PLACEHOLDER] behavioural) with a T feedback network -> 1:2 output transformer -> output pad.
 
+#[derive(Clone)]
 pub struct AType {
     s: Solver,
     n_sp: usize,

@@ -100,7 +100,6 @@ pub struct Preamp {
     drive_target_db: f32,
     bypassed: bool,
     circuit_on: bool,
-    adaa_on: bool,
     configured: Option<(PreampType, bool)>,
     n_adaa: [[Residual; 4]; MAX_CH],
     b_adaa: [[Residual; 3]; MAX_CH],
@@ -139,7 +138,6 @@ impl Default for Preamp {
             drive_target_db: 0.0,
             bypassed: false,
             circuit_on: false,
-            adaa_on: true,
             configured: None,
             n_adaa: Default::default(),
             b_adaa: Default::default(),
@@ -170,7 +168,7 @@ impl Default for Preamp {
 }
 
 impl Preamp {
-    /// Builds and solves the netlists (allocates; off the audio thread) and sizes the drive ramp.
+    /// Copies in the solved netlists (allocates; off the audio thread) and sizes the drive ramp.
     pub fn prepare(&mut self, sample_rate: f64, max_samples: usize) {
         self.sr = sample_rate;
         self.slew_coef = 1.0 - (-1.0 / (sample_rate * 0.04)).exp() as f32;
@@ -178,11 +176,9 @@ impl Preamp {
         self.drive_state = 1.0;
         self.configured = None;
         self.drive_ramp = vec![0.0; max_samples];
-        self.n_ok = self.n_circ[0].prepare(CIRCUIT_RATE) & self.n_circ[1].prepare(CIRCUIT_RATE);
-        self.b_ok = self.b_circ[0].prepare(CIRCUIT_RATE) & self.b_circ[1].prepare(CIRCUIT_RATE);
-        let (first, rest) = self.f_circ.split_at_mut(1);
-        self.f_ok = first[0].prepare(CIRCUIT_RATE) && rest[0].prepare_like(&first[0], CIRCUIT_RATE);
-        self.a_ok = self.a_circ[0].prepare(CIRCUIT_RATE) & self.a_circ[1].prepare(CIRCUIT_RATE);
+        let n = netlists();
+        (self.n_circ, self.b_circ, self.f_circ, self.a_circ) = (n.n.clone(), n.b.clone(), n.f.clone(), n.a.clone());
+        [self.n_ok, self.b_ok, self.f_ok, self.a_ok] = n.ok;
         adaa::rail_table();
     }
 
@@ -197,9 +193,6 @@ impl Preamp {
     }
     pub fn set_circuit_enabled(&mut self, on: bool) {
         self.circuit_on = on;
-    }
-    pub fn set_adaa_enabled(&mut self, on: bool) {
-        self.adaa_on = on;
     }
 
     /// Transient state only: the drive slew and (via a forced re-configure) the ADAA history and the
@@ -445,9 +438,7 @@ impl Preamp {
         let prev = &mut self.adaa_prev_drive[ch];
         let settled = (g - *prev).abs() <= 1.0e-6 * g;
         *prev = g;
-        if !self.adaa_on {
-            Mode::Off
-        } else if settled {
+        if settled {
             Mode::On
         } else {
             Mode::Hold
@@ -499,6 +490,29 @@ impl Preamp {
             }
         }
     }
+}
+
+/// The four netlists, solved and calibrated at the fixed internal rate. That takes about a second and
+/// gives the same result every time, so it is done once per process and copied into each instance.
+struct Netlists {
+    n: [NType; MAX_CH],
+    b: [Brit; MAX_CH],
+    f: [Fsf; MAX_CH],
+    a: [AType; MAX_CH],
+    ok: [bool; 4],
+}
+
+fn netlists() -> &'static Netlists {
+    static NETLISTS: std::sync::OnceLock<Netlists> = std::sync::OnceLock::new();
+    NETLISTS.get_or_init(|| {
+        let mut x = Netlists { n: Default::default(), b: Default::default(), f: Default::default(), a: Default::default(), ok: [false; 4] };
+        x.ok[0] = x.n[0].prepare(CIRCUIT_RATE) & x.n[1].prepare(CIRCUIT_RATE);
+        x.ok[1] = x.b[0].prepare(CIRCUIT_RATE) & x.b[1].prepare(CIRCUIT_RATE);
+        let (first, rest) = x.f.split_at_mut(1);
+        x.ok[2] = first[0].prepare(CIRCUIT_RATE) && rest[0].prepare_like(&first[0], CIRCUIT_RATE);
+        x.ok[3] = x.a[0].prepare(CIRCUIT_RATE) & x.a[1].prepare(CIRCUIT_RATE);
+        x
+    })
 }
 
 fn step_circuit<C: Circuit>(c: &mut C, d: &mut Decim, x: f64, g: f64) -> f64 {
