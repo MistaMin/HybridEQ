@@ -571,7 +571,7 @@ impl HybridEqEditor {
         let colour = if active { Color(look.colour) } else { Color(look.colour).mix(Color(0xff4a4f52), 0.6) };
         // The A-Type body is small for its radius (its `visual_frame` reach is the pointer tip, so
         // that cannot normalise it): draw it larger, lowered by its lift so it stays centred in the ring.
-        let (kr, ky) = if look.style == "A" { (r * 1.25, r * 0.115) } else { (r, 0.0) };
+        let (kr, ky) = if look.style == "A" { (r * 1.12, r * 0.055) } else { (r, 0.0) };
         draw::knob_named_mode(sc, look.style, Point::new(c.x, c.y + ky), kr, angle, colour, false, KnobMode::Lit);
         if readout {
             let box_ = Rect::new(c.x - 28.0, c.y + r + 7.0, 56.0, 16.0);
