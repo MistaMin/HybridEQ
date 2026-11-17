@@ -119,7 +119,7 @@ fn strip_x(i: usize) -> f32 {
 }
 
 fn knob_centre(strip: usize, slot: usize) -> Point {
-    Point::new(strip_x(strip) + STRIP_W * 0.5, STRIP_Y + 106.0 + slot as f32 * 93.0)
+    Point::new(strip_x(strip) + STRIP_W * 0.5, STRIP_Y + 100.0 + slot as f32 * 98.0)
 }
 
 fn strip_key(strip: usize, row: usize) -> Rect {
@@ -435,12 +435,8 @@ impl HybridEqEditor {
         let ink = Color(chassis.text);
         let mid = Color(chassis.text_mid);
         let rig = openplugin::dri::goodlookindri::light::LightRig::studio();
-        // chassis with ears and screws
-        let panel = Rect::new(16.0, 4.0, W - 32.0, H - 8.0);
-        draw_rack_ear_with(sc, Rect::new(0.0, panel.y, 18.0, panel.h), true, Color(0xff2b3034), Color(0xff15191c), &rig);
-        draw_panel(sc, panel, Color(chassis.bg_top), Color(chassis.bg_bottom), FINISH_POWDER);
-        draw_rack_ear_with(sc, Rect::new(W - 18.0, panel.y, 18.0, panel.h), false, Color(0xff2b3034), Color(0xff15191c), &rig);
-        draw_corner_screws(sc, panel, ScrewHead::Cross);
+        // chassis: full width, no ears or screws
+        draw_panel(sc, Rect::new(0.0, 0.0, W, H), Color(chassis.bg_top), Color(chassis.bg_bottom), FINISH_POWDER);
         if self.overlay.is_some() {
             let body = Rect::new(26.0, 14.0, W - 52.0, H - 28.0);
             sc.fill_round(body, 8.0, Color(0xff0c1114), Color(0xff080b0d), true);
@@ -548,21 +544,24 @@ impl HybridEqEditor {
     /// Printed scale round a knob: dots, the end values, and the name above.
     fn paint_knob_ring(&self, sc: &mut Scene, c: Point, r: f32, param: usize, name: &str, ink: Color, mid: Color) {
         let p = &TABLE[param];
-        let mut ring = ScaleRing::new(c, r * 1.32 + 3.0, 11, 0, &[]);
+        let mut ring = ScaleRing::new(c, r + 9.0, 11, 0, &[]);
         ring.legend = Legend::Silk(mid);
         ring.marks = ScaleMarks::Dots;
         ring.tick = 2.2;
         draw_scale_ring_with(sc, &ring);
-        legend_text(sc, Legend::Silk(ink), Point::new(c.x, c.y - r * 1.32 - 11.0), name, if r > 24.0 { 10.0 } else { 8.5 }, true);
-        if r > 24.0 {
+        if r <= 24.0 {
+            legend_text(sc, Legend::Silk(ink), Point::new(c.x, c.y - r - 17.5), name, 8.5, true);
+        } else {
+            // band knobs stack: the name sits in the ring's top-left corner so it never meets the readout above
+            legend_text(sc, Legend::Silk(ink), Point::new(c.x - 70.0, c.y - r - 7.0), name, 10.0, false);
             let short = |v: f32| match p.unit {
                 hybrideq_engine::params::Unit::Hz if v >= 1000.0 => format!("{}k", v / 1000.0),
                 hybrideq_engine::params::Unit::Db => format!("{v:+.1}"),
                 hybrideq_engine::params::Unit::Q => format!("{v:.2}"),
                 _ => format!("{v}"),
             };
-            legend_text(sc, Legend::Silk(mid), Point::new(c.x - r * 1.5, c.y + r * 1.15), &short(p.min), 7.5, true);
-            legend_text(sc, Legend::Silk(mid), Point::new(c.x + r * 1.5, c.y + r * 1.15), &short(p.max), 7.5, true);
+            legend_text(sc, Legend::Silk(mid), Point::new(c.x - 46.0, c.y + r + 15.0), &short(p.min), 7.5, true);
+            legend_text(sc, Legend::Silk(mid), Point::new(c.x + 46.0, c.y + r + 15.0), &short(p.max), 7.5, true);
         }
     }
 
@@ -570,9 +569,12 @@ impl HybridEqEditor {
         let t = TABLE[param].to_normalized(self.v[param]);
         let angle = (t * 1.6 - 0.8) * PI;
         let colour = if active { Color(look.colour) } else { Color(look.colour).mix(Color(0xff4a4f52), 0.6) };
-        draw::knob_named_mode(sc, look.style, c, r, angle, colour, false, KnobMode::Lit);
+        // The A-Type body is small for its radius (its `visual_frame` reach is the pointer tip, so
+        // that cannot normalise it): draw it larger, lowered by its lift so it stays centred in the ring.
+        let (kr, ky) = if look.style == "A" { (r * 1.25, r * 0.115) } else { (r, 0.0) };
+        draw::knob_named_mode(sc, look.style, Point::new(c.x, c.y + ky), kr, angle, colour, false, KnobMode::Lit);
         if readout {
-            let box_ = Rect::new(c.x - 32.0, c.y + r + 12.0, 64.0, 17.0);
+            let box_ = Rect::new(c.x - 28.0, c.y + r + 7.0, 56.0, 16.0);
             sc.fill_round(box_, 3.0, Color(0xff080b0d), Color(0xff11161a), true);
             sc.stroke_round(box_, 3.0, Color(0x22ffffff), 1.0);
             let text = TABLE[param].format(self.v[param]);
