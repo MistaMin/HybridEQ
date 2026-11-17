@@ -6,7 +6,7 @@ fn main() {
         eprintln!("usage: hybrideq-lv2-ttl <folder> <library stem>");
         std::process::exit(2);
     };
-    if let Err(e) = openplugin::targets::lv2::write_bundle(&hybrideq::HybridEq::default(), std::path::Path::new(dir), stem, false) {
+    if let Err(e) = openplugin::targets::lv2::write_bundle_for_editor(&hybrideq::HybridEq::default(), std::path::Path::new(dir), stem, Some(hybrideq::editor::make_editor)) {
         eprintln!("{dir}: {e}");
         std::process::exit(1);
     }

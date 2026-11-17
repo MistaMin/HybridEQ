@@ -5,6 +5,7 @@
 //! input, BS.1770, when on) -> Delta (the result minus the input delayed by the reported latency, when
 //! on). Delta therefore hears what the processing changes in tone, after any level matching.
 
+pub mod editor;
 pub mod multirate;
 pub mod params;
 pub mod state;
@@ -16,6 +17,7 @@ use hybrideq_engine::params::{idx, COUNT, TABLE};
 use hybrideq_engine::{defaults, effective_factor, tail_seconds, Engine};
 use multirate::Multirate;
 use openplugin::core::{AaxIds, AuIds, Vst3Ids};
+use openplugin::dri::goodlookindri::spectrum::SampleRing;
 use openplugin::dsp::{Delta, LoudnessMatch};
 use openplugin::prelude::*;
 
@@ -31,7 +33,7 @@ pub static INFO: PluginInfo = PluginInfo {
     category: Category::Eq,
     params: &PARAMS,
     is_instrument: false,
-    has_editor: false,
+    has_editor: true,
 };
 
 /// What the engine shows its editor: levels and the effective oversampling factor.
@@ -42,6 +44,9 @@ pub struct Shared {
     /// Mean square since the editor last looked (output L, R), as f32 bits, and its sample count.
     power: [AtomicU32; 2],
     factor: AtomicU32,
+    sample_rate: AtomicU32,
+    /// The output for the editor's analyser (wait-free; the FFT runs in the editor).
+    pub ring: SampleRing,
 }
 
 impl Shared {
@@ -64,6 +69,14 @@ impl Shared {
     /// The oversampling factor the engine runs at (the user's choice, or 2x for HQ).
     pub fn factor(&self) -> u32 {
         self.factor.load(Ordering::Relaxed).max(1)
+    }
+
+    /// The session sample rate (48 kHz before the first prepare).
+    pub fn sample_rate(&self) -> f64 {
+        match f32::from_bits(self.sample_rate.load(Ordering::Relaxed)) {
+            r if r > 0.0 => r as f64,
+            _ => 48000.0,
+        }
     }
 }
 
@@ -130,6 +143,7 @@ impl Plugin for HybridEq {
     fn prepare(&mut self, sample_rate: f32, max_block: usize, _channels: usize) {
         let sr = sample_rate as f64;
         self.sample_rate = sample_rate;
+        self.shared.sample_rate.store(sample_rate.to_bits(), Ordering::Relaxed);
         self.engine.prepare(sr, max_block, &self.p);
         self.engine.set_params(&self.p);
         let multirate = Multirate::new(sr, max_block);
@@ -226,6 +240,10 @@ impl Plugin for HybridEq {
             }
         }
 
+        match channels {
+            2 => self.shared.ring.push(&[&io[0][..frames], &io[1][..frames]]),
+            _ => self.shared.ring.push(&[&io[0][..frames]]),
+        }
         for ch in 0..channels {
             // Filter state decays below f32 range on silence; nothing under -600 dBFS reaches the host.
             for x in &mut io[ch][..frames] {
@@ -282,6 +300,6 @@ impl Plugin for HybridEq {
     }
 }
 
-openplugin::targets::export_clap!(HybridEq);
-openplugin::targets::export_lv2!(HybridEq);
-openplugin::targets::export_shell!(HybridEq);
+openplugin::targets::export_clap!(HybridEq, editor = editor::make_editor);
+openplugin::targets::export_lv2!(HybridEq, editor = editor::make_editor);
+openplugin::targets::export_shell!(HybridEq, editor = editor::make_editor);

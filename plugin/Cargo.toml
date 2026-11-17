@@ -24,6 +24,10 @@ openplugin = { version = "1.0.0-beta", features = ["testing"] }
 name = "hybrideq-lv2-ttl"
 path = "src/bin/lv2_ttl.rs"
 
+[[bin]]
+name = "hybrideq-preview"
+path = "src/bin/preview.rs"
+
 [profile.release]
 codegen-units = 1
 lto = "thin"
