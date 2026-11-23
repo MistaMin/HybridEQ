@@ -1,0 +1,79 @@
+PASS     loads VST3: HybridEQ (OpenGrid), 49 parameters
+PASS     finite output peak -4.3 dBFS
+PASS     not silent rms -15.3 dBFS
+PASS     deterministic render repeat differs by -240.0 dB
+PASS     editor opens 1077x688, 0.1% animates by itself
+  Oversample                       audio=ok       visual=ok
+  Oversample Filter                audio=DEAD     visual=ok
+  2nd Harmonic                     audio=ok       visual=ok
+  3rd Harmonic                     audio=ok       visual=ok
+  4th Harmonic                     audio=ok       visual=ok
+  5th Harmonic                     audio=ok       visual=ok
+  Low Cut Freq                     audio=ok       visual=ok
+  Low Cut Q                        audio=ok       visual=ok
+  Low Cut Slope                    audio=ok       visual=ok
+  Low Cut Mode                     audio=ok       visual=ok
+  Low Cut Bypass                   audio=ok       visual=ok
+  High Cut Freq                    audio=ok       visual=ok
+  High Cut Q                       audio=ok       visual=ok
+  High Cut Slope                   audio=ok       visual=ok
+  High Cut Mode                    audio=ok       visual=ok
+  High Cut Bypass                  audio=ok       visual=ok
+  Low Freq                         audio=DEAD     visual=ok
+  Low Gain                         audio=ok       visual=ok
+  Low Type                         audio=DEAD     visual=ok
+  Low Mode                         audio=DEAD     visual=ok
+  Low Band Bypass                  audio=DEAD     visual=ok
+  Mid 1 Freq                       audio=DEAD     visual=ok
+  Mid 1 Gain                       audio=ok       visual=ok
+  Mid 1 Q                          audio=DEAD     visual=ok
+  Mid 1 Type                       audio=DEAD     visual=ok
+  Mid 1 Mode                       audio=DEAD     visual=ok
+  Mid 1 Bypass                     audio=DEAD     visual=ok
+  Mid 2 Freq                       audio=DEAD     visual=ok
+  Mid 2 Gain                       audio=ok       visual=ok
+  Mid 2 Q                          audio=DEAD     visual=ok
+  Mid 2 Type                       audio=DEAD     visual=ok
+  Mid 2 Mode                       audio=DEAD     visual=ok
+  Mid 2 Bypass                     audio=DEAD     visual=ok
+  High Freq                        audio=DEAD     visual=ok
+  High Gain                        audio=ok       visual=ok
+  High Type                        audio=DEAD     visual=ok
+  High Mode                        audio=DEAD     visual=ok
+  High Band Bypass                 audio=DEAD     visual=ok
+  Preamp Type                      audio=ok       visual=ok
+  Preamp Pad                       audio=ok       visual=ok
+  Preamp Gain                      audio=ok       visual=ok
+  Preamp Bypass                    audio=ok       visual=ok
+  Preamp Circuit                   audio=ok       visual=ok
+  Preamp HQ                        audio=DEAD     visual=ok
+  Output Gain                      audio=ok       visual=ok
+  Bypass                           audio=ok       visual=ok
+  Bypass                           audio=ok       visual=ok
+  Wet                              audio=ok       visual=ok
+  Delta                            audio=ok       visual=ok
+  Low Freq                         audio=CONDITIONAL (acts in random state 1)
+  Low Type                         audio=CONDITIONAL (acts in random state 1)
+  Low Mode                         audio=CONDITIONAL (acts in random state 1)
+  Low Band Bypass                  audio=CONDITIONAL (acts in random state 1)
+  Mid 1 Freq                       audio=CONDITIONAL (acts in random state 1)
+  Mid 1 Q                          audio=CONDITIONAL (acts in random state 1)
+  Mid 1 Type                       audio=CONDITIONAL (acts in random state 1)
+  Mid 1 Mode                       audio=CONDITIONAL (acts in random state 1)
+  Mid 1 Bypass                     audio=CONDITIONAL (acts in random state 1)
+  Mid 2 Freq                       audio=CONDITIONAL (acts in random state 1)
+  Mid 2 Q                          audio=CONDITIONAL (acts in random state 1)
+  Mid 2 Type                       audio=CONDITIONAL (acts in random state 1)
+  Mid 2 Mode                       audio=CONDITIONAL (acts in random state 1)
+  Mid 2 Bypass                     audio=CONDITIONAL (acts in random state 1)
+  High Freq                        audio=CONDITIONAL (acts in random state 1)
+  High Type                        audio=CONDITIONAL (acts in random state 1)
+  High Mode                        audio=CONDITIONAL (acts in random state 1)
+  High Band Bypass                 audio=CONDITIONAL (acts in random state 1)
+  Oversample Filter                audio=CONDITIONAL (acts in random state 2)
+  Preamp HQ                        audio=CONDITIONAL (acts in random state 3)
+PASS     every parameter changes the sound 
+PASS     every parameter is shown in the GUI 
+PASS     state survives save and reopen 
+PASS     editor reopens 5 close/open cycles
+report: C:\Users\marco\Developer\HybridEQ\qa\2026-11-03-win-published-verify\report.md
