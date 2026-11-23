@@ -17,8 +17,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SDK_REF: MistaMin/hybrideq-host-values
-  GOODLOOKINDRI_REF: MistaMin/semibold-text
+  # The commits 2.0.0 was built from (OpenPluginSDK PR #37, GoodLookin DRI semibold-text); move on deliberately.
+  SDK_REF: b01d07a155e91d138afd32e6f7c5ee195f99cc33
+  GOODLOOKINDRI_REF: 333a952f43c978b86b2232678bc895c209b9806f
   VST3_SDK_REF: v3.8.0_build_66
   CLAP_VALIDATOR_REF: "0.4.1"
   PLUGINVAL_VERSION: v1.0.4

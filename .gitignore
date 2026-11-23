@@ -48,3 +48,7 @@ qa/**/resp.txt
 qa/**/seq.txt
 qa/**/ready.txt
 qa/**/editor_p*.png
+
+# Release builds
+build-release/
+dist-release/

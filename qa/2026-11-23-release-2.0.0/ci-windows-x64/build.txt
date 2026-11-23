@@ -1,0 +1,197 @@
+== plugin HybridEQ (hybrideq) 2.0.0 by OpenGrid, formats: clap,lv2,vst3, x64 Windows
+== Rust library
++ cargo build --release --manifest-path D:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --bin hybrideq-lv2-ttl
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling serde_core v1.0.229
+   Compiling autocfg v1.5.1
+   Compiling num-traits v0.2.19
+   Compiling version_check v0.9.5
+   Compiling zerocopy v0.8.63
+   Compiling ahash v0.8.12
+   Compiling serde v1.0.229
+   Compiling syn v3.0.10
+   Compiling once_cell v1.21.4
+   Compiling cfg-if v1.0.5
+   Compiling allocator-api2 v0.2.21
+   Compiling num-integer v0.1.47
+   Compiling zmij v1.0.23
+   Compiling ttf-parser v0.20.0
+   Compiling serde_json v1.0.154
+   Compiling serde_derive v1.0.229
+   Compiling strength_reduce v0.2.4
+   Compiling goodlookindri v0.2.1 (D:\a\HybridEQ\HybridEQ\GoodLookinDri)
+   Compiling hashbrown v0.14.5
+   Compiling fontdue v0.8.0
+   Compiling goodlookindri-shell v0.2.1 (D:\a\HybridEQ\HybridEQ\GoodLookinDri\shell)
+   Compiling transpose v0.2.3
+   Compiling openplugin-core v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-core)
+   Compiling primal-check v0.3.4
+   Compiling num-complex v0.4.6
+   Compiling itoa v1.0.19
+   Compiling memchr v2.8.3
+   Compiling log v0.4.35
+   Compiling openplugin-dri v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dri)
+   Compiling openplugin-host v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-host)
+   Compiling rustfft v6.4.1
+   Compiling openplugin-targets v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-targets)
+   Compiling hybrideq-engine v2.0.0 (D:\a\HybridEQ\HybridEQ\HybridEQ\crates\engine)
+   Compiling openplugin-dsp v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dsp)
+   Compiling openplugin v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin)
+   Compiling hybrideq v2.0.0 (D:\a\HybridEQ\HybridEQ\HybridEQ\plugin)
+warning: use of deprecated method `std::sync::atomic::Atomic::<u32>::fetch_update`: renamed to `try_update` for consistency
+  --> src\lib.rs:59:22
+   |
+59 |         let _ = slot.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+   |                      ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+help: replace the use of the deprecated method
+   |
+59 -         let _ = slot.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+59 +         let _ = slot.try_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+   |
+
+warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 1m 36s
++ cargo rustc --release --manifest-path D:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --lib -- -C link-arg=/PDBALTPATH:%_PDB% -C link-arg=D:\a\HybridEQ\HybridEQ\build-win\version\clap.res
+   Compiling hybrideq v2.0.0 (D:\a\HybridEQ\HybridEQ\HybridEQ\plugin)
+warning: use of deprecated method `std::sync::atomic::Atomic::<u32>::fetch_update`: renamed to `try_update` for consistency
+  --> src\lib.rs:59:22
+   |
+59 |         let _ = slot.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+   |                      ^^^^^^^^^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+help: replace the use of the deprecated method
+   |
+59 -         let _ = slot.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+59 +         let _ = slot.try_update(Ordering::Relaxed, Ordering::Relaxed, |b| Some((f32::from_bits(b) + v).to_bits()));
+   |
+
+warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 2.68s
+== CLAP
++ replace D:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap with D:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq.dll
+== LV2
++ make D:\a\HybridEQ\HybridEQ\dist\HybridEQ.lv2 with D:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq.dll as HybridEQ.dll
++ D:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq-lv2-ttl.exe D:\a\HybridEQ\HybridEQ\dist\HybridEQ.lv2 HybridEQ
+== VST3 and AAX shells
++ cmake -S D:\a\HybridEQ\HybridEQ\OpenPluginSDK\native -B D:\a\HybridEQ\HybridEQ\build-win\native -A x64 -UOP_RUST_NATIVE_LIBS -DOP_RUST_LIB=D:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq.lib -DOP_PRODUCT=HybridEQ -DOP_BUNDLE_ID=com.OpenGrid.HybridEQ -DOP_VERSION=2.0.0 -DOP_MANUFACTURER=OpenGrid -DOP_BUILD_VST3=ON -DOP_BUILD_AAX=OFF -DOP_EDITOR=ON -DOP_TAIL=ON -DOP_AAX_PAGES=OFF -DOP_TRIM_PATHS=C:/Users/runneradmin;D:/a/HybridEQ/HybridEQ/build-win;D:/a/HybridEQ/HybridEQ/HybridEQ;D:/a/HybridEQ/HybridEQ/HybridEQ/plugin;D:/a/HybridEQ/HybridEQ/OpenPluginSDK;D:/a/HybridEQ/HybridEQ/vst3sdk -DOP_VST3_SDK=D:\a\HybridEQ\HybridEQ\vst3sdk
+-- Building for: Visual Studio 18 2026
+-- The C compiler identification is MSVC 19.52.37029.0
+-- The CXX compiler identification is MSVC 19.52.37029.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/MSVC/14.52.37025/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Enterprise/VC/Tools/MSVC/14.52.37025/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Role proofs not built: no example_role_tags.lib (cargo build --release --lib -p example-role-tags)
+-- Expression proof not built: no example_expression_synth.lib (cargo build --release --lib -p example-expression-synth)
+-- Identity proofs not built: no example_pinned_*.lib (cargo build --release --lib -p example-pinned-a -p example-pinned-b -p example-pinned-plain-a -p example-pinned-plain-b)
+-- [SMTG] SMTG_AAX_SDK_PATH is not set. If you need it, please download the AAX SDK!
+-- Could NOT find LIBJACK (missing: LIBJACK_LIBRARIES LIBJACK_INCLUDE_DIR) 
+-- Performing Test SMTG_USE_STDATOMIC_H
+-- Performing Test SMTG_USE_STDATOMIC_H - Failed
+-- Configuring done (14.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: D:/a/HybridEQ/HybridEQ/build-win/native
++ cmake --build D:\a\HybridEQ\HybridEQ\build-win\native --config Release -j 4 --target OpenPluginVST3
+MSBuild version 18.12.2-1.26514.2+04f6ca984 for .NET Framework
+
+  1>Checking Build System
+  Building Custom Rule D:/a/HybridEQ/HybridEQ/vst3sdk/CMakeLists.txt
+  baseiids.cpp
+  fbuffer.cpp
+  fdebug.cpp
+  fdynlib.cpp
+  Building Custom Rule D:/a/HybridEQ/HybridEQ/vst3sdk/CMakeLists.txt
+  conststringtable.cpp
+  coreiids.cpp
+  funknown.cpp
+  ustring.cpp
+  fobject.cpp
+  fstreamer.cpp
+  fstring.cpp
+  timer.cpp
+  updatehandler.cpp
+  fcondition.cpp
+  flock.cpp
+  pluginterfaces.vcxproj -> D:\a\HybridEQ\HybridEQ\build-win\native\lib\Release\pluginterfaces.lib
+  base.vcxproj -> D:\a\HybridEQ\HybridEQ\build-win\native\lib\Release\base.lib
+  Building Custom Rule D:/a/HybridEQ/HybridEQ/vst3sdk/CMakeLists.txt
+  commoniids.cpp
+  commonstringconvert.cpp
+  openurl.cpp
+  systemclipboard_linux.cpp
+  systemclipboard_win32.cpp
+  threadchecker_linux.cpp
+  threadchecker_win32.cpp
+  readfile.cpp
+  vstpresetfile.cpp
+  sdk_common.vcxproj -> D:\a\HybridEQ\HybridEQ\build-win\native\lib\Release\sdk_common.lib
+  Building Custom Rule D:/a/HybridEQ/HybridEQ/vst3sdk/CMakeLists.txt
+  pluginview.cpp
+  pluginfactory.cpp
+  moduleinit.cpp
+  dataexchange.cpp
+  stringconvert.cpp
+  systemtime.cpp
+  testing.cpp
+  vst2persistence.cpp
+  vstaudioeffect.cpp
+  vstbus.cpp
+  vstcomponent.cpp
+  vstcomponentbase.cpp
+  vsteditcontroller.cpp
+  vstinitiids.cpp
+  vstnoteexpressiontypes.cpp
+  vstparameters.cpp
+  vstrepresentation.cpp
+  sdk.vcxproj -> D:\a\HybridEQ\HybridEQ\build-win\native\lib\Release\sdk.lib
+  Building Custom Rule D:/a/HybridEQ/HybridEQ/OpenPluginSDK/native/CMakeLists.txt
+  OpenPluginVST3Win.cpp
+  dllmain.cpp
+  editor_pixels.cpp
+  Generating Code...
+     Creating library D:/a/HybridEQ/HybridEQ/build-win/native/implib/OpenPluginVST3/HybridEQ.lib and object D:/a/HybridEQ/HybridEQ/build-win/native/implib/OpenPluginVST3/HybridEQ.exp
+  OpenPluginVST3.vcxproj -> D:\a\HybridEQ\HybridEQ\build-win\native\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3
+== VST3
++ replace D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3 with D:\a\HybridEQ\HybridEQ\build-win\native\HybridEQ.vst3
+== checks
+-- D:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap
+x64 DLL, 3273728 bytes
+checking 1 binaries for Visual C++ runtime imports
+ok  D:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap : bcryptprimitives.dll UIAutomationCore.DLL OLEAUT32.dll USER32.dll GDI32.dll KERNEL32.dll SHELL32.dll COMDLG32.dll COMCTL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll
+all 1 binaries are free of the Visual C++ runtime
+imports bcryptprimitives.dll UIAutomationCore.DLL OLEAUT32.dll USER32.dll GDI32.dll KERNEL32.dll SHELL32.dll COMDLG32.dll COMCTL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll
+exports clap_entry
+version resource: 'HybridEQ' 2.0.0 by 'OpenGrid' (HybridEQ (CLAP, LV2); file version 2.0.0)
+-- D:\a\HybridEQ\HybridEQ\dist\HybridEQ.lv2\HybridEQ.dll
+x64 DLL, 3273728 bytes
+checking 1 binaries for Visual C++ runtime imports
+ok  D:\a\HybridEQ\HybridEQ\dist\HybridEQ.lv2\HybridEQ.dll : bcryptprimitives.dll UIAutomationCore.DLL OLEAUT32.dll USER32.dll GDI32.dll KERNEL32.dll SHELL32.dll COMDLG32.dll COMCTL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll
+all 1 binaries are free of the Visual C++ runtime
+imports bcryptprimitives.dll UIAutomationCore.DLL OLEAUT32.dll USER32.dll GDI32.dll KERNEL32.dll SHELL32.dll COMDLG32.dll COMCTL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll
+exports lv2_descriptor lv2ui_descriptor
+version resource: 'HybridEQ' 2.0.0 by 'OpenGrid' (HybridEQ (CLAP, LV2); file version 2.0.0)
+-- D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3
+x64 DLL, 3321856 bytes
+checking 1 binaries for Visual C++ runtime imports
+ok  D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3 : USER32.dll bcryptprimitives.dll GDI32.dll KERNEL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll SHELL32.dll COMDLG32.dll COMCTL32.dll OLEAUT32.dll UIAutomationCore.DLL ole32.dll
+all 1 binaries are free of the Visual C++ runtime
+imports USER32.dll bcryptprimitives.dll GDI32.dll KERNEL32.dll ntdll.dll api-ms-win-core-synch-l1-2-0.dll SHELL32.dll COMDLG32.dll COMCTL32.dll OLEAUT32.dll UIAutomationCore.DLL ole32.dll
+exports GetPluginFactory InitDll ExitDll
+version resource: 'HybridEQ' 2.0.0 by 'OpenGrid' (HybridEQ (VST3); file version 2.0.0)
+lv2 file: manifest.ttl
+lv2 file: HybridEQ.ttl
+== done
+D:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap
+D:\a\HybridEQ\HybridEQ\dist\HybridEQ.lv2\HybridEQ.dll
+D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3\Contents\x86_64-win\HybridEQ.vst3

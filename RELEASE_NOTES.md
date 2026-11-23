@@ -48,7 +48,22 @@ the archive to `~/.vst3`, `~/.clap` and `~/.lv2`. Close the DAW first, remove ol
 
 ## Checks
 
-CHECKS
+All five downloads were built from the same source (HybridEQ `f9e6307`, OpenPluginSDK `b01d07a`,
+GoodLookin DRI `333a952`): macOS on a Mac, Windows and Linux each on its own GitHub runner.
+
+| Check | macOS | Windows x64 | Windows ARM64 | Linux x86_64 | Linux aarch64 |
+|---|---|---|---|---|---|
+| Engine and plug-in tests (including the null tests against 1.6.16 renders) | pass | pass | pass | pass | pass |
+| VST3 SDK validator | 47 / 47 | 47 / 47 | 47 / 47 | 47 / 47 | 47 / 47 |
+| clap-validator 0.4.1 | 34 pass, 0 fail | 33 pass, 0 fail | 33 pass, 0 fail | 34 pass, 0 fail | 34 pass, 0 fail |
+| pluginval, strictness 10 (VST3) | pass (no editor tests) | pass, with the editor | not available | pass, with the editor | not available |
+| auval | pass (2.0.0) | | | | |
+| AAX Validator (signed AAX) | 6 / 6 | | | | |
+| Signing | Developer ID, notarized, PACE | none | none | | |
+
+A macOS build from earlier the same day passed the REAPER host tests in VST3, AU and CLAP: every
+parameter acts and is on screen, renders repeat exactly, the editor reopens, and settings survive
+saving and reopening the project.
 
 ## Known limits
 
