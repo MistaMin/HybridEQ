@@ -1,5 +1,5 @@
 Started validating: /home/runner/work/HybridEQ/HybridEQ/dist/HybridEQ.vst3
-Random seed: 0x6e07e7c
+Random seed: 0x54a451b
 Validation started
 Strictness level: 10
 -----------------------------------------------------------------

@@ -5,10 +5,12 @@ GitHub Actions (explicit exception to native machines); Windows as an unsigned I
 standalone; the three differences from 1.6.16 accepted and documented (manual, "What changed from 1.6");
 the SDK VST3 bug (edits while the host bypasses the effect were not saved) fixed before release.
 
-Source: HybridEQ f9e6307, OpenPluginSDK b01d07a (branch MistaMin/hybrideq-host-values, PR #37),
+Source: HybridEQ f9e6307, OpenPluginSDK b01d07a for macOS (branch MistaMin/hybrideq-host-values, PR #37),
 GoodLookin DRI 333a952 (branch MistaMin/semibold-text). macOS: this Mac, VST3 SDK v3.8.1, universal.
-Windows and Linux: CI run 45163752697 (windows-latest, windows-11-arm, ubuntu-22.04, ubuntu-22.04-arm),
-VST3 SDK v3.8.0_build_66.
+Windows and Linux: CI run 45202748784 at HybridEQ 09c7124 with OpenPluginSDK c5446e7 (PR #42, the X11 frame
+pacing; see the finding below) on windows-latest, windows-11-arm, ubuntu-22.04 and ubuntu-22.04-arm,
+VST3 SDK v3.8.0_build_66. The first Windows and Linux builds (run 45163752697, SDK b01d07a) were replaced.
+OpenPluginSDK PRs #37 and #42 and GoodLookin DRI PR #1 are merged into their main branches.
 
 | Check | Result | Evidence |
 |---|---|---|

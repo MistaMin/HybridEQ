@@ -2,8 +2,8 @@
 == Rust library
 + cargo build --release --manifest-path D:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --bin hybrideq-lv2-ttl
    Compiling proc-macro2 v1.0.107
-   Compiling quote v1.0.47
    Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
    Compiling serde_core v1.0.229
    Compiling autocfg v1.5.1
    Compiling num-traits v0.2.19
@@ -19,19 +19,19 @@
    Compiling zmij v1.0.23
    Compiling ttf-parser v0.20.0
    Compiling serde_json v1.0.154
-   Compiling serde_derive v1.0.229
    Compiling strength_reduce v0.2.4
    Compiling goodlookindri v0.2.1 (D:\a\HybridEQ\HybridEQ\GoodLookinDri)
+   Compiling serde_derive v1.0.229
    Compiling hashbrown v0.14.5
-   Compiling fontdue v0.8.0
-   Compiling goodlookindri-shell v0.2.1 (D:\a\HybridEQ\HybridEQ\GoodLookinDri\shell)
    Compiling transpose v0.2.3
-   Compiling openplugin-core v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-core)
+   Compiling fontdue v0.8.0
    Compiling primal-check v0.3.4
+   Compiling goodlookindri-shell v0.2.1 (D:\a\HybridEQ\HybridEQ\GoodLookinDri\shell)
    Compiling num-complex v0.4.6
+   Compiling openplugin-core v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-core)
    Compiling itoa v1.0.19
-   Compiling memchr v2.8.3
    Compiling log v0.4.35
+   Compiling memchr v2.8.3
    Compiling openplugin-dri v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dri)
    Compiling openplugin-host v1.0.0-beta (D:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-host)
    Compiling rustfft v6.4.1
@@ -54,7 +54,7 @@ help: replace the use of the deprecated method
    |
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
-    Finished `release` profile [optimized] target(s) in 1m 36s
+    Finished `release` profile [optimized] target(s) in 1m 18s
 + cargo rustc --release --manifest-path D:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --lib -- -C link-arg=/PDBALTPATH:%_PDB% -C link-arg=D:\a\HybridEQ\HybridEQ\build-win\version\clap.res
    Compiling hybrideq v2.0.0 (D:\a\HybridEQ\HybridEQ\HybridEQ\plugin)
 warning: use of deprecated method `std::sync::atomic::Atomic::<u32>::fetch_update`: renamed to `try_update` for consistency
@@ -71,7 +71,7 @@ help: replace the use of the deprecated method
    |
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
-    Finished `release` profile [optimized] target(s) in 2.68s
+    Finished `release` profile [optimized] target(s) in 2.20s
 == CLAP
 + replace D:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap with D:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq.dll
 == LV2
@@ -99,8 +99,8 @@ warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq`
 -- Could NOT find LIBJACK (missing: LIBJACK_LIBRARIES LIBJACK_INCLUDE_DIR) 
 -- Performing Test SMTG_USE_STDATOMIC_H
 -- Performing Test SMTG_USE_STDATOMIC_H - Failed
--- Configuring done (14.4s)
--- Generating done (0.2s)
+-- Configuring done (11.1s)
+-- Generating done (0.1s)
 -- Build files have been written to: D:/a/HybridEQ/HybridEQ/build-win/native
 + cmake --build D:\a\HybridEQ\HybridEQ\build-win\native --config Release -j 4 --target OpenPluginVST3
 MSBuild version 18.12.2-1.26514.2+04f6ca984 for .NET Framework
