@@ -22,5 +22,25 @@ VST3 SDK v3.8.0_build_66.
 | Linux binaries | glibc 2.35; NEEDED only glibc, libgcc_s and the loader; the VST3 exports only its three entry points | ci-linux-*/build.txt |
 | Windows binaries | no Visual C++ runtime imports; version resources; installers 3.4 and 3.6 MB | ci-windows-*/build.txt |
 
+## Finding: Linux editor stalled the host (fixed before release)
+
+After merging main into rust-port (QA files only), CI run 45166466133 failed Linux x86_64 pluginval
+"Editor Automation: Timeout after 30 secs", and its rerun failed the same way; the run before (45163752697,
+same source) had passed. A diagnostic workflow (branch diag/linux-editor-hang, deleted after use) stalled
+in 7 of 8 runs over seeds 0x727d986, 1, 2 and 3.
+
+- Cause (backtraces in linux-editor-stall/before/*-bt.txt, four snapshots 5 s apart): the main thread was
+  always in LinuxEditorView::onTimer -> EditorView::pump -> HybridEqEditor::render. The test changes every
+  parameter every 10 ms, so every frame repaints everything: 300-650 ms on the Mac, worst 1.15 s on the
+  runner. JUCE's timer thread re-posts its message every 300 ms while one is running
+  (juce_Timer.cpp, callbackArrived.wait (300)), each drew another frame, and pluginval's callAsync that
+  closes the editor never ran.
+- Fix: OpenPluginSDK 6eed477 (PR #42): after a frame the X11 view stays idle as long as the frame took;
+  pending damage is drawn at the next pump.
+- After: 6 of 6 pluginval runs SUCCESS, 0 failed (seeds 0x727d986 x2, 0x6e07e7c, 1, 2, 3):
+  linux-editor-stall/after/.
+- Not fixed in 2.0.0: any parameter change repaints the whole editor (85 ms per frame at the defaults on
+  the Mac, more with new knob angles or a section type change). Follow-up: damage only the changed control.
+
 Not done: Windows and Linux in a DAW by hand; ARM pluginval; Windows code signing (owner: unsigned);
 REAPER rerun on the final macOS build (the 1.7.0-day build passed; the final build passed the validators).
