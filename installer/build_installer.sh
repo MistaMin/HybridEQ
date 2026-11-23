@@ -3,11 +3,13 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-ARTEFACTS="$PROJECT_DIR/build3/HybridEQ_artefacts/Release"
+# The built bundles side by side (HybridEQ.vst3, .component, .clap, .lv2, .aaxplugin), as
+# OpenPluginSDK's scripts/build_plugin.sh writes them; signed (and the AAX PACE-wrapped) already.
+BUNDLES="${BUNDLES:-$PROJECT_DIR/dist-rust}"
 STAGING="$SCRIPT_DIR/staging"
 PKG_ROOT="$STAGING/root"
 SCRIPTS_DIR="$STAGING/scripts"
-OUTPUT="$PROJECT_DIR/build3/HybridEQ-Installer.pkg"
+OUTPUT="${OUTPUT:-$PROJECT_DIR/dist-rust/HybridEQ-Installer.pkg}"
 IDENTIFIER="com.opengrid.hybrideq"
 
 # ---- Version scheme ----
@@ -36,31 +38,28 @@ mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/VST3"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/Components"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/CLAP"
 mkdir -p "$PKG_ROOT/Library/Audio/Plug-Ins/LV2"
-mkdir -p "$PKG_ROOT/Applications"
 mkdir -p "$SCRIPTS_DIR"
 
 echo "Copying VST3..."
-cp -R "$ARTEFACTS/VST3/HybridEQ.vst3" "$PKG_ROOT/Library/Audio/Plug-Ins/VST3/"
+cp -R "$BUNDLES/HybridEQ.vst3" "$PKG_ROOT/Library/Audio/Plug-Ins/VST3/"
 
 echo "Copying CLAP..."
-cp -R "$ARTEFACTS/CLAP/HybridEQ.clap" "$PKG_ROOT/Library/Audio/Plug-Ins/CLAP/"
+cp -R "$BUNDLES/HybridEQ.clap" "$PKG_ROOT/Library/Audio/Plug-Ins/CLAP/"
 
 echo "Copying LV2..."
-cp -R "$ARTEFACTS/LV2/HybridEQ.lv2" "$PKG_ROOT/Library/Audio/Plug-Ins/LV2/"
+cp -R "$BUNDLES/HybridEQ.lv2" "$PKG_ROOT/Library/Audio/Plug-Ins/LV2/"
 
 echo "Copying AU..."
-cp -R "$ARTEFACTS/AU/HybridEQ.component" "$PKG_ROOT/Library/Audio/Plug-Ins/Components/"
+cp -R "$BUNDLES/HybridEQ.component" "$PKG_ROOT/Library/Audio/Plug-Ins/Components/"
 
 if [ "$INCLUDE_AAX" = "1" ]; then
     echo "Copying AAX..."
     mkdir -p "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins"
-    cp -R "$ARTEFACTS/AAX/HybridEQ.aaxplugin" "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins/"
+    cp -R "$BUNDLES/HybridEQ.aaxplugin" "$PKG_ROOT/Library/Application Support/Avid/Audio/Plug-Ins/"
 else
     echo "Skipping AAX (INCLUDE_AAX=0)."
 fi
 
-echo "Copying Standalone..."
-cp -R "$ARTEFACTS/Standalone/HybridEQ.app" "$PKG_ROOT/Applications/"
 
 cat > "$SCRIPTS_DIR/postinstall" << 'POSTINSTALL'
 #!/bin/bash
@@ -84,7 +83,6 @@ cat > "$STAGING/welcome.html" << HTML
 <li><b>CLAP</b> &rarr; /Library/Audio/Plug-Ins/CLAP/</li>
 <li><b>LV2</b> &rarr; /Library/Audio/Plug-Ins/LV2/</li>
 $AAX_LI
-<li><b>Standalone App</b> &rarr; /Applications/</li>
 </ul>
 <p>Version $VERSION &mdash; macOS Universal (Apple silicon &amp; Intel)</p>
 </body></html>
@@ -96,15 +94,14 @@ mkdir -p "$LICENSE_DIR"
 cp "$PROJECT_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/BINARY_LICENSE.txt"
 cp "$PROJECT_DIR/LICENSE" "$LICENSE_DIR/LICENSE"
 cp "$PROJECT_DIR/THIRD_PARTY_NOTICES.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt"
-cp "$PROJECT_DIR/third_party/GoodLookinUI/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt"
 cp -R "$PROJECT_DIR/Licenses/third-party" "$LICENSE_DIR/third-party"
 cat "$LICENSE_DIR/BINARY_LICENSE.txt" "$LICENSE_DIR/THIRD_PARTY_NOTICES.txt" \
-    "$LICENSE_DIR/LICENSE" "$LICENSE_DIR/GoodLookinUI-LICENSE.txt" > "$STAGING/license.txt"
+    "$LICENSE_DIR/LICENSE" > "$STAGING/license.txt"
 
 cat > "$STAGING/conclusion.html" << 'HTML'
 <html><body style="font-family:-apple-system,Helvetica,Arial,sans-serif;padding:20px;">
 <h1>Installation Complete</h1>
-<p>HybridEQ has been installed successfully (VST3, Audio Unit, AAX, CLAP, LV2 and the standalone app).</p>
+<p>HybridEQ has been installed successfully (VST3, Audio Unit, AAX, CLAP and LV2).</p>
 <p>License texts are in /Library/Application Support/OpenGrid/HybridEQ/Licenses.</p>
 <p>Please restart your DAW to load the new plug-in.</p>
 </body></html>
@@ -122,9 +119,9 @@ cat > "$STAGING/distribution.xml" << DIST
     <installation-check script="installCheck();"/>
     <script>
 function installCheck() {
-    if (!(system.compareVersions(system.version.ProductVersion, '10.13') &gt;= 0)) {
+    if (!(system.compareVersions(system.version.ProductVersion, '11.0') &gt;= 0)) {
         my.result.title = 'Unsupported macOS';
-        my.result.message = 'HybridEQ requires macOS 10.13 or later.';
+        my.result.message = 'HybridEQ requires macOS 11 or later.';
         my.result.type = 'Fatal';
         return false;
     }
@@ -202,18 +199,6 @@ cat > "$STAGING/component.plist" << COMPONENTPLIST
         <string>Library/Audio/Plug-Ins/CLAP/HybridEQ.clap</string>
     </dict>
 $AAX_DICT
-    <dict>
-        <key>BundleHasStrictIdentifier</key>
-        <false/>
-        <key>BundleIsRelocatable</key>
-        <false/>
-        <key>BundleIsVersionChecked</key>
-        <false/>
-        <key>BundleOverwriteAction</key>
-        <string>upgrade</string>
-        <key>RootRelativeBundlePath</key>
-        <string>Applications/HybridEQ.app</string>
-    </dict>
 </array>
 </plist>
 COMPONENTPLIST

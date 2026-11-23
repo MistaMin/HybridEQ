@@ -1,25 +1,59 @@
-# HybridEQ 1.6.16
+# HybridEQ 2.0.0
 
-This update returns the editor's drawing to the 1.6.13 path, which 1.6.14 changed, and
-reduces CPU use while the full-window analyser is open. It keeps the existing sound,
-controls, parameter IDs and saved settings.
+![HybridEQ 2.0.0](https://raw.githubusercontent.com/MistaMin/HybridEQ/v2.0.0/Docs/HybridEQ-2.0.0.png)
 
-- The cached artwork introduced in 1.6.14 is removed, because it made the controls look softer. Knobs use the 1.6.13 spring animation again.
-- The full-window analyser declares itself opaque, so the controls beneath it are no longer redrawn on every frame. On the development Mac, CPU with the analyser open fell from about 61% to about 35%. CPU with it closed has not been measured against 1.6.13 for this build.
-- The small analyser behind the EQ curve pauses while the full-window view covers it.
-- Current user manual and plugin-manager bundle archives.
+HybridEQ rewritten in Rust: the same six-band EQ, four preamp circuits, harmonics and oversampling,
+now with AUTO GAIN and DELTA, a resizable editor, and Windows and Linux builds for x64 and ARM. It
+replaces 1.6.16 in place: the same plug-in IDs in every format, the same parameter IDs, and 1.6
+projects open with every setting.
 
-## Verification
+## What is new
 
-The Release build passes and the local spectrum and processor tests pass. The
-1.6.13 and 1.6.16 standalones were compared on the same Mac with interleaved runs
-(see Docs/UI_PERFORMANCE.md). Local measurements are not whole-editor frame rates.
-The original Windows 11 / Iris Xe report still needs confirmation on the affected hardware.
+- **AUTO GAIN** holds the output at the input's loudness (ITU-R BS.1770, 3 s window, ±24 dB), so
+  you compare tone and not level.
+- **DELTA** plays only what HybridEQ changes: the processed signal minus the latency-aligned input.
+- **Editor:** resizes in proportion (826 x 616 to 1770 x 1320 points), keeps its size in the
+  project, and draws its text crisply at every window size.
+- **Automation** lands on the exact sample.
+- **Windows ARM64 and Linux aarch64** builds; Windows ships as an installer.
 
-## Downloads and installation
+## Differences from 1.6 (on purpose)
 
-macOS universal (11+): VST3, AU, PACE-signed AAX, CLAP and LV2.
-Windows x64 and Linux x86_64: VST3, CLAP and LV2; AAX requires the separately licensed SDK and signing setup and is not supplied for those platforms.
-Standalone is built and checked locally but is not shipped in these bundle archives.
+The manual's "What changed from 1.6" explains each, and why it is better:
 
-Use OpenGrid Plugin Manager for macOS/Windows bundle ZIPs, or install the modules manually as described in the manual. Close the DAW before updating. The macOS bundle archive is Developer ID signed and notarized. SHA-256 checksum files accompany downloads.
+1. The FSF high shelf no longer inverts the signal's polarity when boosted near the top of the spectrum.
+2. New oversampling filters: IIR keeps 1.6's delay and level (phase differs in the top octave);
+   FIR adds 11 samples of latency at 4x and 9 at 8x, reported to the DAW.
+3. VST3: the DAW's bypass for HybridEQ is a latency-aligned crossfade with a new parameter ID, so
+   automation of that bypass switch in 1.6 VST3 projects does not carry over.
+
+## Downloads
+
+| File | System | Formats |
+|---|---|---|
+| HybridEQ-2.0.0-macos.pkg | macOS 11+, Apple silicon and Intel | VST3, AU, AAX (PACE-signed), CLAP, LV2 |
+| HybridEQ-2.0.0-windows-x64-setup.exe | Windows 10+, x64 | VST3, CLAP, LV2 |
+| HybridEQ-2.0.0-windows-arm64-setup.exe | Windows 10+, ARM64 | VST3, CLAP, LV2 |
+| HybridEQ-2.0.0-linux-x86_64.tar.gz | Linux x86_64, glibc 2.35+ | VST3, CLAP, LV2 |
+| HybridEQ-2.0.0-linux-aarch64.tar.gz | Linux aarch64, glibc 2.35+ | VST3, CLAP, LV2 |
+| HybridEQ-2.0.0-User-Manual.pdf | | the user manual |
+| opengrid-manifest.json | | sizes and SHA-256 of the installers, for the Plugin Manager |
+
+Every download has a `.sha256` file.
+
+**Install.** macOS: run the installer (Developer ID signed and notarized). Windows: run the
+installer for your processor and choose the formats; it is not code-signed, so SmartScreen may ask
+first ("More info", "Run anyway"). Linux: copy `usr/lib/vst3`, `usr/lib/clap` and `usr/lib/lv2` from
+the archive to `~/.vst3`, `~/.clap` and `~/.lv2`. Close the DAW first, remove older copies, rescan.
+
+## Checks
+
+CHECKS
+
+## Known limits
+
+- The Windows and Linux builds have passed the validators but have not been tried in a DAW by hand.
+  The ARM builds were validated on ARM machines without pluginval, which ships for x64 only.
+- AAX is macOS only. There is no standalone application.
+- The Windows installer is not code-signed.
+- The Linux editor needs X11 (Xwayland works).

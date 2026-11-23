@@ -20,7 +20,7 @@ env:
   SDK_REF: MistaMin/hybrideq-host-values
   GOODLOOKINDRI_REF: MistaMin/semibold-text
   VST3_SDK_REF: v3.8.0_build_66
-  CLAP_VALIDATOR_REF: "0.3.2"
+  CLAP_VALIDATOR_REF: "0.4.1"
   PLUGINVAL_VERSION: v1.0.4
   CARGO_TERM_COLOR: never
 
@@ -78,7 +78,7 @@ jobs:
 
       - name: clap-validator
         run: |
-          cargo install --git https://github.com/free-audio/clap-validator --tag $env:CLAP_VALIDATOR_REF --root "$env:RUNNER_TEMP/cv"
+          cargo install --git https://github.com/free-audio/clap-validator --tag $env:CLAP_VALIDATOR_REF --locked --root "$env:RUNNER_TEMP/cv"
           & "$env:RUNNER_TEMP/cv/bin/clap-validator.exe" validate dist/HybridEQ.clap 2>&1 | Tee-Object qa/clap-validator.txt
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
 
@@ -177,7 +177,7 @@ jobs:
       - name: clap-validator
         run: |
           set -o pipefail
-          cargo install --git https://github.com/free-audio/clap-validator --tag "$CLAP_VALIDATOR_REF" --root "$RUNNER_TEMP/cv"
+          cargo install --git https://github.com/free-audio/clap-validator --tag "$CLAP_VALIDATOR_REF" --locked --root "$RUNNER_TEMP/cv"
           "$RUNNER_TEMP/cv/bin/clap-validator" validate dist/HybridEQ.clap 2>&1 | tee qa/clap-validator.txt
 
       - name: VST3 SDK validator
@@ -211,6 +211,7 @@ jobs:
           cp -R dist/HybridEQ.lv2 "$root/usr/lib/lv2/"
           cp -R dist/HybridEQ.vst3 "$root/usr/lib/vst3/"
           cp HybridEQ/LICENSE HybridEQ/BINARY_LICENSE.txt HybridEQ/THIRD_PARTY_NOTICES.txt "$root/usr/share/doc/hybrideq/"
+          cp -R HybridEQ/Licenses/third-party "$root/usr/share/doc/hybrideq/"
           tar -C stage --owner=0 --group=0 -czf "$name.tar.gz" "$name"
           sha256sum "$name.tar.gz" | tee "$name.tar.gz.sha256"
           tar -tzf "$name.tar.gz" | tee qa/archive-contents.txt

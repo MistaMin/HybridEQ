@@ -55,3 +55,4 @@ Source: "{#Dist}\HybridEQ.lv2\*"; DestDir: "{commoncf64}\LV2\HybridEQ.lv2"; Comp
 Source: "{#Root}\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ignoreversion
 Source: "{#Root}\BINARY_LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#Root}\THIRD_PARTY_NOTICES.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Root}\Licenses\third-party\*"; DestDir: "{app}\third-party"; Flags: ignoreversion recursesubdirs

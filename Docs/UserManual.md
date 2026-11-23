@@ -1,101 +1,128 @@
 # HybridEQ
-## User manual - version 1.6.16
+## User manual - version 2.0.0
 
 Six-band console equaliser with preamp character, harmonic saturation and mid/side processing.
 
-![HybridEQ interface](HybridEQ-1.6.14-preview.png)
+![HybridEQ interface](HybridEQ-2.0.0.png)
 
 **Quick start**
 
 - Insert HybridEQ on a stereo audio track or bus.
-- Start with Standard preamp mode and 1x oversampling. These are the lightest options.
-- Adjust a band's gain, frequency and Q; use its B key to compare the bypassed band.
-- Match the output level with OUTPUT before comparing settings.
-- Save your DAW project to store parameters and spectrum settings.
+- Start with the CIRCUIT key unlit and 1x oversampling. These are the lightest options.
+- Adjust a band's gain, frequency and Q; use the band's key at its top right to compare it bypassed.
+- Turn on AUTO GAIN, or match the level with OUTPUT, before comparing settings by ear.
+- Save your DAW project to store the parameters and the editor size.
 
-Version 1.6.16 returns the editor's drawing to the 1.6.13 path, so the controls look as they did before the 1.6.14 artwork cache. The full-window analyser no longer forces the controls beneath it to redraw, which lowers CPU use while it is open. It does not change the audio engine, parameter IDs or FFT resolution. The layout and hardware styles remain the same.
+Version 2.0.0 is HybridEQ rewritten in Rust. The equaliser, preamp circuits, harmonics and oversampling are the same models as in 1.6, and projects saved with 1.6 open with every setting. It adds AUTO GAIN and DELTA, a resizable editor, sample-accurate automation, and Windows ARM64 and Linux aarch64 builds. Three details differ from 1.6 on purpose; they are explained under "What changed from 1.6".
 
 <!-- pagebreak -->
 
 # Equaliser controls
 
-The six strips share the same controls where applicable. Drag a knob to adjust its value. Knob pointers and the numeric readouts follow the current value immediately. In the response plot, drag a band point horizontally for frequency and vertically for gain; use the wheel over a point with Q to adjust its width.
+The six strips share the same controls where applicable. Drag a knob up or down to change its value; hold Shift for fine steps. Double-click a knob to return it to its initial value, or turn the mouse wheel over it. The readout under each knob shows the value at most three digits long (25 Hz, 2.50 kHz, Q 0.71, Q 10.0).
+
+In the response plot, drag a band's point sideways for frequency and up or down for gain. Turn the mouse wheel over a point to change its Q.
 
 | Band | Frequency range / initial value | Gain | Q / initial value |
 |---|---|---|---|
-| LOW CUT | 20 Hz - 1 kHz / 20 Hz | Filter only | 0.10 - 10.00 / 0.707 |
+| LOW CUT | 20 Hz - 1 kHz / 20 Hz | Filter only | 0.10 - 10.0 / 0.71 |
 | LOW BAND | 20 - 400 Hz / 100 Hz | -18 to +18 dB / 0 dB | Fixed by type |
-| MID 1 | 200 Hz - 6 kHz / 800 Hz | -18 to +18 dB / 0 dB | 0.10 - 10.00 / 1.00 |
-| MID 2 | 200 Hz - 6 kHz / 2.5 kHz | -18 to +18 dB / 0 dB | 0.10 - 10.00 / 1.00 |
-| HIGH BAND | 800 Hz - 30 kHz / 8 kHz | -18 to +18 dB / 0 dB | Fixed by type |
-| HIGH CUT | 1 - 30 kHz / 20 kHz | Filter only | 0.10 - 10.00 / 0.707 |
+| MID 1 | 200 Hz - 6 kHz / 800 Hz | -18 to +18 dB / 0 dB | 0.10 - 10.0 / 1.00 |
+| MID 2 | 200 Hz - 6 kHz / 2.50 kHz | -18 to +18 dB / 0 dB | 0.10 - 10.0 / 1.00 |
+| HIGH BAND | 800 Hz - 30 kHz / 8.00 kHz | -18 to +18 dB / 0 dB | Fixed by type |
+| HIGH CUT | 1 - 30 kHz / 20.0 kHz | Filter only | 0.10 - 10.0 / 0.71 |
 
-**SLOPE:** Low Cut and High Cut offer -6, -12, -18 and -24 dB/oct labels. Both initially use -12 dB/oct.
+**SLOPE:** Low Cut and High Cut offer -6, -12, -18 and -24 dB/oct. Both start at -12 dB/oct.
 
-**TYPE:** Low and High bands offer Bax-EQ, Brit and FSF; both start at Bax-EQ. Mid bands offer N-EQ, Brit and A-Type; both start at N-EQ. Mid-band Q is disabled for A-Type.
+**TYPE:** The Low and High bands offer Bax-EQ, Brit and FSF; both start at Bax-EQ. The Mid bands offer N-EQ, Brit and A-Type; both start at N-EQ. A-Type has a fixed Q, so its Q knob has no effect. Each type gives its strip its own plate, knob style and colour.
 
-**M/S:** Each band can process Stereo, Mid or Side. All initially use Stereo. Mid/Side processing is meaningful on stereo material; the plotted response does not separately display both stereo paths.
+**M/S:** Each band processes Stereo, Mid or Side. All start at Stereo. Mid and Side are meaningful on stereo material; the response plot shows one curve per band.
 
-**B:** Each band has an independent bypass key; all bands initially process audio.
+**Band key (top right of each strip):** lit when the band processes audio; click it to bypass the band. A bypassed band drops out of the response curve.
 
-Frequency controls extend to 30 kHz; the analyser stops at the session's Nyquist frequency. EQ response and the spectrum use different vertical scales: the EQ plot shows gain, while the analyser shows signal level.
+**Choice keys** (SLOPE, TYPE, M/S, PAD, the preamp type, RATE and FILTER): click to step forward, right-click to step back.
+
+**Host menu:** right-click a knob, a fader, a band key, a point in the response plot or the CIRCUIT key to open your DAW's menu for that parameter (automation, MIDI learn), where the DAW offers one.
+
+Frequency controls reach 30 kHz; the analyser stops at the session's Nyquist frequency. The response plot shows gain, the analyser behind it shows signal level, on separate scales.
+
+![Band strips](HybridEQ-2.0.0-bands.png)
 
 <!-- pagebreak -->
 
 # Preamp, harmonics and global controls
 
-**PREAMP TYPE:** Off, Brit, N-Type, FSF and A-Type. The default is Brit. Off selects the clean preamp model. Use the type key's dropdown to select a model.
+![Preamp, harmonics, global and level](HybridEQ-2.0.0-controls.png)
 
-**PAD:** -20 dB, Unity or +10 dB; initially Unity. **GAIN:** -12 to +24 dB; initially 0 dB. **B:** bypasses the preamp section.
+**Preamp type:** Off, Brit, N-Type, FSF and A-Type. Brit is the initial type. Off selects the clean preamp model.
+
+**PAD:** -20 dB, Unity or +10 dB; initially Unity. **GAIN:** -12 to +24 dB; initially 0 dB. **Preamp key (top right):** bypasses the preamp section.
 
 The CIRCUIT key cycles through three engines:
 
 | Key state | Engine | Use |
 |---|---|---|
-| CIRCUIT unlit | Standard static models with anti-aliasing | Lightest preamp option |
+| CIRCUIT unlit | Static models with anti-aliasing | Lightest preamp option |
 | CIRCUIT lit | Reduced circuit model | Circuit character with lower CPU use |
-| CIRCUIT HQ | Full component-level solver | Highest CPU use; 2x minimum oversampling |
+| CIRCUIT HQ | Full component-level circuit solver | Highest CPU use; 2x minimum oversampling |
 
-HQ is the full solver, rather than an additional brightness or output-gain control. Older saved Circuit sessions retain their engine meaning. The unlit state is the initial mode.
+HQ is the full solver, not an extra brightness or output control. A project from 1.6.11 or earlier that used Circuit opens in HQ, which is what Circuit meant then.
 
-**HARMONICS:** The 2nd, 3rd, 4th and 5th sliders independently set harmonic amounts from 0 to 1. All start at 0.
+**HARMONICS:** The 2nd, 3rd, 4th and 5th faders each set a harmonic amount from 0 to 100 %. All start at 0.
 
-**RATE:** Choose 1x, 2x, 4x or 8x oversampling. The key displays the effective factor. An asterisk means an engine requirement raised it above the requested factor. HQ has a 2x floor. Higher factors increase CPU use.
+**RATE:** 1x, 2x, 4x or 8x oversampling. The key shows the factor in effect; an asterisk means an engine raised it above the factor you chose (HQ needs at least 2x). Higher factors cost more CPU.
 
-**FILTER:** Choose IIR (Min) or FIR (Lin) for oversampling above 1x. IIR is minimum phase; FIR is linear phase. IIR is the default. The key is inactive at 1x. Oversampling affects latency; the host's latency report is settled during preparation.
+**FILTER:** IIR (Min) or FIR (Lin) anti-alias filters for oversampling above 1x. IIR is minimum phase and adds no latency of its own; FIR is linear phase and adds latency, which HybridEQ reports to the DAW. IIR is the initial choice. The key is dimmed at 1x.
 
-**OUTPUT:** -24 to +24 dB; initially 0 dB. Use output trim to compare processed and bypassed levels fairly.
+**OUTPUT:** -24 to +24 dB; initially 0 dB.
 
-**Choice keys:** Slope, M/S, Band Type and Pad advance on left-click; right-click opens their choices. Preamp Type uses a dropdown. The CIRCUIT key cycles engines.
+**AUTO GAIN (new in 2.0):** holds the output at the loudness of the input, so you hear what the EQ does to the tone and not that it got louder. It compares the K-weighted loudness (ITU-R BS.1770) of the input and of the processed signal over the last 3 seconds and corrects the difference, up to 24 dB either way, gliding over 50 ms. Below -70 LUFS (silence, tails) it holds its correction. It acts after OUTPUT. Initially off.
+
+**DELTA (new in 2.0):** plays only what HybridEQ changes: the processed signal minus the input, lined up for latency. When HybridEQ changes nothing (every section bypassed, OUTPUT at 0 dB, AUTO GAIN off) it is silent. OUTPUT and AUTO GAIN act before DELTA, so a level change shows in the difference. It fades in and out without a click. Initially off. Remember to turn it off before you bounce.
 
 <!-- pagebreak -->
 
-# Metering and spectrum
+# Metering, spectrum and window
 
-**LEVEL:** The output meter combines RMS/VU behaviour, peak readout, input/output ladders and a latching clip lamp. Click CLIP to reset it. Metering is for observation; it is not an additional limiter.
+**LEVEL:** a VU meter (0 VU = -18 dBFS), a peak readout in dBFS with hold, IN and OUT ladders, and a clip lamp that stays lit until you click it. The meters observe; they do not limit.
 
-**Main analyser:** The spectrum is drawn behind the EQ response. Stored spectrum settings select input or output, FFT size, style, tilt, fall rate, opacity, peak hold, smoothing and colour map. The release interface does not expose the developer Spectrum Studio; existing saved settings are retained.
+**Analyser:** a spectrum of the output is drawn behind the response curve.
 
-**SPECTRUM:** Opens the full-window analyser, initially in spectrogram view. The mode key switches between spectrum and spectrogram; CLOSE returns to the console. EQ nodes remain draggable on top of either view. The spectrogram places newest audio at the top and older frames below it.
+**SPECTRUM:** opens the full-window analyser, starting as a spectrogram (newest audio at the top). The key at the top right switches between spectrogram and spectrum; CLOSE returns to the console. The band points stay draggable on both views. While the full-window view is open, the small analyser behind the curve pauses.
 
-FFT sizes are 512, 1024, 2048, 4096, 8192 and 16384 samples. A larger FFT gives finer frequency resolution and a longer analysis window. Analyser styles are Standard, Multicolour, Bars and Spectrogram. Optional octave smoothing and peak hold alter the display only.
-
-While the full-window view is open, the smaller analyser behind the EQ curve pauses. FFT size, calibration and saved visual settings are preserved.
+**Window size:** resize the plug-in window in your DAW. The editor keeps its proportions between 826 x 616 and 1770 x 1320 points, and the size is saved with the project.
 
 **Working on slower machines**
 
-- Use Standard or reduced Circuit mode before HQ when CPU headroom is limited.
-- Choose oversampling to suit the material and the available processing budget.
-- Close unused plug-in editors and full-window analysers.
-- If the whole interface remains sluggish, record the host, plug-in version, display scaling and graphics hardware when reporting it. Changing FFT size alone may not address an editor drawing problem.
+- Use the CIRCUIT key unlit, or lit, before HQ when CPU headroom is limited.
+- Choose the oversampling factor to suit the material and the processing budget.
+- Close plug-in editors and the full-window analyser when you do not need them.
 
-Local rendering tests do not establish a frame-rate guarantee on every Windows or graphics configuration.
+<!-- pagebreak -->
+
+# What changed from 1.6
+
+HybridEQ 2.0.0 is a drop-in replacement for 1.6.16: the same plug-in IDs in every format, the same parameter IDs and ranges, and 1.6 projects open with every setting and their automation. The sound is the same: renders of 2.0.0 and 1.6.16 cancel to -119 dBFS or lower in the equaliser, preamp and circuit tests, except in the three places below. Each was changed on purpose.
+
+**1. No polarity flip from the FSF high shelf.**
+In 1.6, an FSF high shelf boosted close to the top of the spectrum (for example 20 kHz, +10 dB at 48 kHz) could come out with its polarity inverted: the filter design that matches the analogue curve settled on the mirror image of the correct filter. The level sounded right, but the whole signal was upside down. 2.0.0 always keeps the polarity of the input.
+*Why this is better:* a flipped signal partly cancels when it is mixed with anything that is not flipped: parallel processing, a dry blend, other microphones on the same source, or DELTA. The curve and the level are unchanged.
+
+**2. New oversampling filters.**
+1.6 used the anti-alias filters of the framework it was built on; 2.0.0 has its own. IIR (Min) keeps 1.6's delay and passband level (within 0.02 dB from 20 Hz to 20 kHz); its phase differs only in the top octave. Through the HQ circuit that phase difference slightly changes the highest harmonics; levels are the same. FIR (Lin) is still linear phase, with 11 samples more latency at 4x (72 instead of 61) and 9 more at 8x (75 instead of 66); HybridEQ reports it to the DAW, which compensates.
+*Why this is better:* the filters are part of HybridEQ, so they are tested with it on every build. The tests hold the passband within 0.05 dB at every factor and keep aliasing from content above the session's Nyquist frequency below -90 dB. A future framework update cannot change them.
+
+**3. A new host bypass in VST3.**
+Your DAW's own bypass for HybridEQ is now a latency-aligned crossfade: while bypassed, the output is the input delayed by exactly HybridEQ's latency, and switching starts at the exact sample, so the bypass is click-free and stays in time with the rest of the mix. The bypass parameter has a new ID in VST3.
+*What this means for old projects:* in a VST3 project from 1.6, automation of the DAW's bypass switch for HybridEQ does not carry over. Everything else, including HybridEQ's own band and preamp keys, opens as saved. This concerns VST3 only.
+
+**Also new:** automation lands on the exact sample (1.6 applied it at the start of each audio block), AUTO GAIN and DELTA, a resizable editor, and Windows ARM64 and Linux aarch64 builds.
 
 <!-- pagebreak -->
 
 # Installation, compatibility and support
 
-**macOS:** macOS 11 or later; universal Apple silicon and Intel. The bundle archive contains VST3, AU, CLAP, LV2 and PACE-signed AAX. Use OpenGrid Plugin Manager, or copy the modules from the archive's Library tree into the corresponding folders on your system. Resources install under /Library/Application Support/HybridEQ/.
+**macOS:** macOS 11 or later, universal (Apple silicon and Intel). The signed and notarized installer offers VST3, AU, CLAP, LV2 and PACE-signed AAX.
 
 | Format | macOS destination |
 |---|---|
@@ -105,14 +132,14 @@ Local rendering tests do not establish a frame-rate guarantee on every Windows o
 | LV2 | /Library/Audio/Plug-Ins/LV2 |
 | AAX | /Library/Application Support/Avid/Audio/Plug-Ins |
 
-**Windows x64:** Windows 10 or later. The plugin-manager ZIP contains VST3, CLAP and LV2 under Common Files. The manager installs these beneath Program Files; resources are under Program Files/OpenGrid/HybridEQ. Administrator access may be needed. Windows AAX is not included in this release.
+**Windows:** Windows 10 or later, x64 or ARM64; choose the installer for your processor. It installs VST3, CLAP and LV2 under Common Files (VST3, CLAP, LV2); you can deselect formats. The installer is not code-signed, so Windows SmartScreen may warn before it runs ("More info", then "Run anyway"). AAX for Windows is not included.
 
-**Linux x86_64:** Extract the archive and copy VST3, CLAP and LV2 modules into the plug-in folders supported by your host, commonly ~/.vst3, ~/.clap and ~/.lv2. The release is built on Ubuntu 24.04; library requirements may limit older distributions. Linux AAX is not included.
+**Linux:** x86_64 or aarch64, glibc 2.35 or later (Ubuntu 22.04, Debian 12, Fedora 36 and later). The archive holds usr/lib/vst3, usr/lib/clap and usr/lib/lv2: copy the plug-ins into ~/.vst3, ~/.clap and ~/.lv2, or into /usr/lib/vst3, /usr/lib/clap and /usr/lib/lv2 for every user. The editor needs an X11 display (Xwayland works).
 
-Close the DAW before replacing plug-ins. Avoid duplicate old modules in system and user plug-in locations, then rescan in the host. Current downloads are plug-in archives; standalone applications are available as source-build targets rather than release payloads.
+Close the DAW before replacing plug-ins. Remove older copies from both the system and the user plug-in folders, then rescan in the host. HybridEQ has no standalone application.
 
-**Sessions and automation:** All 45 host parameters and their IDs are retained in 1.6.14. Save and reopen the host project to restore parameter state. Spectrum appearance is stored alongside the project state.
+**Sessions and automation:** all 45 parameters of 1.6 keep their IDs, plus AUTO GAIN and DELTA. Save and reopen the project to restore every setting and the editor size.
 
-**Licence:** Official compiled binaries are proprietary freeware for personal and commercial audio work. HybridEQ's own source and the GoodLookinUI toolkit retain their MIT licences. See the included binary licence and third-party component notices. End users do not need developer signing credentials or SDK licences.
+**Licence:** the official binaries are proprietary freeware for personal and commercial audio work. HybridEQ's source is MIT licensed. See the included binary licence and the third-party notices.
 
 Support and downloads: https://github.com/MistaMin/HybridEQ
