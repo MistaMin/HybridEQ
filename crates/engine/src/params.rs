@@ -289,6 +289,8 @@ pub fn format_value(unit: Unit, v: f32) -> String {
             let r = round_to(v as f64, 1);
             format!("{}{:.1} dB", if r > 0.0 { "+" } else { "" }, r)
         }
+        // at most three digits: 0.71, 2.57, 10.0
+        Unit::Q if v >= 9.995 => format!("{:.1}", v),
         Unit::Q => format!("{:.2}", v),
         Unit::Percent => format!("{} %", (v * 100.0).round() as i32),
         Unit::Choice | Unit::Toggle => format!("{v}"),
@@ -378,6 +380,8 @@ mod tests {
                 let shown = p.format(v);
                 let back = p.parse(&shown).unwrap_or_else(|| panic!("{} cannot parse {shown}", p.id));
                 assert_eq!(p.format(back), shown, "{}", p.id);
+                let digits = shown.chars().filter(char::is_ascii_digit).count();
+                assert!(digits <= 3, "{} shows {shown}: more than three digits", p.id);
             }
         }
     }

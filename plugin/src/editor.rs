@@ -483,14 +483,14 @@ impl HybridEqEditor {
             let silk = Legend::Silk(ink);
             sc.fill_rect(Rect::new(r.x + 10.0, r.y + 13.0, 3.0, 18.0), Color(lk.colour), Color(lk.colour).darker(0.3), true);
             legend_text(sc, silk, Point::new(r.x + 20.0, r.y + 25.0), strip.title, 12.5, false);
-            legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + 20.0, r.y + 41.0), strip.range, 8.0, false);
+            legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + 20.0, r.y + 41.0), strip.range, 8.5, false);
             legend_line(sc, Legend::Silk(Color(fp.text_mid).with_alpha(0.5)), Point::new(r.x + 12.0, r.y + 54.0), Point::new(r.right() - 12.0, r.y + 54.0), 1.0);
             for (slot, (param, name)) in strip.knobs.iter().enumerate() {
                 let c = knob_centre(s, slot);
                 Self::paint_knob_ring(sc, c, 27.0, *param, name, ink, Color(fp.text_mid));
             }
             if !strip.caption.is_empty() {
-                legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + STRIP_W * 0.5, STRIP_Y + 292.0), strip.caption, 8.0, true);
+                legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + STRIP_W * 0.5, STRIP_Y + 292.0), strip.caption, 8.5, true);
             }
             for (row, (_, label)) in strip.keys.iter().enumerate() {
                 let k = strip_key(s, row);
@@ -505,7 +505,7 @@ impl HybridEqEditor {
             sc.shadow(openplugin::dri::goodlookindri::scene::Shape::Round(r, 7.0), 6.0, Color(0x90000000));
             draw_panel_with(sc, r, 7.0, Color(fp.panel_top), Color(fp.panel_bottom), fp.finish, &rig);
             legend_text(sc, Legend::Silk(Color(fp.text)), Point::new(r.x + 14.0, r.y + 20.0), title, 11.5, false);
-            legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + 14.0, r.y + 34.0), sub, 7.5, false);
+            legend_text(sc, Legend::Silk(Color(fp.text_mid)), Point::new(r.x + 14.0, r.y + 34.0), sub, 8.5, false);
         }
         let pfp = plate(pl.plate);
         let pink = Legend::Silk(Color(pfp.text));
@@ -519,13 +519,13 @@ impl HybridEqEditor {
         legend_text(sc, g, Point::new(GLOBAL.x + 14.0, RATE_KEY.y + 12.0), "RATE", 9.0, false);
         legend_text(sc, g, Point::new(GLOBAL.x + 14.0, FILTER_KEY.y + 12.0), "FILTER", 9.0, false);
         Self::paint_knob_ring(sc, Point::new(OUTPUT_KNOB.0, OUTPUT_KNOB.1), 20.0, idx::OUTPUT_GAIN, "OUTPUT", ink, mid);
-        legend_text(sc, Legend::Silk(mid), Point::new(PEAK.x + PEAK.w * 0.5, PEAK.bottom() + 9.0), "PEAK dBFS", 7.0, true);
-        legend_text(sc, Legend::Silk(mid), Point::new(CLIP.0, CLIP.1 + 15.0), "CLIP", 7.0, true);
-        legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 806.0), "IN", 7.5, false);
-        legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 829.0), "OUT", 7.5, false);
+        legend_text(sc, Legend::Silk(mid), Point::new(PEAK.x + PEAK.w * 0.5, PEAK.bottom() + 9.0), "PEAK dBFS", 8.5, true);
+        legend_text(sc, Legend::Silk(mid), Point::new(CLIP.0, CLIP.1 + 15.0), "CLIP", 8.5, true);
+        legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 806.0), "IN", 8.5, false);
+        legend_text(sc, Legend::Silk(mid), Point::new(1028.0, 829.0), "OUT", 8.5, false);
 
-        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(40.0, 868.0), "OPENGRID   /   HYBRID EQ", 7.5, false);
-        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(1010.0, 868.0), &format!("CONSOLE EDITION   /   v{}", crate::INFO.version), 7.5, false);
+        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(40.0, 868.0), "OPENGRID   /   HYBRID EQ", 8.5, false);
+        legend_text(sc, Legend::Silk(Color(chassis.footer)), Point::new(1010.0, 868.0), &format!("CONSOLE EDITION   /   v{}", crate::INFO.version), 8.5, false);
     }
 
     /// The frequency and gain graticule of a response plot.
@@ -535,14 +535,14 @@ impl HybridEqEditor {
             let x = Self::x_of(plot, f);
             sc.line(Point::new(x, plot.y), Point::new(x, plot.bottom()), grid, 1.0);
             let label = if f >= 1000.0 { format!("{}k", f / 1000.0) } else { format!("{f}") };
-            sc.text(Point::new(x, plot.bottom() - 8.0), label, ink.with_alpha(0.7), 8.0, true);
+            sc.text(Point::new(x, plot.bottom() - 8.0), label, ink.with_alpha(0.7), 8.5, true);
         }
         for db in [-18.0, -12.0, -6.0, 0.0, 6.0, 12.0, 18.0] {
             let y = Self::y_of(plot, db);
             let c = if db == 0.0 { Color(0x40ffffff) } else { grid };
             sc.line(Point::new(plot.x, y), Point::new(plot.right(), y), c, 1.0);
             if overlay || db % 12.0 == 0.0 {
-                sc.text(Point::new(plot.right() - 22.0, y - 6.0), format!("{db:+}"), ink.with_alpha(0.6), 7.5, true);
+                sc.text(Point::new(plot.right() - 22.0, y - 6.0), format!("{db:+}"), ink.with_alpha(0.6), 8.5, true);
             }
         }
     }
@@ -563,11 +563,11 @@ impl HybridEqEditor {
             let short = |v: f32| match p.unit {
                 hybrideq_engine::params::Unit::Hz if v >= 1000.0 => format!("{}k", v / 1000.0),
                 hybrideq_engine::params::Unit::Db => format!("{v:+.1}"),
-                hybrideq_engine::params::Unit::Q => format!("{v:.2}"),
+                hybrideq_engine::params::Unit::Q => hybrideq_engine::params::format_value(p.unit, v),
                 _ => format!("{v}"),
             };
-            legend_text(sc, Legend::Silk(mid), Point::new(c.x - 46.0, c.y + r + 15.0), &short(p.min), 7.5, true);
-            legend_text(sc, Legend::Silk(mid), Point::new(c.x + 46.0, c.y + r + 15.0), &short(p.max), 7.5, true);
+            legend_text(sc, Legend::Silk(mid), Point::new(c.x - 46.0, c.y + r + 15.0), &short(p.min), 8.5, true);
+            legend_text(sc, Legend::Silk(mid), Point::new(c.x + 46.0, c.y + r + 15.0), &short(p.max), 8.5, true);
         }
     }
 
@@ -702,7 +702,7 @@ impl HybridEqEditor {
             let pill = Rect::new(c.x - 15.0, (c.y - 25.0).max(plot.y + 1.0), 30.0, 13.0);
             sc.fill_round(pill, 4.0, col.with_alpha(0.92), col.darker(0.15).with_alpha(0.92), true);
             let ink = if col.perceived_brightness() > 0.55 { Color(0xff101216) } else { Color(0xfff2f2f2) };
-            sc.text(pill.center(), label, ink, 8.0, true);
+            sc.text(pill.center(), label, ink, 8.5, true);
         }
     }
 }
@@ -964,10 +964,12 @@ mod tests {
     #[test]
     fn every_control_reaches_its_own_parameter() {
         let (mut e, log) = editor();
+        let mut reached = std::collections::BTreeSet::new();
         let mut click = |p: Point, expect: usize| {
             e.mouse_down(p.x, p.y, 1);
             e.mouse_up(p.x, p.y);
             assert_eq!(params_touched(&log), [expect as u32], "click at {:?}", (p.x, p.y));
+            reached.insert(expect);
         };
         for (s, strip) in STRIPS.iter().enumerate() {
             for (slot, (param, _)) in strip.knobs.iter().enumerate() {
@@ -986,6 +988,13 @@ mod tests {
         for i in 0..4 {
             click(harm_fader(i).center(), idx::H2 + i);
         }
+        // The CIRCUIT key drives two parameters (circuit_key_steps_off_circuit_hq checks the order).
+        let c = CIRCUIT_KEY.center();
+        e.mouse_down(c.x, c.y, 1);
+        reached.extend(params_touched(&log).into_iter().map(|i| i as usize));
+        // GUI coverage: every parameter in the host's list has a control.
+        let missing: Vec<&str> = (0..TABLE.len()).filter(|i| !reached.contains(i)).map(|i| TABLE[i].id).collect();
+        assert!(missing.is_empty(), "parameters with no control: {missing:?}");
     }
 
     #[test]

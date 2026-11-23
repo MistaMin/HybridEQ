@@ -116,3 +116,37 @@ Host list dumped from: <format, build>   Count: 45 own (+ host bypass)   All in 
 | Null vs 1.6.16 (shipped, FMA) | unchanged; eq-types and hq-* are the polarity fix (hq-* null -132 dBFS with the 1.7.0 render inverted) | dsp/evidence/null-vs-1.6.16-shipped-fma.txt |
 
 Not run: auval, AAX validator and REAPER. All three need 1.7.0 installed where hosts find it, and 1.6.16 (same IDs) is installed in /Library; owner to decide whether to move it aside.
+
+## Wiki QA pipeline run, 2026-11-22
+
+| Wiki step | Result | Evidence |
+|---|---|---|
+| 1 Scope ledger | this file | |
+| 2 DSP audit | `dsp_lint` 0 findings on the tracked files, unpushed history and the dist-rust bundles; netlist values equal the C++ (2026-11-17) | |
+| 3 GUI coverage | PASS: all 47 parameters in the host's list are reached by a click on their own control (test `every_control_reaches_its_own_parameter` now fails on any parameter without a control). Display rule: Q showed `10.00` (4 digits); fixed to `10.0`, and `text_round_trip` now fails on any text over three digits | plugin/src/editor.rs, crates/engine/src/params.rs |
+| 4 Local suites | PASS: engine 10, plugin lib 11, conformance, features 2 | cargo test --release |
+| 5 Validators | AAX Validator 6/6 PASS (page_table.load passes; it was inconclusive on 1.6.16), warning: algorithm context gaps (as 1.6.16). clap-validator, VST3 validator, pluginval: PASS (2026-11-17). auval: SKIPPED, needs the build installed | aax/aaxval_summary.txt |
+| 6 Host matrix (REAPER, OpenGrid9) | SKIPPED: owner chose to move 1.6.16 aside for the run; the password dialog was cancelled, so nothing was moved or installed | |
+| 7 Interactive acceptance (Pro Tools, Studio One, listening) | SKIPPED: needs the owner | |
+
+## Host tests, 2026-11-23
+
+1.6.16 (VST3, AU, CLAP) was moved to /Users/Shared through the macOS admin prompt. 1.7.0 was installed in the user folders, the tests were run, and then 1.7.0 was removed and 1.6.16 put back. The AAX in /Library was not touched. REAPER ran as a separate, hidden test instance; the REAPER already open was left alone. Exceptions: qa/exceptions.txt, context lines only, nothing excused.
+
+| Check | VST3 | AU | CLAP | Evidence |
+|---|---|---|---|---|
+| auval | | PASS, version 1.7.0 | | validators/auval.txt |
+| loads, finite, not silent, deterministic (-240 dB) | PASS | PASS | PASS | reaper/suite-*.log |
+| editor opens, reopens 5 times | PASS | PASS | PASS | reaper/editor_*.png |
+| every parameter changes the sound | PASS (band bypasses CONDITIONAL: act once the band has gain) | PASS | PASS | |
+| every parameter shown in the GUI | PASS | PASS | PASS | |
+| state survives save and reopen | FAIL in the suite, PASS by hand (see 1) | FAIL in the suite, PASS by hand (see 2) | PASS | reaper/rt4-*.json, reaper/au-rt.rpp |
+| LV2 in OpenGrid9 | SKIPPED: OpenGrid9 aborts at start (Homebrew glib 2.90.1 loaded next to the runtime's glib, Glib::ConvertError) before any plugin loads; a harness problem | | | opengrid9/opengrid9.log |
+
+1. VST3: the suite's state step also sets REAPER's own FX parameters (Bypass, Wet, Delta), which bypassed the FX, so the flush render never ran the plugin and the processor kept the earlier values (decoded chunk: Oversample 0.6229 = the earlier 4x). With REAPER's bypass off, all 47 parameters and bypass survive save and reopen (0 differ). Finding: values set while the FX is bypassed in REAPER are not in the saved VST3 state, because the SDK VST3 component learns values only in process(). JUCE (1.6.16) probably keeps them; not tested. SDK fix: send the controller's values to the component (IConnectionPoint) or keep one shared plane.
+2. AU: only choices and toggles differ, and only in REAPER's text. REAPER draws AU indexed and boolean values itself and rounds an in-between value down (0.6 shows "Stereo"); the plugin rounds to nearest (stores "Mid"), as JUCE does, and reopens with "Mid". Every float survives. Same REAPER 7.80 quirk as noted in plugin-daw-test.
+Harness fix suggested: the state step should leave REAPER's own FX parameters alone.
+
+## Editor text on 1x screens, 2026-11-23
+
+At REAPER's default size on a 1x screen (1062 px wide, 90% of the design) the editor dropped pixels: the SDK canvas never drew below scale 1.0 and the view shrank the frame without filtering (reproduced to 0.8/255). Letters broke (SLOPE read SLOFE) and hairlines vanished. Fixed in the SDK (canvas draws at the window's size, test added), GoodLookinDri (Semibold face, light-on-dark edge lift, test added) and here (no text below 8.5). Comparison with 1.6.16 at the same size and scale: qa/2026-11-23-gui-compare/new-*.png (top 1.6.16, middle 1.7.0 before, bottom after). Not checked: Retina, Windows, a host run with rebuilt bundles.

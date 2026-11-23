@@ -1,0 +1,412 @@
+{
+ "params": [
+  {
+   "ident": "0:1057129025",
+   "value": 0.1299999952,
+   "name": "Oversample",
+   "text": "1x",
+   "index": 0,
+   "step": 0.3333333333
+  },
+  {
+   "ident": "1:2083021974",
+   "value": 0.5,
+   "name": "Oversample Filter",
+   "text": "FIR (Lin)",
+   "index": 1,
+   "step": 1
+  },
+  {
+   "ident": "2:2140420123",
+   "value": 0.8700000048,
+   "name": "2nd Harmonic",
+   "text": "87",
+   "index": 2,
+   "step": 0
+  },
+  {
+   "ident": "3:2140421208",
+   "value": 0.2399999946,
+   "name": "3rd Harmonic",
+   "text": "24",
+   "index": 3,
+   "step": 0
+  },
+  {
+   "ident": "4:2140422235",
+   "value": 0.6100000143,
+   "name": "4th Harmonic",
+   "text": "61",
+   "index": 4,
+   "step": 0
+  },
+  {
+   "ident": "5:2140423196",
+   "value": 0.9800000191,
+   "name": "5th Harmonic",
+   "text": "98",
+   "index": 5,
+   "step": 0
+  },
+  {
+   "ident": "6:1038091407",
+   "value": 0.349999994,
+   "name": "Low Cut Freq",
+   "text": "78.6",
+   "index": 6,
+   "step": 0
+  },
+  {
+   "ident": "7:106938",
+   "value": 0.7200000286,
+   "name": "Low Cut Q",
+   "text": "5.23",
+   "index": 7,
+   "step": 0
+  },
+  {
+   "ident": "8:2127899252",
+   "value": 0.09000000358,
+   "name": "Low Cut Slope",
+   "text": "-6 dB/oct",
+   "index": 8,
+   "step": 0.3333333333
+  },
+  {
+   "ident": "9:1038297018",
+   "value": 0.4600000083,
+   "name": "Low Cut Mode",
+   "text": "Mid",
+   "index": 9,
+   "step": 0.5
+  },
+  {
+   "ident": "10:1065693503",
+   "value": 0.8299999833,
+   "name": "Low Cut Bypass",
+   "text": "On",
+   "index": 10,
+   "step": 1
+  },
+  {
+   "ident": "11:923574803",
+   "value": 0.200000003,
+   "name": "High Cut Freq",
+   "text": "1.97 k",
+   "index": 11,
+   "step": 0
+  },
+  {
+   "ident": "12:103094",
+   "value": 0.5699999928,
+   "name": "High Cut Q",
+   "text": "3.32",
+   "index": 12,
+   "step": 0
+  },
+  {
+   "ident": "13:725368176",
+   "value": 0.9399999976,
+   "name": "High Cut Slope",
+   "text": "-24 dB/oct",
+   "index": 13,
+   "step": 0.3333333333
+  },
+  {
+   "ident": "14:923780414",
+   "value": 0.3100000024,
+   "name": "High Cut Mode",
+   "text": "Mid",
+   "index": 14,
+   "step": 0.5
+  },
+  {
+   "ident": "15:536903107",
+   "value": 0.6800000072,
+   "name": "High Cut Bypass",
+   "text": "On",
+   "index": 15,
+   "step": 1
+  },
+  {
+   "ident": "16:356082668",
+   "value": 0.05000000075,
+   "name": "Low Freq",
+   "text": "23.2",
+   "index": 16,
+   "step": 0
+  },
+  {
+   "ident": "17:356096243",
+   "value": 0.4199999869,
+   "name": "Low Gain",
+   "text": "-2.9",
+   "index": 17,
+   "step": 0
+  },
+  {
+   "ident": "18:356506798",
+   "value": 0.7900000215,
+   "name": "Low Type",
+   "text": "FSF",
+   "index": 18,
+   "step": 0.5
+  },
+  {
+   "ident": "19:356288279",
+   "value": 0.1599999964,
+   "name": "Low Mode",
+   "text": "Stereo",
+   "index": 19,
+   "step": 0.5
+  },
+  {
+   "ident": "20:637807964",
+   "value": 0.5299999714,
+   "name": "Low Band Bypass",
+   "text": "On",
+   "index": 20,
+   "step": 1
+  },
+  {
+   "ident": "21:449253633",
+   "value": 0.8999999762,
+   "name": "Mid 1 Freq",
+   "text": "4.27 k",
+   "index": 21,
+   "step": 0
+  },
+  {
+   "ident": "22:449267208",
+   "value": 0.2700000107,
+   "name": "Mid 1 Gain",
+   "text": "-8.3",
+   "index": 22,
+   "step": 0
+  },
+  {
+   "ident": "23:103889544",
+   "value": 0.6399999857,
+   "name": "Mid 1 Q",
+   "text": "4.16",
+   "index": 23,
+   "step": 0
+  },
+  {
+   "ident": "24:449677763",
+   "value": 0.009999999776,
+   "name": "Mid 1 Type",
+   "text": "N-EQ",
+   "index": 24,
+   "step": 0.5
+  },
+  {
+   "ident": "25:449459244",
+   "value": 0.3799999952,
+   "name": "Mid 1 Mode",
+   "text": "Mid",
+   "index": 25,
+   "step": 0.5
+  },
+  {
+   "ident": "26:2128275761",
+   "value": 0.75,
+   "name": "Mid 1 Bypass",
+   "text": "On",
+   "index": 26,
+   "step": 1
+  },
+  {
+   "ident": "27:450177154",
+   "value": 0.1199999973,
+   "name": "Mid 2 Freq",
+   "text": "301",
+   "index": 27,
+   "step": 0
+  },
+  {
+   "ident": "28:450190729",
+   "value": 0.4900000095,
+   "name": "Mid 2 Gain",
+   "text": "-0.4",
+   "index": 28,
+   "step": 0
+  },
+  {
+   "ident": "29:103889575",
+   "value": 0.8600000143,
+   "name": "Mid 2 Q",
+   "text": "7.42",
+   "index": 29,
+   "step": 0
+  },
+  {
+   "ident": "30:450601284",
+   "value": 0.2300000042,
+   "name": "Mid 2 Type",
+   "text": "N-EQ",
+   "index": 30,
+   "step": 0.5
+  },
+  {
+   "ident": "31:450382765",
+   "value": 0.6000000238,
+   "name": "Mid 2 Mode",
+   "text": "Mid",
+   "index": 31,
+   "step": 0.5
+  },
+  {
+   "ident": "32:868295794",
+   "value": 0.9700000286,
+   "name": "Mid 2 Bypass",
+   "text": "On",
+   "index": 32,
+   "step": 1
+  },
+  {
+   "ident": "33:461817658",
+   "value": 0.3400000036,
+   "name": "High Freq",
+   "text": "2.74 k",
+   "index": 33,
+   "step": 0
+  },
+  {
+   "ident": "34:461831233",
+   "value": 0.7099999785,
+   "name": "High Gain",
+   "text": "+7.6",
+   "index": 34,
+   "step": 0
+  },
+  {
+   "ident": "35:462241788",
+   "value": 0.07999999821,
+   "name": "High Type",
+   "text": "Bax-EQ",
+   "index": 35,
+   "step": 0.5
+  },
+  {
+   "ident": "36:462023269",
+   "value": 0.4499999881,
+   "name": "High Mode",
+   "text": "Mid",
+   "index": 36,
+   "step": 0.5
+  },
+  {
+   "ident": "37:1317401898",
+   "value": 0.8199999928,
+   "name": "High Band Bypass",
+   "text": "On",
+   "index": 37,
+   "step": 1
+  },
+  {
+   "ident": "38:771791643",
+   "value": 0.1899999976,
+   "name": "Preamp Type",
+   "text": "Brit",
+   "index": 38,
+   "step": 0.25
+  },
+  {
+   "ident": "39:717628562",
+   "value": 0.5600000024,
+   "name": "Preamp Pad",
+   "text": "Unity",
+   "index": 39,
+   "step": 0.5
+  },
+  {
+   "ident": "40:771381088",
+   "value": 0.9300000072,
+   "name": "Preamp Gain",
+   "text": "+21.5",
+   "index": 40,
+   "step": 0
+  },
+  {
+   "ident": "41:294585481",
+   "value": 0.3000000119,
+   "name": "Preamp Bypass",
+   "text": "Off",
+   "index": 41,
+   "step": 1
+  },
+  {
+   "ident": "42:973560936",
+   "value": 0.6700000167,
+   "name": "Preamp Circuit",
+   "text": "On",
+   "index": 42,
+   "step": 1
+  },
+  {
+   "ident": "43:854433034",
+   "value": 0.03999999911,
+   "name": "Preamp HQ",
+   "text": "Off",
+   "index": 43,
+   "step": 1
+  },
+  {
+   "ident": "44:873230368",
+   "value": 0.4099999964,
+   "name": "Output Gain",
+   "text": "-4.3",
+   "index": 44,
+   "step": 0
+  },
+  {
+   "ident": "45:1438330318",
+   "value": 0.7799999714,
+   "name": "Auto Gain",
+   "text": "On",
+   "index": 45,
+   "step": 1
+  },
+  {
+   "ident": "46:95468472",
+   "value": 0.150000006,
+   "name": "Delta",
+   "text": "Off",
+   "index": 46,
+   "step": 1
+  },
+  {
+   "ident": "47:1113149523",
+   "value": 0,
+   "name": "Bypass",
+   "text": "Off",
+   "index": 47,
+   "step": 1
+  },
+  {
+   "ident": "48:bypass",
+   "value": 0,
+   "name": "Bypass",
+   "text": "normal",
+   "index": 48,
+   "step": 0
+  },
+  {
+   "ident": "49:wet",
+   "value": 1,
+   "name": "Wet",
+   "text": "100",
+   "index": 49,
+   "step": 0
+  },
+  {
+   "ident": "50:delta",
+   "value": 0,
+   "name": "Delta",
+   "text": "normal",
+   "index": 50,
+   "step": 0
+  }
+ ]
+}

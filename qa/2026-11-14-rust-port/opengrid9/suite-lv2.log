@@ -1,0 +1,12 @@
+/Users/marcosdeida/Library/Caches/plugin-qa/opengrid9-runtime
+Traceback (most recent call last):
+  File "/Users/marcosdeida/.claude/skills/plugin-daw-test/scripts/og9_qa.py", line 292, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/marcosdeida/.claude/skills/plugin-daw-test/scripts/og9_qa.py", line 269, in main
+    print(json.dumps({"pid": launch(args.qa_dir)}))
+                             ~~~~~~^^^^^^^^^^^^^
+  File "/Users/marcosdeida/.claude/skills/plugin-daw-test/scripts/og9_qa.py", line 113, in launch
+    raise RuntimeError("OpenGrid9 exited during start, code %s: see opengrid9.log" % proc.returncode)
+RuntimeError: OpenGrid9 exited during start, code -6: see opengrid9.log
+suite_exit=1

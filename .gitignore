@@ -33,3 +33,18 @@ dsp/evidence/null/
 dsp/evidence/null-nofma/
 qa/2026-11-14-rust-port/null-bundles/*/
 plugin/target/
+
+# QA run artefacts: renders, raw frames, compiled helpers, bridge scratch, per-parameter screenshots,
+# and the OpenGrid9 test home (it links into the user's ~/Library)
+qa/**/*.wav
+qa/**/*.ppm
+qa/**/peaks/
+qa/**/home/
+qa/**/hide_pid
+qa/**/winlist
+qa/**/*.pid
+qa/**/cmd.txt
+qa/**/resp.txt
+qa/**/seq.txt
+qa/**/ready.txt
+qa/**/editor_p*.png
