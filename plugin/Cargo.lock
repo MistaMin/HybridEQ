@@ -92,7 +92,7 @@ dependencies = [
 
 [[package]]
 name = "hybrideq"
-version = "1.7.0"
+version = "2.0.0"
 dependencies = [
  "hybrideq-engine",
  "openplugin",
@@ -100,7 +100,7 @@ dependencies = [
 
 [[package]]
 name = "hybrideq-engine"
-version = "1.7.0"
+version = "2.0.0"
 
 [[package]]
 name = "itoa"

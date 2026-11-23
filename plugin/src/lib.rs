@@ -23,7 +23,7 @@ use openplugin::prelude::*;
 
 pub use params::PARAMS;
 
-pub static INFO: PluginInfo = PluginInfo::new("com.opengrid.hybrideq", "HybridEQ", "OpenGrid", "1.7.0", Category::Eq, &PARAMS)
+pub static INFO: PluginInfo = PluginInfo::new("com.opengrid.hybrideq", "HybridEQ", "OpenGrid", "2.0.0", Category::Eq, &PARAMS)
     .with_url("https://github.com/MistaMin/HybridEQ")
     .with_editor(true);
 

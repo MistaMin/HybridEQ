@@ -1,5 +1,5 @@
 ; HybridEQ installer for Windows (Inno Setup 6). Built by .github/workflows/windows-linux.yml:
-;   iscc /DAppVersion=1.7.0 /DArch=x64 /DDist=<folder with the plug-ins> /DRoot=<repository> installer\windows\HybridEQ.iss
+;   iscc /DAppVersion=2.0.0 /DArch=x64 /DDist=<folder with the plug-ins> /DRoot=<repository> installer\windows\HybridEQ.iss
 ; Arch is x64 or arm64; the plug-ins in Dist must be built for it.
 
 #ifndef AppVersion

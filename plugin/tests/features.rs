@@ -1,4 +1,4 @@
-//! Autogain and Delta, the two features 1.7.0 adds (ledger S19, S20).
+//! Autogain and Delta, the two features 2.0.0 adds (ledger S19, S20).
 use hybrideq::HybridEq;
 use hybrideq_engine::params::{idx, PARAMS};
 use openplugin::prelude::*;

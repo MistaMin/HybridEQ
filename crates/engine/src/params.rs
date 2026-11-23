@@ -142,7 +142,7 @@ pub const TABLE: [Param; COUNT] = [
     // before it existed restore as HQ, which is what their Circuit setting always meant.
     toggle("preampHQ", "Preamp HQ", true),
     db("outputGain", "Output Gain", -24.0, 24.0, 0.0),
-    // 1.7.0
+    // 2.0.0
     toggle("autoGain", "Auto Gain", false),
     toggle("delta", "Delta", false),
 ];
