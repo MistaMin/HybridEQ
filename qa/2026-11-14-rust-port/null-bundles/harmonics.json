@@ -1,0 +1,66 @@
+{
+  "original": {
+    "path": "/Library/Audio/Plug-Ins/CLAP/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "port": {
+    "path": "/Volumes/Developer/OpenGrid/HybridEQ/dist-rust/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "rate": 48000,
+  "block": 512,
+  "frames": 144000,
+  "tolerance": 1e-6,
+  "latency_differs": false,
+  "channels": [
+    {
+      "channel": 0,
+      "max_abs_diff": 6.079673767089844e-6,
+      "max_at": 106080,
+      "rms_diff_db": -113.98647178442964,
+      "first_differing": {
+        "index": 0,
+        "original": 2.1293718e-17,
+        "port": 2.1293715e-17
+      },
+      "first_over_tolerance": {
+        "index": 1760,
+        "original": 0.36894086,
+        "port": 0.36893985
+      },
+      "samples_over_tolerance": 99031
+    },
+    {
+      "channel": 1,
+      "max_abs_diff": 6.079673767089844e-6,
+      "max_at": 106719,
+      "rms_diff_db": -113.98263633805254,
+      "first_differing": {
+        "index": 0,
+        "original": 0.54948753,
+        "port": 0.5494874
+      },
+      "first_over_tolerance": {
+        "index": 1,
+        "original": 0.8167191,
+        "port": 0.816718
+      },
+      "samples_over_tolerance": 99328
+    }
+  ],
+  "parameter_map": [
+    "4287903771 (2nd Harmonic) -> 4287903771 (2nd Harmonic)",
+    "4287904856 (3rd Harmonic) -> 4287904856 (3rd Harmonic)",
+    "4287906844 (5th Harmonic) -> 4287906844 (5th Harmonic)"
+  ],
+  "notes": [],
+  "pass": false
+}

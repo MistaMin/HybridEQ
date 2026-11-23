@@ -1,0 +1,335 @@
+* Loading module...
+
+	/Volumes/Developer/OpenGrid/HybridEQ/dist-rust/HybridEQ.vst3
+
+* Check valid bundle structure...
+
+* Scanning classes...
+
+  Factory Info:
+	vendor = OpenGrid
+	url = 
+	email = 
+
+  Class Info 0:
+	name = HybridEQ
+	category = Audio Module Class
+	subCategories = Fx|EQ
+	version = 1.7.0
+	sdkVersion = VST 3.8.1
+	cid = ABCDEF019182FAEB4879627248794571
+
+  Class Info 1:
+	name = HybridEQ
+	category = Component Controller Class
+	subCategories = 
+	version = 1.7.0
+	sdkVersion = VST 3.8.1
+	cid = ABCDEF011234ABCD4879627248794571
+
+* Checking snapshots...
+
+Info: No snapshots in Bundle.
+
+* Creating tests...
+
+* Running tests...
+
+-------------------------------------------------------------
+TestSuite : HybridEQ
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+TestSuite : General Tests
+-------------------------------------------------------------
+
+[Scan Editor Classes]
+Info:  ===Scan Editor Classes ====================================
+Info:  This component has an edit controller class
+Info:     Controller CID: {ABCDEF01-1234-ABCD-4879-627248794571}
+[Succeeded]
+
+[Scan Buses]
+Info:  ===Scan Buses ====================================
+Info:  => Audio Buses: [1 In(s) => 1 Out(s)]
+Info:       In [0]: "Input" (Main-Default Active) 
+Info:       Out[0]: "Output" (Main-Default Active) 
+Info:  => Event Buses: [0 In(s) => 0 Out(s)]
+[Succeeded]
+
+[Scan Parameters]
+Info:  ===Scan Parameters ====================================
+Info:  This component exports 48 parameter(s)
+Info:  Note: it could be better to use UnitInfo in order to sort Parameters (>20).
+Info:     Parameter 000 (id=1057129025): [title="Oversample"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 001 (id=2083021974): [title="Oversample Filter"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 002 (id=2140420123): [title="2nd Harmonic"] [unit="%"] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 003 (id=2140421208): [title="3rd Harmonic"] [unit="%"] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 004 (id=2140422235): [title="4th Harmonic"] [unit="%"] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 005 (id=2140423196): [title="5th Harmonic"] [unit="%"] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 006 (id=1038091407): [title="Low Cut Freq"] [unit="Hz"] [type = Float, default = 0.000000, unit = 0]
+Info:     Parameter 007 (id=106938): [title="Low Cut Q"] [unit=""] [type = Float, default = 0.247615, unit = 0]
+Info:  =>Parameter 007 (id=106938): getParamValueByString ("0.71") doesn't return the original normalized value! Got 0.248226 instead of 0.247615.
+Info:     Parameter 008 (id=2127899252): [title="Low Cut Slope"] [unit=""] [type = Discrete, default = 0.333333, unit = 0]
+Info:     Parameter 009 (id=1038297018): [title="Low Cut Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 010 (id=1065693503): [title="Low Cut Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 011 (id=923574803): [title="High Cut Freq"] [unit="Hz"] [type = Float, default = 0.880788, unit = 0]
+Info:  =>Parameter 011 (id=923574803): getParamValueByString ("20.0 k") doesn't return the original normalized value! Got 0.000000 instead of 0.880788.
+Info:     Parameter 012 (id=103094): [title="High Cut Q"] [unit=""] [type = Float, default = 0.247615, unit = 0]
+Info:  =>Parameter 012 (id=103094): getParamValueByString ("0.71") doesn't return the original normalized value! Got 0.248226 instead of 0.247615.
+Info:     Parameter 013 (id=725368176): [title="High Cut Slope"] [unit=""] [type = Discrete, default = 0.333333, unit = 0]
+Info:     Parameter 014 (id=923780414): [title="High Cut Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 015 (id=536903107): [title="High Cut Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 016 (id=356082668): [title="Low Freq"] [unit="Hz"] [type = Float, default = 0.537244, unit = 0]
+Info:     Parameter 017 (id=356096243): [title="Low Gain"] [unit="dB"] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 018 (id=356506798): [title="Low Type"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 019 (id=356288279): [title="Low Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 020 (id=637807964): [title="Low Band Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 021 (id=449253633): [title="Mid 1 Freq"] [unit="Hz"] [type = Float, default = 0.407590, unit = 0]
+Info:     Parameter 022 (id=449267208): [title="Mid 1 Gain"] [unit="dB"] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 023 (id=103889544): [title="Mid 1 Q"] [unit=""] [type = Float, default = 0.301511, unit = 0]
+Info:     Parameter 024 (id=449677763): [title="Mid 1 Type"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 025 (id=449459244): [title="Mid 1 Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 026 (id=2128275761): [title="Mid 1 Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 027 (id=450177154): [title="Mid 2 Freq"] [unit="Hz"] [type = Float, default = 0.742600, unit = 0]
+Info:  =>Parameter 027 (id=450177154): getParamValueByString ("2.50 k") doesn't return the original normalized value! Got 0.000000 instead of 0.742600.
+Info:     Parameter 028 (id=450190729): [title="Mid 2 Gain"] [unit="dB"] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 029 (id=103889575): [title="Mid 2 Q"] [unit=""] [type = Float, default = 0.301511, unit = 0]
+Info:     Parameter 030 (id=450601284): [title="Mid 2 Type"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 031 (id=450382765): [title="Mid 2 Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 032 (id=868295794): [title="Mid 2 Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 033 (id=461817658): [title="High Freq"] [unit="Hz"] [type = Float, default = 0.635311, unit = 0]
+Info:  =>Parameter 033 (id=461817658): getParamValueByString ("8.00 k") doesn't return the original normalized value! Got 0.000000 instead of 0.635311.
+Info:     Parameter 034 (id=461831233): [title="High Gain"] [unit="dB"] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 035 (id=462241788): [title="High Type"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 036 (id=462023269): [title="High Mode"] [unit=""] [type = Discrete, default = 0.000000, unit = 0]
+Info:     Parameter 037 (id=1317401898): [title="High Band Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 038 (id=771791643): [title="Preamp Type"] [unit=""] [type = Discrete, default = 0.250000, unit = 0]
+Info:     Parameter 039 (id=717628562): [title="Preamp Pad"] [unit=""] [type = Discrete, default = 0.500000, unit = 0]
+Info:     Parameter 040 (id=771381088): [title="Preamp Gain"] [unit="dB"] [type = Float, default = 0.333333, unit = 0]
+Info:     Parameter 041 (id=294585481): [title="Preamp Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 042 (id=973560936): [title="Preamp Circuit"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 043 (id=854433034): [title="Preamp HQ"] [unit=""] [type = Toggle, default = 1.000000, unit = 0]
+Info:     Parameter 044 (id=873230368): [title="Output Gain"] [unit="dB"] [type = Float, default = 0.500000, unit = 0]
+Info:     Parameter 045 (id=1438330318): [title="Auto Gain"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 046 (id=95468472): [title="Delta"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+Info:     Parameter 047 (id=1113149523): [title="Bypass"] [unit=""] [type = Toggle, default = 0.000000, unit = 0]
+[Succeeded]
+
+[MIDI Mapping]
+Info:  ===MIDI Mapping ====================================
+[Succeeded]
+
+[MIDI Learn]
+Info:  ===MIDI Learn ====================================
+Info:  No MIDI Learn interface supplied!
+[Succeeded]
+
+[Scan Units]
+Info:  ===Scan Units ====================================
+Info:  This component has no units.
+[Succeeded]
+
+[Scan Programs]
+Info:  ===Scan Programs ====================================
+Info:  This component does not export any programs.
+[Succeeded]
+
+[Terminate/Initialize]
+Info:  ===Terminate/Initialize ====================================
+[Succeeded]
+
+[Check Unit Structure]
+Info:  ===Check Unit Structure ====================================
+Info:  This component does not support IUnitInfo!
+[Succeeded]
+
+[Valid State Transition 32bits]
+Info:  ===Valid State Transition 32bits ====================================
+[Succeeded]
+
+[Valid State Transition 64bits]
+Info:  ===Valid State Transition 64bits ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Bus Consistency]
+Info:  ===Bus Consistency ====================================
+[Succeeded]
+
+[Bus Activation]
+Info:  ===Bus Activation ====================================
+Info:     Bus Activation: Input Audio Bus (0) (kMain)
+Info:     Bus Activation: Output Audio Bus (0) (kMain)
+[Succeeded]
+
+[Check Audio Bus Arrangement]
+Info:  ===Check Audio Bus Arrangement ====================================
+Info:     Check Input Audio Bus Arrangement (0)
+Info:     Check Output Audio Bus Arrangement (0)
+[Succeeded]
+
+[SideChain Arrangement]
+Info:  ===SideChain Arrangement ====================================
+[Succeeded]
+
+[Suspend/Resume]
+Info:  ===Suspend/Resume ====================================
+[Succeeded]
+
+[Note Expression]
+Info:  ===Note Expression ====================================
+Info:  No Note Expression interface supplied!
+[Succeeded]
+
+[Keyswitch]
+Info:  ===Keyswitch ====================================
+Info:  No Keyswitch interface supplied!
+[Succeeded]
+
+[ProcessContext Requirements]
+Info:  ===ProcessContext Requirements ====================================
+Info:  ProcessContextRequirements:
+Info:   - None
+[Succeeded]
+
+-------------------------------------------------------------
+TestSuite : Single Precision (32 bit) Tests
+-------------------------------------------------------------
+
+[Process Test]
+[Succeeded]
+
+[Process function running in another thread]
+Info:  ===Process function running in another thread ====================================
+[Succeeded]
+
+[Silence Flags]
+Info:  ===Silence Flags ====================================
+[Succeeded]
+
+[Silence Processing]
+Info:  ===Silence Processing ====================================
+Info:  The component reported a wrong silent flag for its output buffer! : output is silent but silenceFlags not set !
+[Succeeded]
+
+[Parameters Flush (no Buffer)]
+Info:  ===Parameters Flush (no Buffer) ====================================
+[Succeeded]
+
+[Parameters Flush 2 (only numChannel==0)]
+Info:  ===Parameters Flush 2 (only numChannel==0) ====================================
+[Succeeded]
+
+[Parameters Flush 2 (no Buffer, no parameter change)]
+Info:  ===Parameters Flush 2 (no Buffer, no parameter change) ====================================
+[Succeeded]
+
+[Variable Block Size]
+Info:  ===Variable Block Size ====================================
+[Succeeded]
+
+[Process Format]
+Info:  ===Process Format ====================================
+Info:  ***Tested Sample Rates***
+Info:        22050 Hz - processed successfully!
+Info:        32000 Hz - processed successfully!
+Info:        44100 Hz - processed successfully!
+Info:        48000 Hz - processed successfully!
+Info:        88200 Hz - processed successfully!
+Info:        96000 Hz - processed successfully!
+Info:       192000 Hz - processed successfully!
+Info:       384000 Hz - processed successfully!
+ERROR: IAudioProcessor::setupProcessing (..) failed for samplerate 1234.568 Hz! 
+Info:    12345.678 Hz - processed successfully!
+Info:    123456.78 Hz - processed successfully!
+ERROR: IAudioProcessor::setupProcessing (..) failed for samplerate 1234567.800 Hz! 
+[Succeeded]
+
+[Parameter Bypass persistence]
+Info:  ===Parameter Bypass persistence ====================================
+[Succeeded]
+
+[In: Stereo: 2 Channels, Out: Stereo: 2 Channels]
+Info:  ===In: Stereo: 2 Channels, Out: Stereo: 2 Channels ====================================
+[Succeeded]
+
+[In: Mono: 1 Channels, Out: Mono: 1 Channels]
+Info:  ===In: Mono: 1 Channels, Out: Mono: 1 Channels ====================================
+[Succeeded]
+
+[Accuracy: Block, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Block, 1 Parameters, Change every100 Samples ====================================
+[Succeeded]
+
+[Accuracy: Sample, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Sample, 1 Parameters, Change every100 Samples ====================================
+[Succeeded]
+
+-------------------------------------------------------------
+TestSuite : Double Precision (64 bit) Tests
+-------------------------------------------------------------
+
+[Process Test]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Process function running in another thread]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Silence Flags]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Silence Processing]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush (no Buffer)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush 2 (only numChannel==0)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameters Flush 2 (no Buffer, no parameter change)]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Variable Block Size]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Process Format]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Parameter Bypass persistence]
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[In: Stereo: 2 Channels, Out: Stereo: 2 Channels]
+Info:  ===In: Stereo: 2 Channels, Out: Stereo: 2 Channels ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[In: Mono: 1 Channels, Out: Mono: 1 Channels]
+Info:  ===In: Mono: 1 Channels, Out: Mono: 1 Channels ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Accuracy: Block, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Block, 1 Parameters, Change every100 Samples ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+[Accuracy: Sample, 1 Parameters, Change every100 Samples]
+Info:  ===Accuracy: Sample, 1 Parameters, Change every100 Samples ====================================
+Info:  64bit Audio Processing not supported.
+[Succeeded]
+
+-------------------------------------------------------------
+Result: 47 tests passed, 0 tests failed
+-------------------------------------------------------------

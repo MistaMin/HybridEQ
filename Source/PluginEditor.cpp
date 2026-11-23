@@ -154,6 +154,7 @@ HybridEQEditor::HybridEQEditor(HybridEQProcessor& p)
     overlayEq = std::make_unique<EQDisplay>(proc.apvts, proc.getEQ());
     overlayEq->setOverlayMode(true);
     spectrumOverlay->setNodeLayer(overlayEq.get());
+    spectrumOverlay->onVisibilityChanged = [this](bool shown) { eqDisplay->setCoveredByOverlay(shown); };
     addAndMakeVisible(*eqDisplay);
 
     // Narrow vertical channel-strip bands (vintage console style): every

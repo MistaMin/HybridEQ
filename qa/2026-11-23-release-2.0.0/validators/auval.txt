@@ -1,0 +1,569 @@
+
+    AU Validation Tool
+    Version: 1.10.0 
+    Copyright 2003-2019, Apple Inc. All Rights Reserved.
+    Specify -h (-help) for command options
+
+--------------------------------------------------
+VALIDATING AUDIO UNIT: 'aufx' - 'HyEq' - 'Hybr'
+--------------------------------------------------
+Manufacturer String: OpenGrid
+AudioUnit Name: HybridEQ
+Component Version: 2.0.0 (0x20000)
+
+* * PASS
+--------------------------------------------------
+TESTING OPEN TIMES:
+COLD:
+Time to open AudioUnit:         275.037 ms
+WARM:
+Time to open AudioUnit:         0.127  ms
+This AudioUnit is a version 2 implementation.
+FIRST TIME:
+Time for initialization:        1172.925 ms
+
+* * PASS
+--------------------------------------------------
+VERIFYING DEFAULT SCOPE FORMATS:
+Input Scope Bus Configuration:
+ Default Bus Count:1
+    Default Format: AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+    Has Channel Layouts: 0x650002 
+    Default Layout:
+	Tag=0x650002, Num Chan Descs=0
+
+Output Scope Bus Configuration:
+ Default Bus Count:1
+    Default Format: AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+    Has Channel Layouts: 0x650002 
+    Default Layout:
+	Tag=0x650002, Num Chan Descs=0
+
+* * PASS
+--------------------------------------------------
+VERIFYING REQUIRED PROPERTIES:
+
+* * PASS
+--------------------------------------------------
+VERIFYING RECOMMENDED PROPERTIES:
+  VERIFYING PROPERTY: Latency
+    PASS
+  VERIFYING PROPERTY: Tail Time
+    PASS
+  VERIFYING PROPERTY: Bypass Effect
+    PASS
+
+* * PASS
+--------------------------------------------------
+VERIFYING OPTIONAL PROPERTIES:
+
+* * PASS
+--------------------------------------------------
+VERIFYING SPECIAL PROPERTIES:
+
+VERIFYING CUSTOM UI
+Cocoa Views Available: 1
+  OpenPluginAUViewFactory_HybridEQ_2_0_0
+    PASS
+
+VERIFYING CLASS INFO
+    PASS
+
+TESTING HOST CALLBACKS
+    PASS
+
+* * PASS
+--------------------------------------------------
+PUBLISHED PARAMETER INFO:
+
+# # # 47 Global Scope Parameters:
+Parameter ID:1057129025
+Name: Oversample
+Parameter Type: Indexed
+Values: Minimum = 1x, Default = 1x, Maximum = 8x
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 4
+Value: 0,  String: 1x
+Value: 1,  String: 2x
+Value: 2,  String: 4x
+Value: 3,  String: 8x
+  -parameter PASS
+
+Parameter ID:2083021974
+Name: Oversample Filter
+Parameter Type: Boolean
+Values: Minimum = IIR (Min), Default = IIR (Min), Maximum = FIR (Lin)
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:2140420123
+Name: 2nd Harmonic
+Parameter Type: Percent
+Values: Minimum = 0 %, Default = 0 %, Maximum = 100 %
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:2140421208
+Name: 3rd Harmonic
+Parameter Type: Percent
+Values: Minimum = 0 %, Default = 0 %, Maximum = 100 %
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:2140422235
+Name: 4th Harmonic
+Parameter Type: Percent
+Values: Minimum = 0 %, Default = 0 %, Maximum = 100 %
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:2140423196
+Name: 5th Harmonic
+Parameter Type: Percent
+Values: Minimum = 0 %, Default = 0 %, Maximum = 100 %
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:1038091407
+Name: Low Cut Freq
+Parameter Type: Hertz
+Values: Minimum = 20.0 Hz, Default = 20.0 Hz, Maximum = 1.00 kHz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:106938
+Name: Low Cut Q
+Parameter Type: Generic
+Values: Minimum = 0.10, Default = 0.71, Maximum = 10.0
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:2127899252
+Name: Low Cut Slope
+Parameter Type: Indexed
+Values: Minimum = -6 dB/oct, Default = -12 dB/oct, Maximum = -24 dB/oct
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 4
+Value: 0,  String: -6 dB/oct
+Value: 1,  String: -12 dB/oct
+Value: 2,  String: -18 dB/oct
+Value: 3,  String: -24 dB/oct
+  -parameter PASS
+
+Parameter ID:1038297018
+Name: Low Cut Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:1065693503
+Name: Low Cut Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:923574803
+Name: High Cut Freq
+Parameter Type: Hertz
+Values: Minimum = 1.00 kHz, Default = 20.0 kHz, Maximum = 30.0 kHz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:103094
+Name: High Cut Q
+Parameter Type: Generic
+Values: Minimum = 0.10, Default = 0.71, Maximum = 10.0
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:725368176
+Name: High Cut Slope
+Parameter Type: Indexed
+Values: Minimum = -6 dB/oct, Default = -12 dB/oct, Maximum = -24 dB/oct
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 4
+Value: 0,  String: -6 dB/oct
+Value: 1,  String: -12 dB/oct
+Value: 2,  String: -18 dB/oct
+Value: 3,  String: -24 dB/oct
+  -parameter PASS
+
+Parameter ID:923780414
+Name: High Cut Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:536903107
+Name: High Cut Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:356082668
+Name: Low Freq
+Parameter Type: Hertz
+Values: Minimum = 20.0 Hz, Default = 100 Hz, Maximum = 400 Hz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:356096243
+Name: Low Gain
+Parameter Type: Decibels
+Values: Minimum = -18.0 dB, Default = 0.0 dB, Maximum = +18.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:356506798
+Name: Low Type
+Parameter Type: Indexed
+Values: Minimum = Bax-EQ, Default = Bax-EQ, Maximum = FSF
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Bax-EQ
+Value: 1,  String: Brit
+Value: 2,  String: FSF
+  -parameter PASS
+
+Parameter ID:356288279
+Name: Low Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:637807964
+Name: Low Band Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:449253633
+Name: Mid 1 Freq
+Parameter Type: Hertz
+Values: Minimum = 200 Hz, Default = 800 Hz, Maximum = 6.00 kHz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:449267208
+Name: Mid 1 Gain
+Parameter Type: Decibels
+Values: Minimum = -18.0 dB, Default = 0.0 dB, Maximum = +18.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:103889544
+Name: Mid 1 Q
+Parameter Type: Generic
+Values: Minimum = 0.10, Default = 1.00, Maximum = 10.0
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:449677763
+Name: Mid 1 Type
+Parameter Type: Indexed
+Values: Minimum = N-EQ, Default = N-EQ, Maximum = A-Type
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: N-EQ
+Value: 1,  String: Brit
+Value: 2,  String: A-Type
+  -parameter PASS
+
+Parameter ID:449459244
+Name: Mid 1 Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:2128275761
+Name: Mid 1 Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:450177154
+Name: Mid 2 Freq
+Parameter Type: Hertz
+Values: Minimum = 200 Hz, Default = 2.50 kHz, Maximum = 6.00 kHz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:450190729
+Name: Mid 2 Gain
+Parameter Type: Decibels
+Values: Minimum = -18.0 dB, Default = 0.0 dB, Maximum = +18.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:103889575
+Name: Mid 2 Q
+Parameter Type: Generic
+Values: Minimum = 0.10, Default = 1.00, Maximum = 10.0
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:450601284
+Name: Mid 2 Type
+Parameter Type: Indexed
+Values: Minimum = N-EQ, Default = N-EQ, Maximum = A-Type
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: N-EQ
+Value: 1,  String: Brit
+Value: 2,  String: A-Type
+  -parameter PASS
+
+Parameter ID:450382765
+Name: Mid 2 Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:868295794
+Name: Mid 2 Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:461817658
+Name: High Freq
+Parameter Type: Hertz
+Values: Minimum = 800 Hz, Default = 8.00 kHz, Maximum = 30.0 kHz
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:461831233
+Name: High Gain
+Parameter Type: Decibels
+Values: Minimum = -18.0 dB, Default = 0.0 dB, Maximum = +18.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:462241788
+Name: High Type
+Parameter Type: Indexed
+Values: Minimum = Bax-EQ, Default = Bax-EQ, Maximum = FSF
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Bax-EQ
+Value: 1,  String: Brit
+Value: 2,  String: FSF
+  -parameter PASS
+
+Parameter ID:462023269
+Name: High Mode
+Parameter Type: Indexed
+Values: Minimum = Stereo, Default = Stereo, Maximum = Side
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: Stereo
+Value: 1,  String: Mid
+Value: 2,  String: Side
+  -parameter PASS
+
+Parameter ID:1317401898
+Name: High Band Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:771791643
+Name: Preamp Type
+Parameter Type: Indexed
+Values: Minimum = Off, Default = Brit, Maximum = A-Type
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 5
+Value: 0,  String: Off
+Value: 1,  String: Brit
+Value: 2,  String: N-Type
+Value: 3,  String: FSF
+Value: 4,  String: A-Type
+  -parameter PASS
+
+Parameter ID:717628562
+Name: Preamp Pad
+Parameter Type: Indexed
+Values: Minimum = -20 dB, Default = Unity, Maximum = +10 dB
+Flags: Values Have Strings, Readable, Writable 
+Parameter has Value Strings
+Num Strings = 3
+Value: 0,  String: -20 dB
+Value: 1,  String: Unity
+Value: 2,  String: +10 dB
+  -parameter PASS
+
+Parameter ID:771381088
+Name: Preamp Gain
+Parameter Type: Decibels
+Values: Minimum = -12.0 dB, Default = 0.0 dB, Maximum = +24.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:294585481
+Name: Preamp Bypass
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:973560936
+Name: Preamp Circuit
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:854433034
+Name: Preamp HQ
+Parameter Type: Boolean
+Values: Minimum = Off, Default = On, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:873230368
+Name: Output Gain
+Parameter Type: Decibels
+Values: Minimum = -24.0 dB, Default = 0.0 dB, Maximum = +24.0 dB
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:1438330318
+Name: Auto Gain
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Parameter ID:95468472
+Name: Delta
+Parameter Type: Boolean
+Values: Minimum = Off, Default = Off, Maximum = On
+Flags: Values Have Strings, Readable, Writable 
+  -parameter PASS
+
+Testing that parameters retain value across reset and initialization
+  PASS
+
+* * PASS
+--------------------------------------------------
+FORMAT TESTS:
+
+Reported Channel Capabilities (explicit):
+      [2, 2]  [1, 1]  
+
+Input/Output Channel Handling:
+1-1   1-2   1-4   1-5   1-6   1-7   1-8   2-2   2-4   2-5   2-6   2-7   2-8   4-4   4-5   5-5   6-6   7-7   8-8
+X                                         X                                                                       
+
+# # AudioChannelLayouts (1), Input Scope:
+ChannelLayout is Writable: T
+The Unit publishes the following Channel Layouts:
+  0x650002, 
+
+Is Audio Channel Layout Available:
+Mono    Stereo  Binau.  AU_4    Ambi.   AU_5    AU_5_0  AU_6    AU_6_0  AU_7_0  AU_7_0F AU_8    AU_5_1  AU_6_1  AU_7_1  AU_7_1F 
+        X                                                                                                                       
+
+Current Format:AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+Current Format Tag = 0x650002, New Format Tag = 0x650002, Successsful
+
+# # AudioChannelLayouts (1), Output Scope:
+ChannelLayout is Writable: T
+The Unit publishes the following Channel Layouts:
+  0x650002, 
+
+Is Audio Channel Layout Available:
+Mono    Stereo  Binau.  AU_4    Ambi.   AU_5    AU_5_0  AU_6    AU_6_0  AU_7_0  AU_7_0F AU_8    AU_5_1  AU_6_1  AU_7_1  AU_7_1F 
+        X                                                                                                                       
+
+Current Format:AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+Current Format Tag = 0x650002, New Format Tag = 0x650002, Successsful
+
+* * PASS
+--------------------------------------------------
+RENDER TESTS:
+
+Input Format: AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+Output Format: AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+Render Test at 512 frames
+Slicing Render Test at 64 frames
+  PASS
+
+
+Render Test at 64 frames, sample rate: 22050 Hz
+Render Test at 137 frames, sample rate: 96000 Hz
+Render Test at 4096 frames, sample rate: 48000 Hz
+Render Test at 4096 frames, sample rate: 192000 Hz
+Render Test at 4096 frames, sample rate: 11025 Hz
+Render Test at 512 frames, sample rate: 44100 Hz
+  PASS
+
+1 Channel Test:
+Render Test at 512 frames
+  PASS
+
+Checking connection semantics:
+Connection format:
+AudioStreamBasicDescription:  2 ch,  44100 Hz, Float32, deinterleaved
+  PASS
+
+Bad Max Frames - Render should fail
+  PASS
+
+Checking parameter setting
+Using AudioUnitSetParameter
+Using AudioUnitScheduleParameter
+  PASS
+
+Test MIDI
+  PASS
+
+* * PASS
+--------------------------------------------------
+AU VALIDATION SUCCEEDED.
+--------------------------------------------------

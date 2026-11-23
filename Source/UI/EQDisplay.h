@@ -59,9 +59,11 @@ public:
 
     // Optional analyser drawn behind the EQ curve (owned elsewhere).
     void setSpectrum(SpectrumRenderer* s) { spectrum = s; startTimerHz(s && s->isOn() ? 30 : 20); }
+    // Hidden under the full-window analyser: the small scope is covered, so its FFT and repaints are skipped.
+    void setCoveredByOverlay(bool covered) { if (coveredByOverlay != covered) { coveredByOverlay = covered; if (!covered) repaint(); } }
     void timerCallback() override
     {
-        if (overlay && !isShowing()) return;
+        if (coveredByOverlay || (overlay && !isShowing())) return;
         if (spectrum && spectrum->isOn()) { if (isShowing()) spectrum->update(1.0f / float(juce::jmax(1, getTimerInterval() > 0 ? 1000 / getTimerInterval() : 30))); }
         repaint();
     }
@@ -137,6 +139,7 @@ public:
 private:
     SpectrumRenderer* spectrum = nullptr;
     bool overlay = false;
+    bool coveredByOverlay = false;
     juce::uint32 lastWheelMs = 0;
 
     juce::Rectangle<float> plotRect() const

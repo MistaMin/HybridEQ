@@ -1,0 +1,65 @@
+{
+  "original": {
+    "path": "/Library/Audio/Plug-Ins/CLAP/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "port": {
+    "path": "/Volumes/Developer/OpenGrid/HybridEQ/dist-rust/HybridEQ.clap",
+    "format": "clap",
+    "name": "HybridEQ",
+    "latency_samples": 0,
+    "input_channels": 2,
+    "output_channels": 2
+  },
+  "rate": 48000,
+  "block": 512,
+  "frames": 144000,
+  "tolerance": 1e-6,
+  "latency_differs": false,
+  "channels": [
+    {
+      "channel": 0,
+      "max_abs_diff": 0.9948258399963379,
+      "max_at": 119887,
+      "rms_diff_db": -8.745804911298286,
+      "first_differing": {
+        "index": 0,
+        "original": -5.0195922e-26,
+        "port": 0.0
+      },
+      "first_over_tolerance": {
+        "index": 46,
+        "original": -0.0000012581719,
+        "port": 1.1614916e-7
+      },
+      "samples_over_tolerance": 143952
+    },
+    {
+      "channel": 1,
+      "max_abs_diff": 0.9947243332862854,
+      "max_at": 119786,
+      "rms_diff_db": -8.745349390255207,
+      "first_differing": {
+        "index": 0,
+        "original": 4.0733856e-18,
+        "port": 0.0
+      },
+      "first_over_tolerance": {
+        "index": 26,
+        "original": 8.76863e-7,
+        "port": -3.1499363e-7
+      },
+      "samples_over_tolerance": 143972
+    }
+  ],
+  "parameter_map": [
+    "1057129025 (Oversample) -> 1057129025 (Oversample)",
+    "2083021974 (Oversample Filter) -> 2083021974 (Oversample Filter)"
+  ],
+  "notes": [],
+  "pass": false
+}

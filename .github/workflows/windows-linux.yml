@@ -1,0 +1,230 @@
+# Builds, tests and packages HybridEQ for Windows (x64, ARM64) and Linux (x86_64, aarch64), each on
+# its own runner, in CLAP, LV2 and VST3: the release's PC and Linux archives. macOS is built, signed and notarised on a Mac.
+#
+# The plugin is built with OpenPluginSDK and GoodLookin DRI checked out next to it at the refs below;
+# scripts/sdk_env.sh points cargo at the SDK. Every job uploads its archive, its checksum and its
+# QA logs (tests, clap-validator, the VST3 SDK validator, and pluginval on x64, where it ships).
+name: Windows and Linux
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+    branches: [rust-port]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The commits 2.0.0 was built from (OpenPluginSDK PR #37, GoodLookin DRI semibold-text); move on deliberately.
+  SDK_REF: b01d07a155e91d138afd32e6f7c5ee195f99cc33
+  GOODLOOKINDRI_REF: 333a952f43c978b86b2232678bc895c209b9806f
+  VST3_SDK_REF: v3.8.0_build_66
+  CLAP_VALIDATOR_REF: "0.4.1"
+  PLUGINVAL_VERSION: v1.0.4
+  CARGO_TERM_COLOR: never
+
+jobs:
+  windows:
+    name: Windows ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: windows-latest, arch: x64, cmake_arch: x64 }
+          - { runner: windows-11-arm, arch: arm64, cmake_arch: ARM64 }
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: HybridEQ }
+      - uses: actions/checkout@v4
+        with: { repository: MistaMin/OpenPluginSDK, ref: "${{ env.SDK_REF }}", path: OpenPluginSDK }
+      - uses: actions/checkout@v4
+        with: { repository: MistaMin/GoodLookinDri, ref: "${{ env.GOODLOOKINDRI_REF }}", path: GoodLookinDri }
+      - uses: actions/checkout@v4
+        with: { repository: steinbergmedia/vst3sdk, ref: "${{ env.VST3_SDK_REF }}", submodules: recursive, path: vst3sdk }
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Point HybridEQ at the SDK, read the version
+        working-directory: HybridEQ
+        run: |
+          New-Item -ItemType Directory -Force .cargo | Out-Null
+          $sdk = "$env:GITHUB_WORKSPACE/OpenPluginSDK/crates/openplugin" -replace '\\', '/'
+          "[patch.crates-io]`nopenplugin = { path = `"$sdk`" }" | Set-Content .cargo/config.toml
+          "VERSION=$((Get-Content VERSION).Trim())" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Force "$env:GITHUB_WORKSPACE/qa" | Out-Null
+          rustc -vV | Tee-Object "$env:GITHUB_WORKSPACE/qa/toolchain.txt"
+
+      - name: Tests
+        working-directory: HybridEQ
+        run: |
+          cargo test --release --manifest-path crates/engine/Cargo.toml 2>&1 | Tee-Object "$env:GITHUB_WORKSPACE/qa/tests-engine.txt"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cargo test --release --manifest-path plugin/Cargo.toml 2>&1 | Tee-Object "$env:GITHUB_WORKSPACE/qa/tests-plugin.txt"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Build CLAP, LV2 and VST3
+        working-directory: HybridEQ
+        run: |
+          & ../OpenPluginSDK/scripts/windows/build_plugin.ps1 -ManifestPath plugin/Cargo.toml -Name HybridEQ `
+            -Version $env:VERSION -Manufacturer OpenGrid -BundleId com.OpenGrid.HybridEQ -Editor -Tail `
+            -TtlBin hybrideq-lv2-ttl -Formats 'clap,lv2,vst3' -Vst3Sdk ../vst3sdk -Out ../dist -WorkDir ../build-win `
+            2>&1 | Tee-Object "$env:GITHUB_WORKSPACE/qa/build.txt"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: clap-validator
+        run: |
+          cargo install --git https://github.com/free-audio/clap-validator --tag $env:CLAP_VALIDATOR_REF --locked --root "$env:RUNNER_TEMP/cv"
+          & "$env:RUNNER_TEMP/cv/bin/clap-validator.exe" validate dist/HybridEQ.clap 2>&1 | Tee-Object qa/clap-validator.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: VST3 SDK validator
+        run: |
+          cmake -S vst3sdk -B vst3-build -A ${{ matrix.cmake_arch }} -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF `
+            -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_CREATE_PLUGIN_LINK=OFF
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cmake --build vst3-build --config Release --target validator
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $validator = Get-ChildItem vst3-build -Recurse -Filter validator.exe | Select-Object -First 1
+          & $validator.FullName dist/HybridEQ.vst3 2>&1 | Tee-Object qa/vst3-validator.txt
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      # pluginval hosts the VST3 at strictness 10, editor included. It ships for x64 only.
+      - name: pluginval (x64)
+        if: matrix.arch == 'x64'
+        run: |
+          Invoke-WebRequest "https://github.com/Tracktion/pluginval/releases/download/$env:PLUGINVAL_VERSION/pluginval_Windows.zip" -OutFile pv.zip
+          Expand-Archive pv.zip -DestinationPath pv
+          $pv = Get-ChildItem pv -Recurse -Filter pluginval.exe | Select-Object -First 1
+          $p = Start-Process $pv.FullName -ArgumentList '--strictness-level','10','--validate-in-process','--output-dir','qa','--validate','dist\HybridEQ.vst3' -NoNewWindow -Wait -PassThru -RedirectStandardOutput qa/pluginval-vst3.txt
+          Get-Content qa/pluginval-vst3.txt
+          if ($p.ExitCode) { exit $p.ExitCode }
+
+      - name: Installer
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup --no-progress -y; if ($LASTEXITCODE) { exit $LASTEXITCODE } }
+          & $iscc /Qp "/DAppVersion=$env:VERSION" "/DArch=${{ matrix.arch }}" "/DDist=$env:GITHUB_WORKSPACE\dist" `
+            "/DRoot=$env:GITHUB_WORKSPACE\HybridEQ" HybridEQ\installer\windows\HybridEQ.iss
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $exe = "HybridEQ-$env:VERSION-windows-${{ matrix.arch }}-setup.exe"
+          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $exe" | Set-Content -NoNewline "$exe.sha256"
+          Get-Content "$exe.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-windows-${{ matrix.arch }}
+          path: |
+            HybridEQ-*-windows-${{ matrix.arch }}-setup.exe
+            HybridEQ-*-windows-${{ matrix.arch }}-setup.exe.sha256
+            qa/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: "failed-windows-${{ matrix.arch }}", path: qa/ }
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 22.04: glibc 2.35, so the plug-ins load on distributions from 2022 on.
+          - { runner: ubuntu-22.04, arch: x86_64 }
+          - { runner: ubuntu-22.04-arm, arch: aarch64 }
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: HybridEQ }
+      - uses: actions/checkout@v4
+        with: { repository: MistaMin/OpenPluginSDK, ref: "${{ env.SDK_REF }}", path: OpenPluginSDK }
+      - uses: actions/checkout@v4
+        with: { repository: MistaMin/GoodLookinDri, ref: "${{ env.GOODLOOKINDRI_REF }}", path: GoodLookinDri }
+      - uses: actions/checkout@v4
+        with: { repository: steinbergmedia/vst3sdk, ref: "${{ env.VST3_SDK_REF }}", submodules: recursive, path: vst3sdk }
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Point HybridEQ at the SDK, read the version
+        working-directory: HybridEQ
+        run: |
+          OPENPLUGIN_SDK="$GITHUB_WORKSPACE/OpenPluginSDK" . scripts/sdk_env.sh
+          echo "VERSION=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_ENV"
+          mkdir -p "$GITHUB_WORKSPACE/qa"
+          { rustc -vV; ldd --version | head -1; } | tee "$GITHUB_WORKSPACE/qa/toolchain.txt"
+
+      - name: Tests
+        working-directory: HybridEQ
+        run: |
+          set -o pipefail
+          cargo test --release --manifest-path crates/engine/Cargo.toml 2>&1 | tee "$GITHUB_WORKSPACE/qa/tests-engine.txt"
+          cargo test --release --manifest-path plugin/Cargo.toml 2>&1 | tee "$GITHUB_WORKSPACE/qa/tests-plugin.txt"
+
+      - name: Build CLAP, LV2 and VST3
+        working-directory: HybridEQ
+        run: |
+          set -o pipefail
+          ../OpenPluginSDK/scripts/build_plugin_linux.sh --manifest-path plugin/Cargo.toml --name HybridEQ \
+            --version "$VERSION" --manufacturer OpenGrid --editor --tail --ttl-bin hybrideq-lv2-ttl \
+            --formats clap,lv2,vst3 --vst3-sdk ../vst3sdk --out ../dist --work-dir ../build-linux \
+            2>&1 | tee "$GITHUB_WORKSPACE/qa/build.txt"
+
+      - name: clap-validator
+        run: |
+          set -o pipefail
+          cargo install --git https://github.com/free-audio/clap-validator --tag "$CLAP_VALIDATOR_REF" --locked --root "$RUNNER_TEMP/cv"
+          "$RUNNER_TEMP/cv/bin/clap-validator" validate dist/HybridEQ.clap 2>&1 | tee qa/clap-validator.txt
+
+      - name: VST3 SDK validator
+        run: |
+          set -o pipefail
+          cmake -S vst3sdk -B vst3-build -DCMAKE_BUILD_TYPE=Release -DSMTG_ENABLE_VST3_PLUGIN_EXAMPLES=OFF \
+            -DSMTG_ENABLE_VST3_HOSTING_EXAMPLES=OFF -DSMTG_ENABLE_VSTGUI_SUPPORT=OFF -DSMTG_CREATE_PLUGIN_LINK=OFF
+          cmake --build vst3-build --target validator -j 4
+          "$(find vst3-build -type f -name validator -perm -u+x | head -1)" dist/HybridEQ.vst3 2>&1 | tee qa/vst3-validator.txt
+
+      # pluginval hosts the VST3 at strictness 10 on a virtual display, editor included (the X11 view
+      # driven by the host's run loop). It ships for x86_64 only.
+      - name: pluginval (x86_64)
+        if: matrix.arch == 'x86_64'
+        run: |
+          set -o pipefail
+          sudo apt-get update -q && sudo apt-get install -y -q xvfb libfreetype6 libfontconfig1 libasound2 libcurl4 \
+            libx11-6 libxext6 libxrandr2 libxinerama1 libxcursor1
+          curl -fsSL -o pv.zip "https://github.com/Tracktion/pluginval/releases/download/$PLUGINVAL_VERSION/pluginval_Linux.zip"
+          unzip -q pv.zip -d pv && chmod +x pv/pluginval
+          xvfb-run -a pv/pluginval --strictness-level 10 --validate-in-process --output-dir qa --validate dist/HybridEQ.vst3 \
+            2>&1 | tee qa/pluginval-vst3.txt
+
+      - name: Archive
+        run: |
+          set -e
+          name="HybridEQ-$VERSION-linux-${{ matrix.arch }}"
+          root="stage/$name"
+          mkdir -p "$root/usr/lib/clap" "$root/usr/lib/lv2" "$root/usr/lib/vst3" "$root/usr/share/doc/hybrideq"
+          cp dist/HybridEQ.clap "$root/usr/lib/clap/"
+          cp -R dist/HybridEQ.lv2 "$root/usr/lib/lv2/"
+          cp -R dist/HybridEQ.vst3 "$root/usr/lib/vst3/"
+          cp HybridEQ/LICENSE HybridEQ/BINARY_LICENSE.txt HybridEQ/THIRD_PARTY_NOTICES.txt "$root/usr/share/doc/hybrideq/"
+          cp -R HybridEQ/Licenses/third-party "$root/usr/share/doc/hybrideq/"
+          tar -C stage --owner=0 --group=0 -czf "$name.tar.gz" "$name"
+          sha256sum "$name.tar.gz" | tee "$name.tar.gz.sha256"
+          tar -tzf "$name.tar.gz" | tee qa/archive-contents.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HybridEQ-linux-${{ matrix.arch }}
+          path: |
+            HybridEQ-*-linux-${{ matrix.arch }}.tar.gz
+            HybridEQ-*-linux-${{ matrix.arch }}.tar.gz.sha256
+            qa/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: "failed-linux-${{ matrix.arch }}", path: qa/ }

@@ -1,0 +1,4 @@
+Rewritten in Rust: the same EQ, preamp circuits and harmonics; 1.6 projects open unchanged.
+AUTO GAIN for loudness-matched comparisons and DELTA to hear only what changes.
+Resizable editor with crisper text, and sample-accurate automation.
+Windows (x64, ARM64) and Linux (x86_64, aarch64) builds alongside macOS.

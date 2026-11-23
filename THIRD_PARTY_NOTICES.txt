@@ -1,65 +1,58 @@
 HybridEQ licensing and component notices
 
 HybridEQ source code
-Copyright (c) 2026 Marcos Deida. MIT License; see LICENSE.
+Copyright (c) 2026 Marcos Quirino Deida. MIT License; see LICENSE.
 The official complete binaries are proprietary freeware; see BINARY_LICENSE.txt.
 The MIT permissions for the corresponding source remain available.
 
-GoodLookinUI
-Copyright (c) 2026 Marcos Deida. MIT License.
-See third_party/GoodLookinUI/LICENSE in the source repository, or
-GoodLookinUI-LICENSE.txt alongside this notice in binary distributions.
-The core and JUCE adapter are independent toolkit code, not a JUCE fork.
-Include the GoodLookinUI copyright and MIT permission notice when distributing
-copies or substantial portions of the toolkit, including compiled copies.
-
-JUCE 9.0.3
-Copyright holders and licensing: https://github.com/juce-framework/JUCE/tree/9.0.3
-JUCE is fetched during source builds and is not included as source here.
-Official HybridEQ binaries use the publisher's commercial JUCE license.
-JUCE is not covered by the MIT licenses above. Independent builders must
-comply with the JUCE license applicable to their build and distribution;
-the publisher's commercial license is not supplied with this repository.
-JUCE 9 commercial terms: https://juce.com/legal/juce-9-licence/
-JUCE's alternative open-source terms and component notices are in its source.
-
-Included third-party components
+Components in HybridEQ 2.0.0
 The full license text of each component below is in the Licenses/third-party folder of the source
 repository, and is installed with the binaries (see "Where the licenses are" at the end).
+
+  OpenPluginSDK (plug-in framework: the CLAP, LV2 and editor code in Rust, and the VST3, Audio Unit and
+    AAX shells): Copyright (c) 2026 Marcos Quirino Deida and OpenPluginSDK Contributors. MIT License
+    (also offered under Apache 2.0):
+    OpenPluginSDK-LICENSE-MIT.txt
+  GoodLookin DRI (the editor's drawing toolkit): Copyright (c) 2026 Marcos Quirino Deida. MIT License:
+    GoodLookinDri-LICENSE.txt
+  Source Sans Pro Semibold (the editor's typeface), Copyright 2010, 2012 Adobe Systems Incorporated,
+    with Reserved Font Name 'Source'. SIL Open Font License 1.1: SourceSansPro-OFL.txt
+  Rust crates linked into the binaries (cargo tree -e normal): ahash, allocator-api2, bitflags, cfg-if,
+    fontdue, hashbrown, itoa, log, memchr, num-complex, num-integer, num-traits, once_cell,
+    primal-check, rustfft, serde, serde_core, serde_json, strength_reduce, transpose, ttf-parser,
+    zerocopy and zmij; on Linux also gethostname, linux-raw-sys, rustix, x11rb and x11rb-protocol.
+    Each is under the MIT License, the Apache License 2.0, or both (some also Zlib, BSD-2-Clause or
+    the Unlicense, as chosen by its authors); every crate's own license files are collected in
+    Rust-crates-LICENSES.txt. The Rust standard library is under MIT and Apache 2.0.
   Plug-in format SDKs
-    VST3 SDK (Steinberg Media Technologies GmbH), compiled in through JUCE, under the MIT license:
-      VST3-SDK-LICENSE-MIT.txt (usage guidelines: VST3-Usage-Guidelines.pdf).
-      VST is a trademark of Steinberg Media Technologies GmbH (VST-TRADEMARK-NOTICE.txt).
-    LV2 headers, lilv, serd, sord, sratom (ISC license), compiled in through JUCE: LV2-*-COPYING.txt
-    CLAP SDK and clap-helpers (MIT) and clap-juce-extensions (MIT): CLAP-*.txt, clap-juce-extensions-LICENSE.txt
-    Audio Unit SDK (Apple, Apache License 2.0): AudioUnitSDK-LICENSE-Apache-2.0.txt
-  Libraries bundled inside JUCE and compiled into the binaries
-    zlib, libpng, libjpeg (Independent JPEG Group), libwebp, FLAC, Ogg, Vorbis, Opus (libopus, opusfile,
-    libopusenc), HarfBuzz, SheenBidi, LunaSVG (with PlutoVG): the matching *-LICENSE.txt / *-COPYING.txt /
-    *-Licence.txt files in the same folder
-  JUCE itself: JUCE-NOTICE.txt
+    VST3 SDK (Steinberg Media Technologies GmbH), MIT License: VST3-SDK-LICENSE-MIT.txt (usage
+      guidelines: VST3-Usage-Guidelines.pdf). VST is a trademark of Steinberg Media Technologies GmbH
+      (VST-TRADEMARK-NOTICE.txt).
+    Audio Unit SDK (Apple), Apache License 2.0: AudioUnitSDK-LICENSE-Apache-2.0.txt
+    CLAP (the format's interface, implemented in OpenPluginSDK), MIT License: CLAP-LICENSE.txt
+    LV2 (the format's interface, implemented in OpenPluginSDK), ISC License: LV2-lv2-COPYING.txt
 
 Avid AAX SDK
 The AAX format is built using Avid's AAX SDK under the Avid AAX Developer Agreement
 and PACE Eden signing. The resulting AAX plug-in is included in official macOS installers
 as freeware. The AAX SDK itself is proprietary to Avid Technology, Inc., is not included
-in this repository, and is not MIT licensed.
+in this repository, and is not MIT licensed: AAX-SDK-LICENSE.txt.
 AAX and Pro Tools are trademarks of Avid Technology, Inc.
 
 Trademarks
 Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of
 their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc.
 VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies
-are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the
+are not affiliated with, and have not endorsed or sponsored, Marcos Quirino Deida, the
 OpenGrid Project or this plug-in. The names appear only to describe the
 classic designs that inspired each model; every model here is an independent
 circuit simulation, and no code or text from those companies is included.
 
 Where the licenses are
-  Source download (git clone / zip): LICENSE, BINARY_LICENSE.txt, THIRD_PARTY_NOTICES.txt, Licenses/third-party/
-    and third_party/GoodLookinUI/LICENSE (after `git submodule update --init`).
-  Installer (.pkg): shown in the installer's license step, and installed to
+  Source download (git clone / zip): LICENSE, BINARY_LICENSE.txt, THIRD_PARTY_NOTICES.txt and
+    Licenses/third-party/.
+  macOS installer (.pkg): shown in the installer's license step, and installed to
     /Library/Application Support/OpenGrid/HybridEQ/Licenses (with a third-party subfolder).
-  Disk image (.dmg): LICENSE.txt and the Licenses folder next to the installer.
-  Each plug-in bundle (VST3, AU, AAX, CLAP, LV2) and the standalone app carries the same files in its own
-    Resources/Licenses (LV2: Licenses) folder.
+  Windows installer: shown in its license step, and installed with LICENSE, BINARY_LICENSE.txt and
+    this file to Common Files\OpenGrid\HybridEQ, with the third-party folder.
+  Linux archive: usr/share/doc/hybrideq, with the third-party folder.

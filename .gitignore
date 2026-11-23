@@ -17,6 +17,42 @@ website
 *.pdf
 
 
+# Generated documentation
+output/
+
+# Rust
+target/
+.cargo/
+build-ref*/
+dist-rust/
+build-rust/
+build-rust.log
+
+# Render files of the null tests (the text and JSON results are kept)
+dsp/evidence/null/
+dsp/evidence/null-nofma/
+qa/2026-11-14-rust-port/null-bundles/*/
+plugin/target/
+
+# QA run artefacts: renders, raw frames, compiled helpers, bridge scratch, per-parameter screenshots,
+# and the OpenGrid9 test home (it links into the user's ~/Library)
+qa/**/*.wav
+qa/**/*.ppm
+qa/**/peaks/
+qa/**/home/
+qa/**/hide_pid
+qa/**/winlist
+qa/**/*.pid
+qa/**/cmd.txt
+qa/**/resp.txt
+qa/**/seq.txt
+qa/**/ready.txt
+qa/**/editor_p*.png
+
+# Release builds
+build-release/
+dist-release/
+
 # QA run transients and bulky media (docs stay: report.md/json, ledger.md, exceptions.txt, logs)
 qa/**/cmd.txt
 qa/**/resp.txt

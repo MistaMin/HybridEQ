@@ -1,0 +1,29 @@
+default            max -156.5 dBFS at frame 7749, rms -203.5 dBFS
+flat-off           max -150.5 dBFS at frame 51417, rms -198.8 dBFS
+eq-all             max -138.5 dBFS at frame 18567, rms -175.6 dBFS
+eq-types           max 4.8 dBFS at frame 91202, rms -4.6 dBFS
+eq-ms              max -144.5 dBFS at frame 36232, rms -190.2 dBFS
+bypass             max -inf dBFS at frame 0, rms -inf dBFS
+brit-hot           max -126.4 dBFS at frame 2218, rms -171.8 dBFS
+ntype-hot          max -120.4 dBFS at frame 10452, rms -162.3 dBFS
+fsf-hot            max -144.5 dBFS at frame 32908, rms -196.6 dBFS
+atype-hot          max -132.5 dBFS at frame 57542, rms -183.0 dBFS
+off-pad            max -180.6 dBFS at frame 86293, rms -230.6 dBFS
+harmonics          max -138.5 dBFS at frame 504, rms -156.4 dBFS
+reduced-brit       max -138.5 dBFS at frame 34520, rms -190.2 dBFS
+reduced-ntype      max -144.5 dBFS at frame 18853, rms -193.3 dBFS
+reduced-fsf        max -144.5 dBFS at frame 81071, rms -196.0 dBFS
+reduced-atype      max -138.5 dBFS at frame 23808, rms -182.7 dBFS
+circuit-off-type   max -144.5 dBFS at frame 18720, rms -191.9 dBFS
+hq-brit            max 10.4 dBFS at frame 38373, rms 5.7 dBFS
+hq-ntype           max 12.7 dBFS at frame 24051, rms 5.1 dBFS
+hq-fsf             max 9.5 dBFS at frame 18066, rms 5.2 dBFS
+hq-atype           max 11.9 dBFS at frame 35359, rms 7.1 dBFS
+hq-off             max 0.3 dBFS at frame 3153, rms -5.8 dBFS
+
+# hq-*: the difference is a polarity inversion in 1.6.16 (its default 20 kHz High Cut fit, first designed at 88.2 kHz, warm-started at 96 kHz, landed on a negated numerator; 1.7.0 keeps positive polarity). With the 1.7.0 render inverted:
+hq-brit            max -132.5 dBFS (inverted)
+hq-ntype           max -132.5 dBFS (inverted)
+hq-fsf             max -132.5 dBFS (inverted)
+hq-atype           max -132.5 dBFS (inverted)
+hq-off             max -144.5 dBFS (inverted)

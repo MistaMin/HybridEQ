@@ -1,9 +1,9 @@
 HybridEQ Binary Freeware License
-Copyright (c) 2026 Marcos Deida
+Copyright (c) 2026 Marcos Quirino Deida
 
 Scope
-This license applies to the official compiled HybridEQ plug-ins, standalone
-application, and installers distributed by Marcos Deida / OpenGrid.
+This license applies to the official compiled HybridEQ plug-ins and installers
+distributed by Marcos Quirino Deida.
 HybridEQ source code is separately available under the MIT License.
 
 Permission to use
@@ -15,19 +15,17 @@ it does not place the complete binaries in the public domain or grant the
 MIT source license over third-party code incorporated into them.
 
 Third-party components
-The official binaries are built using the publisher's JUCE commercial
-license. The AAX binary is built using Avid's AAX SDK and digitally signed
-using PACE Eden credentials under the OpenGrid Avid AAX Developer Agreement.
-End users do not need a JUCE, Avid, or PACE developer license to install or use
-these binaries. The publisher's commercial JUCE license and Avid signing
-credentials are not transferred to anyone building or distributing their own
-versions from source.
-HybridEQ's MIT-licensed source and the MIT-licensed GoodLookinUI components
-retain their respective MIT permissions. See THIRD_PARTY_NOTICES.txt, the
-included MIT license texts and the third-party license texts in the
-Licenses/third-party folder (installed with the binaries). These freeware terms do not restrict rights
-granted by those component licenses. External components retain their own
-licenses; no license to JUCE or the Avid AAX SDK is granted by this document.
+The AAX binary is built using Avid's AAX SDK and digitally signed using PACE
+Eden credentials under the OpenGrid Avid AAX Developer Agreement. End users do
+not need an Avid or PACE developer license to install or use these binaries.
+Avid signing credentials are not transferred to anyone building or distributing
+their own versions from source.
+HybridEQ's MIT-licensed source, OpenPluginSDK and GoodLookin DRI retain their
+MIT permissions, and the other components their own licenses. See
+THIRD_PARTY_NOTICES.txt and the license texts in the Licenses/third-party
+folder (installed with the binaries). These freeware terms do not restrict
+rights granted by those component licenses. No license to the Avid AAX SDK is
+granted by this document.
 
 Warranty
 THE BINARIES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -40,7 +38,7 @@ Trademarks
 Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of
 their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc.
 VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies
-are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the
+are not affiliated with, and have not endorsed or sponsored, Marcos Quirino Deida, the
 OpenGrid Project or this plug-in. The names appear only to describe the
 classic designs that inspired each model; every model here is an independent
 circuit simulation, and no code or text from those companies is included.

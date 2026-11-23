@@ -1,28 +1,56 @@
 # HybridEQ
 
-**Console-style channel strip: six-band EQ, four preamp circuits, three ways to run them.**
+**A console-style channel strip: six-band EQ, four analogue-modelled preamp circuits, harmonics and
+mid/side, by OpenGrid.**
 
-![HybridEQ 1.6.13](Docs/HybridEQ-1.6.13-preview.png)
+![HybridEQ 2.0.0](Docs/HybridEQ-2.0.0.png)
 
-HybridEQ is a channel-strip plug-in from **OpenGrid / Marcos Deida**. It combines a
-multi-flavour analogue preamp emulation with a six-band EQ, harmonic saturation and
-mid/side processing, in a hardware-style interface. Built with
-[JUCE](https://juce.com); ships as VST3, Audio Unit (macOS), AAX (Pro Tools), CLAP, LV2 and a standalone app
-for **macOS 11+** (universal Apple silicon and Intel), **Windows** (`x64` and `ARM64`), and **Linux** (`x86_64` and `aarch64`).
+| Band strips | Preamp, harmonics, global and level |
+|---|---|
+| ![Band strips](Docs/HybridEQ-2.0.0-bands.png) | ![Preamp, harmonics, global and level](Docs/HybridEQ-2.0.0-controls.png) |
 
-- **macOS:** [HybridEQ-1.6.13.dmg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13.dmg) · [HybridEQ-Installer.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-Installer.pkg)
-- **Windows (x64 & ARM64):** [HybridEQ-1.6.13-x64.msi](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-x64.msi) · [HybridEQ-1.6.13-windows-arm64.zip](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-windows-arm64.zip) ([ARM64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-windows-arm64.sha256))
-- **Linux (x86_64 & aarch64):** [HybridEQ-1.6.13-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.tar.gz) ([x86_64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-x86_64.sha256)) · [HybridEQ-1.6.13-linux-aarch64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-aarch64.tar.gz) ([aarch64 SHA-256](https://github.com/MistaMin/HybridEQ/releases/download/v1.6.13/HybridEQ-1.6.13-linux-aarch64.sha256)) (extract and copy `VST3/`, `CLAP/` and `LV2/` into `~/.vst3`, `~/.clap` and `~/.lv2`)
+## Version 2.0.0
 
-[Latest release](https://github.com/MistaMin/HybridEQ/releases/latest) · [Version history](#version-1613)
+- HybridEQ rewritten in Rust: the same EQ, preamp circuits, harmonics and oversampling, and 1.6
+  projects open with every setting.
+- New AUTO GAIN (loudness-matched comparisons) and DELTA (hear only what changes).
+- A resizable editor with crisper text on every screen, and sample-accurate automation.
+- Windows (x64 and ARM64) and Linux (x86_64 and aarch64) builds alongside macOS.
+- Three deliberate differences from 1.6 are explained in the manual's "What changed from 1.6".
 
-## Preamp: four circuits, three modes
+## Download
+
+| System | Download | Formats |
+|---|---|---|
+| macOS 11+, Apple silicon and Intel | [HybridEQ-2.0.0-macos.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-macos.pkg) | VST3, AU, AAX, CLAP, LV2 |
+| Windows 10+, x64 | [HybridEQ-2.0.0-windows-x64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-windows-x64-setup.exe) | VST3, CLAP, LV2 |
+| Windows 10+, ARM64 | [HybridEQ-2.0.0-windows-arm64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-windows-arm64-setup.exe) | VST3, CLAP, LV2 |
+| Linux x86_64, glibc 2.35+ | [HybridEQ-2.0.0-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-linux-x86_64.tar.gz) | VST3, CLAP, LV2 |
+| Linux aarch64, glibc 2.35+ | [HybridEQ-2.0.0-linux-aarch64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-linux-aarch64.tar.gz) | VST3, CLAP, LV2 |
+
+Each download has a `.sha256` file beside it on the [release page](https://github.com/MistaMin/HybridEQ/releases/tag/v2.0.0).
+
+- **macOS:** a Developer ID signed and notarized installer; the AAX is PACE-signed for Pro Tools. It
+  installs every format to the system plug-in folders. The OpenGrid Plugin Manager offers the same installer.
+- **Windows:** an installer in which you choose the formats; it installs to Common Files. It is not
+  code-signed, so Windows SmartScreen may warn before it runs.
+- **Linux:** an archive with `usr/lib/vst3`, `usr/lib/clap` and `usr/lib/lv2`; copy the plug-ins to
+  `~/.vst3`, `~/.clap` and `~/.lv2`, or to `/usr/lib` for every user.
+- **Not included:** AAX for Windows, and a standalone application.
+- **Tested:** the macOS build in REAPER (VST3, AU and CLAP), with auval and the AAX Validator. The
+  Windows and Linux builds pass the CLAP and VST3 validators on each processor, and on x64 pluginval,
+  which opens the editor; they have not yet been tried in a DAW by hand.
+
+## User guide
+
+- [User manual](Docs/UserManual.md) (the PDF is on the release page)
+- [Changelog](CHANGELOG.md) and [release notes](RELEASE_NOTES.md)
+
+## What it does
 
 - **Models:** Brit, N-Type, FSF and A-Type, plus a clean Off model. Each EQ band can
   also be switched between circuit flavours (N-Type, Brit, A-Type, Baxandall, FSF).
 - **One key, three modes.** The preamp's circuit key steps through them on each click:
-
-  ![Preamp mode key: Off, Circuit, Circuit HQ](Docs/HybridEQ-1.6.12-modes.png)
 
   | Key | Mode | What runs | Oversampling |
   |---|---|---|---|
@@ -36,79 +64,11 @@ for **macOS 11+** (universal Apple silicon and Intel), **Windows** (`x64` and `A
   the base rate, so they follow it near Nyquist without oversampling.
 - Six EQ bands with Mid/Side per band, harmonic saturation (2nd to 5th), VU and peak
   metering, and a full-window spectrum / spectrogram view with draggable EQ points.
+- **AUTO GAIN** holds the output at the input's loudness (ITU-R BS.1770), so a comparison is
+  about tone, not level. **DELTA** plays only what HybridEQ changes.
 
-![Three-dimensional knobs, switches and meters](Docs/HybridEQ-1.6.12-bands.png)
 
-Current version: see [`VERSION`](VERSION).
-
-## Building
-
-Requires CMake 3.22+ and a C++20 compiler. GoodLookinUI is a git submodule
-in `third_party/GoodLookinUI` (pinned to v0.2.3-4, the 3D hardware look): after cloning run
-`git submodule update --init`, or set `GOODLOOKINUI_ROOT` to use a separate
-checkout instead. AAX is added only when Avid's SDK exists at
-`../aax-sdk-2-8-1`, or at the path specified by `HYBRIDEQ_AAX_SDK`. JUCE itself is fetched automatically via CMake's
-`FetchContent` — no manual setup needed for VST3/AU/Standalone.
-
-```bash
-cmake -B build -G Xcode
-cmake --build build --config Release --target HybridEQ_VST3
-```
-
-macOS builds are universal (`arm64;x86_64`, macOS 11+) by default; check one with
-`lipo -archs build/HybridEQ_artefacts/Release/VST3/HybridEQ.vst3/Contents/MacOS/HybridEQ`.
-
-Swap `HybridEQ_VST3` for `HybridEQ_AU`, `HybridEQ_AAX`, `HybridEQ_LV2`,
-`HybridEQ_CLAP` or `HybridEQ_Standalone` for the other formats. LV2 and CLAP
-(the open formats for Linux) are on by default; turn them off with
-`-DHYBRIDEQ_LV2=OFF` / `-DHYBRIDEQ_CLAP=OFF` (CLAP fetches clap-juce-extensions
-at configure time). Linux needs the usual JUCE dependencies (ALSA/JACK, X11,
-freetype, fontconfig, OpenGL); the `Linux build` GitHub Actions workflow shows
-the exact package list and builds them.
-
-## License
-
-Official compiled HybridEQ plug-ins, standalone applications, and installers
-are **proprietary freeware**, free to use for personal and commercial audio
-production. They are distributed under the [binary freeware license](BINARY_LICENSE.txt),
-not an open-source license. The publisher builds them under a JUCE commercial
-license; end users do not need a JUCE developer license to use these downloads.
-
-HybridEQ's own source code is separately [MIT licensed](LICENSE). The bundled
-GoodLookinUI toolkit, including its core and JUCE adapter, has its own
-[MIT license](third_party/GoodLookinUI/LICENSE). Those component permissions
-remain intact when included in the freeware binaries, and their copyright and
-permission notices accompany binary distributions.
-
-JUCE and Avid SDK code retain their own licenses. Official compiled binaries (including the AAX format) are distributed as freeware under the [binary freeware license](BINARY_LICENSE.txt), built under the publisher's commercial JUCE license and Avid AAX Developer Agreement with PACE Eden signing. End users do not need a developer license to use these downloads.
-
-Anyone building or distributing their own version from source must comply with the applicable dependency licenses (JUCE and Avid SDK terms). The publisher's commercial JUCE license and Avid signing credentials are not transferred with the source. See [component notices](THIRD_PARTY_NOTICES.txt) and the [JUCE 9 terms](https://juce.com/legal/juce-9-licence/).
-
-The license texts of every bundled third-party component (JUCE-bundled libraries and the VST3, LV2,
-CLAP and Audio Unit SDKs) are in [`Licenses/third-party`](Licenses/third-party). Binary bundles
-(VST3, AU, AAX, CLAP, LV2, standalone) carry them in their Licenses folders. The macOS installer also displays the
-binary freeware terms and installs the notices in
-`/Library/Application Support/OpenGrid/HybridEQ/Licenses`.
-
-## GoodLookinUI development editor
-
-Debug builds include a **Design** inspector for generated knobs. Edit style,
-label, hex colour, font size and panel-relative geometry; Apply, Undo, Save CSV
-and Load CSV are available. Save the accepted design to `Designs/HybridEQ.csv`
-and rebuild to embed it. Release builds exclude the editor entirely. The
-finished panel scales proportionally with the window.
-
-## Console appearance
-
-The console edition uses GoodLookinUI's generated fluted black grips and coloured
-knob caps, fixed calibration marks, shaded mechanical keys, recessed numeric
-readouts and a charcoal rack faceplate. Slope, Mid/Side, Band Type, and Pad
-keys toggle through choices on click (with dropdown menus on right-click), while Preamp Type
-provides a full dropdown menu. Six strips share fixed control slots and switch
-positions. Resizing preserves the panel proportions. The existing DSP and
-parameter IDs are retained.
-
-## Circuit history
+### Circuit history
 
 Each flavour is inspired by a studio classic:
 
@@ -117,233 +77,52 @@ Each flavour is inspired by a studio classic:
 - **Brit** is inspired by Solid State Logic, founded in 1969 by Colin Sanders, whose 1979 SL 4000 E Series ranks among the most groundbreaking mixing consoles ever built ([history](https://solidstatelogic.com/our-history)).
 - **A-Type** is inspired by API's 512 mic preamp, one of the most iconic 500 Series modules, from a company founded in 1969 around the 2520 discrete op-amp ([about](https://apiaudio.com/about/)).
 
-**Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
+**Trademark notice.** Neve, 1073, Focusrite, Solid State Logic (SSL), API and 512 are trademarks of their respective owners. AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media Technologies GmbH. HybridEQ is an independent project: those companies are not affiliated with, and have not endorsed or sponsored, Marcos Quirino Deida, the OpenGrid Project or this plug-in. The names appear only to describe the classic designs that inspired each model; every model here is an independent circuit simulation, and no code or text from those companies is included.
 
-## Version 1.6.13
 
-- **Avid AAX format**: Official signed and notarized AAX plugin included in the freeware macOS installer and DMG, digitally signed with PACE Eden credentials for Avid Pro Tools.
-- **Toggle controls**: Slope, M/S, Band Type, and Preamp Pad keys now cycle on left-click as immediate toggles rather than opening dropdowns (right-click still opens the full choice menu).
-- **Preamp Type menu**: Retains dropdown menu navigation with `Off` as the first item on the list and `Brit` as the initial default.
-- **2x Oversampling**: Added `2x` as a direct user-selectable oversampling rate alongside `1x`, `4x`, and `8x`.
-- **Selectable anti-aliasing filter**: Added `FILTER` key in Global section allowing selection between `IIR (Min)` (minimum-phase polyphase IIR, zero/low latency, no pre-ringing) and `FIR (Lin)` (linear-phase equiripple FIR) across all oversampled rates.
+## Build from source
 
-## Version 1.6.12
+HybridEQ is written in Rust. The engine (`crates/engine`) has no dependencies; the plug-in
+(`plugin`) uses [OpenPluginSDK](https://github.com/MistaMin/OpenPluginSDK) and
+[GoodLookin DRI](https://github.com/MistaMin/GoodLookinDri). Until their pending changes are merged,
+check out these branches side by side:
 
-- **Three preamp modes on one key.** The CIRCUIT key now steps Off -> Circuit -> Circuit HQ.
-  - Off: the light static models (with ADAA, as in 1.6.10).
-  - Circuit: the reduced circuit model from OpenPreamp, light enough for 1x with no
-    latency, with its own ADAA at 1x. Its coefficient tables cover 1x, 2x, 4x and 8x.
-  - Circuit HQ: the full component-level solver, which is what Circuit on always meant.
-    Sessions saved before 1.6.12 open as Circuit HQ.
-  - Stored as the existing `preampCircuit` plus a new appended `preampHQ` parameter
-    (default on), so saved sessions and host automation keep their meaning.
-- **New interface rendering** (GoodLookinUI 0.2.3-4): shaded, fluted 3D knobs, recessed
-  rocker switches and an upgraded VU meter. Layout, colours and designs are unchanged;
-  the toolkit's `flat_` styles remain available.
-- **Universal binary.** The plug-ins and standalone app contain Apple silicon and Intel
-  code and require macOS 11 or later; the installer accepts both architectures.
-- Includes 1.6.11: Oversample key shows the real factor and keeps updating, the KNOBS
-  style picker is developer-only again, and the Spectrum key takes the title bar's colour.
-- Tests: `tests/engine_modes.cpp` (`HybridEQEngineTest`): every type x mode x oversampling
-  x rate for finite and bounded output, effective factor and latency per mode, live mode
-  switching, and old-session restore.
+```bash
+git clone -b MistaMin/hybrideq-host-values https://github.com/MistaMin/OpenPluginSDK
+git clone -b MistaMin/semibold-text https://github.com/MistaMin/GoodLookinDri
+git clone https://github.com/MistaMin/HybridEQ && cd HybridEQ
+OPENPLUGIN_SDK=../OpenPluginSDK . scripts/sdk_env.sh     # points cargo at the SDK
+cargo test --release --manifest-path crates/engine/Cargo.toml
+cargo test --release --manifest-path plugin/Cargo.toml
+```
 
-## Version 1.6.11
+The plug-ins are built by the SDK's scripts: `scripts/build_plugin.sh` on macOS (add
+`--archs universal`), `scripts/windows/build_plugin.ps1` on Windows and
+`scripts/build_plugin_linux.sh` on Linux. The VST3 format needs the
+[VST3 SDK](https://github.com/steinbergmedia/vst3sdk), the Audio Unit the AudioUnitSDK, and AAX Avid's
+AAX SDK (not public; official AAX builds are PACE-signed). `.github/workflows/windows-linux.yml` shows
+the complete Windows and Linux builds.
 
-- The Oversample key now shows the factor that is really running and no longer shows a stray `*` when your own choice is in use. It keeps updating after the interface has settled (with Circuit on at 1x it reads `2x*`).
-- The KNOBS style picker is developer-only again and no longer appears in release builds; releases always use each knob's own design.
-- The Spectrum key in the title bar takes the bar's colour instead of the cream control-key colour.
+Repository layout:
 
-## Version 1.6.10
+| Folder | What it holds |
+|---|---|
+| `crates/engine` | the DSP: EQ, preamp circuits and solver, harmonics, parameters |
+| `plugin` | the plug-in: formats, state, oversampling, editor; `src/bin/preview.rs` renders the editor |
+| `installer` | the macOS and Windows installers |
+| `Docs` | the user manual and its pictures |
+| `qa` | test evidence for each release |
+| `Source`, `CMakeLists.txt` | the 1.6 C++ implementation, kept as the reference the Rust port is measured against |
 
-- **ADAA on the preamp with Circuit off.** The static N-Type, Brit, A-Type and FSF models now use first-order
-  antiderivative anti-aliasing (`Source/DSP/Adaa.h`) on every nonlinear stage, so the harmonics they generate fold back
-  less, even at 1x (measured 5 to 14 dB lower aliasing on hard-driven tones, 4.4 and 10 kHz). It works on the
-  nonlinear part only: quiet signals keep their level at every frequency (the linear path is a unity-magnitude
-  all-pass, about half a sample of delay, no reported latency). ADAA holds off while the Drive control is moving.
-  N-Type's feedback-loop stages are not ADAA'd (their antiderivative proved too noisy); its limiters and cores are.
-- **Circuit needs only 2x.** Turning Circuit on now raises Oversample to a minimum of 2x (it was 4x). The choice list
-  is still 1x/4x/8x; 4x and 8x remain available.
-- Tests: `tests/adaa.cpp` (antiderivatives against their functions, transparency for linear stages, alias reduction).
+## License
 
-## Version 1.6.9
+HybridEQ's source code is [MIT licensed](LICENSE), Copyright (c) 2026 Marcos Quirino Deida. The
+official compiled plug-ins and installers are **proprietary freeware**, free for personal and commercial
+audio work, under the [binary freeware license](BINARY_LICENSE.txt). The licenses of every component
+(OpenPluginSDK, GoodLookin DRI, the Rust crates, the Source Sans Pro typeface and the format SDKs) are
+listed in [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt), with their texts in
+[`Licenses/third-party`](Licenses/third-party); the installers carry them too. The AAX SDK is Avid's
+and is not part of this repository.
 
-- **Cramping-free EQ without oversampling.** The High Cut, High shelf and bells (corner above 10 % of the sample
-  rate) are now biquads fitted by least squares to the analog curve (`Source/DSP/BiquadFit.h`), so a corner near or
-  above Nyquist follows the analog response in-band instead of bending. At the base rate they stay within about
-  0.4 dB of the same plug-in running 8x oversampled; the steepest, highest-Q High Cut slopes within about 1.2 dB.
-  The filters are ordinary IIR biquads (no latency); the fit runs only when a control changes.
-- The EQ no longer forces extra oversampling for the High Cut and High shelf, so with Oversample at 1x and
-  Circuit off the plug-in has no latency (Circuit forces a 2x minimum since 1.6.10).
-- The reported latency is now set from `prepareToPlay` (it was never reported after the audio-thread call was removed).
-- Tests: `tests/eq_fit.cpp` (fit accuracy, stability, speed, continuity), `tests/eq_integration.cpp` (`HybridEQEqTest`:
-  1x versus 8x on the real processor, latency); `tools/eq_matching_experiment.py` is the Python experiment behind it.
-- Magnitude is matched, phase is not (it cannot follow the analog phase near Nyquist).
-
-## Version 1.6.8
-
-- Built with **JUCE 9.0.3** (JUCE 9 End User Licence Agreement; was JUCE 8.0.15). The bundled-library license
-  texts are regenerated for JUCE 9 (adds Opus, libwebp and LunaSVG).
-
-## Version 1.6.7
-
-- Built with **JUCE 8.0.15** (was 8.0.4). Its bundled VST3 SDK is MIT licensed, so VST3 builds no longer depend on
-  the older dual-license (Steinberg license / GPLv3) SDK. Third-party license texts in `Licenses/third-party` are
-  regenerated from the new JUCE tree (`tools/collect_licenses.py`).
-
-## Version 1.6.6
-
-- **LV2 and CLAP** are built alongside VST3, AU and the standalone, and are installed by the macOS installer
-  (`/Library/Audio/Plug-Ins/CLAP` and `/Library/Audio/Plug-Ins/LV2`). A GitHub Actions workflow builds the Linux
-  versions (VST3, LV2, CLAP, standalone).
-- **Licenses:** the license texts of all bundled third-party components are in `Licenses/third-party` and ship
-  with the source, the installer, the disk image and inside every plug-in bundle.
-
-## Version 1.6.5
-
-### A-Type
-
-Adds **A-Type**, a fourth preamp flavour with its own circuit simulation
-(`ATypeCircuit.h`): 1:8 mic
-transformer, discrete op-amp gain stage with a T feedback network (gain pot,
-and a MID/HIGH ground-leg switch), 1:2 output transformer and output pad.
-
-- At 0 dB drive the gain is unity. Drive first turns the gain pot up, then
-  moves to the HIGH position and continues with the pot (up to about 40 dB).
-- The netlist's discrete op-amp is a behavioural placeholder (single-pole,
-  slew-limited, clipped) until its schematic is available, so A-Type is very
-  clean until it clips (about +25 dBu); both transformers' inductances and
-  resistances are placeholders too, and their saturation knees are estimates.
-- The input pad position is not modelled (the Pad control does that job).
-- A-Type is the last entry of the Type list so saved sessions keep their stored choices.
-- Light static model when **Preamp Circuit** is off, as for the others.
-
-### Circuit simulations (Brit, N-Type, FSF)
-
-With **Preamp Circuit** on, all three preamp flavours are now real circuit
-simulations of transcribed netlists (kept privately and not distributed) instead of
-behavioural approximations. Every resistor, capacitor, transistor, op-amp and
-saturating transformer core is solved together every sample
-(`Source/DSP/CircuitSolver.h`):
-
-- **Brit** (`BritCircuit.h`): a
-  balanced 500-series console mic preamp: matched-pair transistor input stage
-  with op-amp current feedback, instrumentation-amp second stage, difference
-  amp, DC servos and a balanced line driver. The gain control is the dual-gang
-  pot. The balanced pair cancels even harmonics, so the colour is odd-order
-  and very clean until the line driver clips (about +21 dBu).
-- **N-Type** (`NTypeCircuit.h`):
-  transformer-coupled line path: input transformer, three-transistor feedback
-  preamp, class-A output stage and a gapped output transformer. Drive changes
-  the gain-network resistor like the real gain switch. Asymmetric even-order
-  colour from the class-A stage and the DC-biased output transformer.
-- **FSF** (`FsfCircuit.h`):
-  transformer-coupled console mic channel: mic transformer, 12-position gain
-  network, two op-amp stages and a class-AB output stage inside a transformer
-  feedback loop. Simulated gain is -7.9 to +59.1 dB across the 12 positions
-  (the manual states -6 to +60 dB). The hardware gain is stepped, so drive picks
-  the nearest position and covers the remainder with a trim of up to 3 dB.
-
-Common behaviour:
-
-- At 0 dB drive the small-signal gain is unity. Drive raises the circuit's
-  gain; whatever a circuit cannot supply is applied as an input trim.
-- CPU: this is a heavy mode. Each circuit runs at about 96 kHz internally
-  (decimated from the oversampled rate with zero-latency IIR filters), roughly
-  3x realtime per channel on a loaded Apple-silicon Mac.
-- Op-amps are single-pole, slew-limited, clipped behavioural models (as in the
-  netlists); they capture gain, bandwidth, slew and clipping, not noise.
-  Transistor series resistances are not modelled.
-- **Estimates, not published:** transformer inductance (N-Type input 100 H,
-  output 4 H), saturation knees, leakage and winding capacitance; the FSF output
-  transformer's turns, inductance and resistance (placeholders in the netlist).
-  Measured values or response plots would let these be fitted.
-- With **Preamp Circuit** off, each flavour uses a light static model.
-- Rename: the preamp, EQ-shape and file names now use only N-Type, Brit,
-  A-Type, FSF and Baxandall.
-- Replaces the 1.6.4 transformer model and the 1.6.2 Brit behavioural model.
-
-## Version 1.6.4 (superseded by 1.6.5)
-
-- N preamp: input and output transformers are now flux-state circuit models instead of memoryless saturators plus an envelope-driven filter (with "Preamp Circuit" on). Low-frequency corner shift and low-frequency harmonics now come from the core's inductance falling as it saturates; the output transformer carries a standing DC bias, giving even-order harmonics.
-- Datasheet values (transformer design guide, preliminary, Issue 1e): VTB 9046 input at 2:1 turns, 2k4 source into 2k4 load (0 dB), DCR 175 || 175 primary and 56 + 56 secondary. VTB 9049 output at 1:1.7 turns (series windings), 200 ohm source into 600 ohm load, DCR 12 primary and 40 secondary.
-- ESTIMATES (not published by the manufacturer): magnetising inductance (4 H each, placeholder), post-saturation inductance, saturation flux, output standing bias current, leakage/capacitance high-frequency corner and Q, and the volts-per-full-scale calibration (13.8 V peak). Treat the sound as an approximation, not a measured unit.
-- Limitations: no hysteresis; no manufacturer inductance, frequency-response or THD data was available. Overall small-signal gain remains unity; "Preamp Circuit" off keeps the static saturation curves.
-
-## Version 1.6.3
-
-Rebuilt the "N-Type" preamp as a circuit-behaviour model, the same
-way "Brit" was rebuilt in 1.6.2. Signal path: input transformer, a
-three-transistor direct-coupled feedback gain stage, a class-A line-driver
-stage (degenerated transistor into a complementary emitter-follower pair),
-and an output transformer. Each gain stage is a single-ended transistor
-solved from the real exponential junction equation with emitter
-degeneration, placed inside its feedback loop and solved every sample.
-Resulting behaviour:
-
-- Asymmetric distortion, rich in 2nd harmonic at moderate drive, with 3rd
-  and higher orders growing as the stage is pushed.
-- Distortion depends on the gain setting: less gain means more feedback and
-  a cleaner stage; more gain means less feedback and more colour.
-- The two stages clip against different positive and negative limits.
-- Both transformer cores saturate. With "Preamp Circuit" on, the input
-  transformer's low-frequency corner rises and the output transformer's
-  high-frequency corner falls as the level increases.
-- Coupling capacitors are modelled as DC blockers between stages.
-
-This is a behavioural circuit model, not a SPICE netlist simulation, and
-the transformers are saturating level-dependent filters, not full
-magnetic-core (hysteresis) models. Transistor high-frequency poles are not
-modelled. Parameter IDs are unchanged, so existing sessions load as before,
-but "N-Type" will sound different from 1.6.1.
-
-## Version 1.6.2
-
-Rebuilt the "Brit" preamp as a circuit-behaviour model instead
-of a generic saturation curve. It now follows the structure of a balanced,
-transformerless console mic preamp: a matched pair of degenerated bipolar
-transistors (one per leg) solved from the real exponential junction
-equation, feeding low-noise op-amp stages that clip with a hard knee at
-their supply rails. Resulting behaviour:
-
-- Distortion depends on the gain setting: more gain means less emitter
-  degeneration, so the input stage gets less linear; low gain stays very
-  clean.
-- The legs are subtracted, so even harmonics cancel and the colour is almost
-  purely odd-order, with only a trace of even content from leg mismatch.
-- Overdriving it gives a hard, console-style clip rather than a soft curve.
-- With "Preamp Circuit" on, the sub-audio coupling and servo high-pass poles
-  are modelled in their real positions in the signal chain, so DC from
-  asymmetric clipping settles the way it does in hardware. The circuit's
-  high-frequency poles sit far above the audio band and are not modelled.
-
-This is a behavioural circuit model, not a SPICE netlist simulation. The
-parameter names and IDs are unchanged, so existing sessions load as before,
-but "Brit" will sound different (cleaner at low gain, harder-edged when
-driven).
-
-## Version 1.6.1
-
-Reworked the "N-Type" preamp's circuit model to be closer to real
-transformer-coupled hardware, after a two-transformer mic
-amp topology (input transformer, discrete class-A gain stage,
-output transformer). Previously "N-Type" used a single lumped
-saturation curve plus a static, level-independent pair of filter poles; it
-now explicitly models the input and output transformer stages separately,
-and - when "Preamp Circuit" is on - a fast level follower makes both
-stages' saturation grow more even-harmonic and the transformer poles shift
-(input stage's LF corner rises, output stage's HF corner falls) as drive
-increases, mimicking how a real transformer core saturates and narrows its
-bandwidth
-under heavier signal. This is a tuned approximation, not a component-level
-SPICE model of the original schematics. See the comment above
-`dsp::PreampEngine` in `Source/DSP/Preamp.h` for the full explanation.
-
-## Version 1.6.0
-
-Introduces the console interface: generated hardware knobs, aligned channel
-strips, mechanical keys with dropdown choices, proportional resizing, and a
-development-only visual inspector. Accepted designs are embedded from CSV.
-The UI toolkit is included as source so fresh checkouts are self-contained.
-
-The bundled [GoodLookinUI toolkit](third_party/GoodLookinUI) is independently [MIT licensed](third_party/GoodLookinUI/LICENSE). Its license file travels with the toolkit when reused in other projects.
+AAX and Pro Tools are trademarks of Avid Technology, Inc. VST is a trademark of Steinberg Media
+Technologies GmbH.

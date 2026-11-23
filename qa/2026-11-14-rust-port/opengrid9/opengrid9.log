@@ -1,0 +1,2 @@
+objc[53739]: Class GNotificationCenterDelegate is implemented in both /opt/homebrew/Cellar/glib/2.90.1/lib/libgio-2.0.0.dylib (0x107c244e8) and /Users/marcosdeida/Library/Caches/plugin-qa/opengrid9-runtime/lib/libgio-2.0.0.dylib (0x1052d44e8). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+libc++abi: terminating due to uncaught exception of type Glib::ConvertError

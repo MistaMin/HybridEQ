@@ -1,0 +1,601 @@
+{
+  "schema_version": 1,
+  "tool": "openplugin-port 1.0.0-beta",
+  "source": {
+    "format": "clap",
+    "path": "/Library/Audio/Plug-Ins/CLAP/HybridEQ.clap",
+    "index": 0,
+    "count": 1,
+    "bundle_id": "com.opengrid.hybrideq"
+  },
+  "plugin": {
+    "name": "HybridEQ",
+    "vendor": "OpenGrid",
+    "version": "1.6.16",
+    "ids": {
+      "clap": {
+        "id": "com.opengrid.hybrideq"
+      },
+      "vst3": null,
+      "au": null,
+      "aax": null
+    }
+  },
+  "states": [
+    {
+      "name": "default",
+      "kind": "default",
+      "location": null,
+      "blobs": [
+        {
+          "role": "clap-state",
+          "file": "hybrideq.clap.blobs/000-default.clap-state.bin",
+          "bytes": 1820,
+          "fnv1a64": "69554507faa90457"
+        }
+      ],
+      "params": [
+        {
+          "id": 1057129025,
+          "name": "Oversample",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2083021974,
+          "name": "Oversample Filter",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287903771,
+          "name": "2nd Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287904856,
+          "name": "3rd Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287905883,
+          "name": "4th Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287906844,
+          "name": "5th Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3185575055,
+          "name": "Low Cut Freq",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 106938,
+          "name": "Low Cut Q",
+          "plain": 0.24822603166103363,
+          "normalized": null
+        },
+        {
+          "id": 4275382900,
+          "name": "Low Cut Slope",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 3185780666,
+          "name": "Low Cut Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3213177151,
+          "name": "Low Cut Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3071058451,
+          "name": "High Cut Freq",
+          "plain": 0.8807875514030457,
+          "normalized": null
+        },
+        {
+          "id": 103094,
+          "name": "High Cut Q",
+          "plain": 0.24822603166103363,
+          "normalized": null
+        },
+        {
+          "id": 725368176,
+          "name": "High Cut Slope",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 3071264062,
+          "name": "High Cut Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 536903107,
+          "name": "High Cut Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 356082668,
+          "name": "Low Freq",
+          "plain": 0.5372436046600342,
+          "normalized": null
+        },
+        {
+          "id": 356096243,
+          "name": "Low Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 356506798,
+          "name": "Low Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 356288279,
+          "name": "Low Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2785291612,
+          "name": "Low Band Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2596737281,
+          "name": "Mid 1 Freq",
+          "plain": 0.4075900912284851,
+          "normalized": null
+        },
+        {
+          "id": 2596750856,
+          "name": "Mid 1 Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 103889544,
+          "name": "Mid 1 Q",
+          "plain": 0.30151134729385376,
+          "normalized": null
+        },
+        {
+          "id": 2597161411,
+          "name": "Mid 1 Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2596942892,
+          "name": "Mid 1 Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4275759409,
+          "name": "Mid 1 Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2597660802,
+          "name": "Mid 2 Freq",
+          "plain": 0.7425998449325562,
+          "normalized": null
+        },
+        {
+          "id": 2597674377,
+          "name": "Mid 2 Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 103889575,
+          "name": "Mid 2 Q",
+          "plain": 0.30151134729385376,
+          "normalized": null
+        },
+        {
+          "id": 2598084932,
+          "name": "Mid 2 Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2597866413,
+          "name": "Mid 2 Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 868295794,
+          "name": "Mid 2 Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2609301306,
+          "name": "High Freq",
+          "plain": 0.6353113651275635,
+          "normalized": null
+        },
+        {
+          "id": 2609314881,
+          "name": "High Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 2609725436,
+          "name": "High Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2609506917,
+          "name": "High Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3464885546,
+          "name": "High Band Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2919275291,
+          "name": "Preamp Type",
+          "plain": 0.25,
+          "normalized": null
+        },
+        {
+          "id": 2865112210,
+          "name": "Preamp Pad",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 2918864736,
+          "name": "Preamp Gain",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 294585481,
+          "name": "Preamp Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 973560936,
+          "name": "Preamp Circuit",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3001916682,
+          "name": "Preamp HQ",
+          "plain": 1.0,
+          "normalized": null
+        },
+        {
+          "id": 3020714016,
+          "name": "Output Gain",
+          "plain": 0.5,
+          "normalized": null
+        }
+      ],
+      "notes": []
+    },
+    {
+      "name": "set",
+      "kind": "set",
+      "location": null,
+      "blobs": [
+        {
+          "role": "clap-state",
+          "file": "hybrideq.clap.blobs/001-set.clap-state.bin",
+          "bytes": 1793,
+          "fnv1a64": "b440aa6d488ae1d8"
+        }
+      ],
+      "params": [
+        {
+          "id": 1057129025,
+          "name": "Oversample",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2083021974,
+          "name": "Oversample Filter",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287903771,
+          "name": "2nd Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287904856,
+          "name": "3rd Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287905883,
+          "name": "4th Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4287906844,
+          "name": "5th Harmonic",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3185575055,
+          "name": "Low Cut Freq",
+          "plain": 1.0,
+          "normalized": null
+        },
+        {
+          "id": 106938,
+          "name": "Low Cut Q",
+          "plain": 1.0,
+          "normalized": null
+        },
+        {
+          "id": 4275382900,
+          "name": "Low Cut Slope",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 3185780666,
+          "name": "Low Cut Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3213177151,
+          "name": "Low Cut Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3071058451,
+          "name": "High Cut Freq",
+          "plain": 0.8807875514030457,
+          "normalized": null
+        },
+        {
+          "id": 103094,
+          "name": "High Cut Q",
+          "plain": 0.24822603166103363,
+          "normalized": null
+        },
+        {
+          "id": 725368176,
+          "name": "High Cut Slope",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 3071264062,
+          "name": "High Cut Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 536903107,
+          "name": "High Cut Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 356082668,
+          "name": "Low Freq",
+          "plain": 0.5372436046600342,
+          "normalized": null
+        },
+        {
+          "id": 356096243,
+          "name": "Low Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 356506798,
+          "name": "Low Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 356288279,
+          "name": "Low Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2785291612,
+          "name": "Low Band Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2596737281,
+          "name": "Mid 1 Freq",
+          "plain": 0.4075900912284851,
+          "normalized": null
+        },
+        {
+          "id": 2596750856,
+          "name": "Mid 1 Gain",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 103889544,
+          "name": "Mid 1 Q",
+          "plain": 0.30151134729385376,
+          "normalized": null
+        },
+        {
+          "id": 2597161411,
+          "name": "Mid 1 Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2596942892,
+          "name": "Mid 1 Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 4275759409,
+          "name": "Mid 1 Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2597660802,
+          "name": "Mid 2 Freq",
+          "plain": 0.7425998449325562,
+          "normalized": null
+        },
+        {
+          "id": 2597674377,
+          "name": "Mid 2 Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 103889575,
+          "name": "Mid 2 Q",
+          "plain": 0.30151134729385376,
+          "normalized": null
+        },
+        {
+          "id": 2598084932,
+          "name": "Mid 2 Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2597866413,
+          "name": "Mid 2 Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 868295794,
+          "name": "Mid 2 Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2609301306,
+          "name": "High Freq",
+          "plain": 0.6353113651275635,
+          "normalized": null
+        },
+        {
+          "id": 2609314881,
+          "name": "High Gain",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 2609725436,
+          "name": "High Type",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2609506917,
+          "name": "High Mode",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3464885546,
+          "name": "High Band Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 2919275291,
+          "name": "Preamp Type",
+          "plain": 1.0,
+          "normalized": null
+        },
+        {
+          "id": 2865112210,
+          "name": "Preamp Pad",
+          "plain": 0.5,
+          "normalized": null
+        },
+        {
+          "id": 2918864736,
+          "name": "Preamp Gain",
+          "plain": 0.3333333432674408,
+          "normalized": null
+        },
+        {
+          "id": 294585481,
+          "name": "Preamp Bypass",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 973560936,
+          "name": "Preamp Circuit",
+          "plain": 0.0,
+          "normalized": null
+        },
+        {
+          "id": 3001916682,
+          "name": "Preamp HQ",
+          "plain": 1.0,
+          "normalized": null
+        },
+        {
+          "id": 3020714016,
+          "name": "Output Gain",
+          "plain": 0.5,
+          "normalized": null
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "notes": [
+    "the bundle has no preset-discovery factory"
+  ]
+}

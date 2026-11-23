@@ -1,0 +1,17 @@
+# HybridEQ host-suite exceptions. Context lines only: each parameter is tested in the state where it acts.
+Oversample Filter @ Oversample=1.0            # the filter only runs while oversampling
+Low Freq @ Low Gain=1.0                       # a band at 0 dB gain is flat whatever its frequency
+Low Type @ Low Gain=1.0                       # shelf shape only shows with gain
+Low Mode @ Low Gain=1.0                       # M/S routing of a flat band changes nothing
+Mid 1 Freq @ Mid 1 Gain=1.0                   # same as Low
+Mid 1 Q @ Mid 1 Gain=1.0
+Mid 1 Type @ Mid 1 Gain=1.0
+Mid 1 Mode @ Mid 1 Gain=1.0
+Mid 2 Freq @ Mid 2 Gain=1.0
+Mid 2 Q @ Mid 2 Gain=1.0
+Mid 2 Type @ Mid 2 Gain=1.0
+Mid 2 Mode @ Mid 2 Gain=1.0
+High Freq @ High Gain=1.0
+High Type @ High Gain=1.0
+High Mode @ High Gain=1.0
+Preamp HQ @ Preamp Circuit=1.0                # HQ selects the circuit model's solver; it acts only with Circuit on

@@ -15,10 +15,12 @@ public:
         modeBtn.onClick = [this] { gram = !gram; apply(); };
         closeBtn.onClick = [this] { setVisible(false); };
         setInterceptsMouseClicks(true, true);
+        setOpaque(true);   // paint() fills the whole component, so JUCE need not repaint what sits beneath it
     }
     // Takes the project's spectrum settings; the overlay forces its own look (waterfall or analyser).
     void setBase(const SpectrumSettings& s) { base = s; apply(); }
-    void visibilityChanged() override { if (isVisible()) startTimerHz(30); else stopTimer(); }
+    void visibilityChanged() override { if (isVisible()) startTimerHz(30); else stopTimer(); if (onVisibilityChanged) onVisibilityChanged(isVisible()); }
+    std::function<void(bool)> onVisibilityChanged;
     bool isSpectrogram() const { return gram; }
     SpectrumRenderer& getRenderer() { return renderer; }
 

@@ -70,4 +70,8 @@ VST3-Usage-Guidelines.pdf. CLAP is an open plug-in standard (https://cleveraudio
 plug-in standard (https://lv2plug.in). Audio Units is a technology of Apple Inc.; AAX is a technology of
 Avid Technology, Inc.
 ''')
+# Include the public SDK licence notice, never the SDK source or private signing material.
+aax_notice = os.path.join(root, '../aax-sdk-2-8-1/LICENSE.txt')
+if os.path.isfile(aax_notice):
+    shutil.copyfile(aax_notice, os.path.join(out, 'AAX-SDK-LICENSE.txt'))
 print(len(os.listdir(out)), 'files in', out)
