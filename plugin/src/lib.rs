@@ -23,18 +23,9 @@ use openplugin::prelude::*;
 
 pub use params::PARAMS;
 
-pub static INFO: PluginInfo = PluginInfo {
-    id: "com.opengrid.hybrideq",
-    name: "HybridEQ",
-    vendor: "OpenGrid",
-    url: "https://github.com/MistaMin/HybridEQ",
-    email: "",
-    version: "1.7.0",
-    category: Category::Eq,
-    params: &PARAMS,
-    is_instrument: false,
-    has_editor: true,
-};
+pub static INFO: PluginInfo = PluginInfo::new("com.opengrid.hybrideq", "HybridEQ", "OpenGrid", "1.7.0", Category::Eq, &PARAMS)
+    .with_url("https://github.com/MistaMin/HybridEQ")
+    .with_editor(true);
 
 /// What the engine shows its editor: levels and the effective oversampling factor.
 #[derive(Default)]
@@ -210,7 +201,7 @@ impl Plugin for HybridEq {
         (tail_seconds(&self.p) * f64::from(self.sample_rate)).ceil() as usize
     }
 
-    fn process(&mut self, io: &mut [Vec<f32>], frames: usize) {
+    fn process(&mut self, io: &mut [&mut [f32]], frames: usize) {
         let channels = io.len().min(2);
         if channels == 0 || frames == 0 {
             return;

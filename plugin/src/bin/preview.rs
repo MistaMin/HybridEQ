@@ -47,7 +47,7 @@ fn main() {
                 io[1][i] = x * 0.9;
             }
             n += 1600;
-            plugin.process(&mut io, 1600);
+            plugin.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 1600);
             e.tick(1.0 / 30.0);
         }
     } else {

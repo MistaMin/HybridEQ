@@ -195,7 +195,7 @@ impl Multirate {
     }
 
     /// Runs `core` on `io` (up to two channels of `frames` session samples) at the selected rate.
-    pub fn process(&mut self, io: &mut [Vec<f32>], frames: usize, core: impl FnOnce(&mut [&mut [f32]])) {
+    pub fn process(&mut self, io: &mut [&mut [f32]], frames: usize, core: impl FnOnce(&mut [&mut [f32]])) {
         let channels = io.len().min(2);
         if channels == 0 {
             return;
@@ -277,7 +277,7 @@ mod tests {
                     for b in 0..60 {
                         let block: Vec<f32> = (0..512).map(|i| 0.5 * tone(f, 48000.0, b * 512 + i)).collect();
                         let mut io = vec![block.clone(), block.clone()];
-                        m.process(&mut io, 512, |_| {});
+                        m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |_| {});
                         if b >= 20 {
                             sin += block.iter().map(|x| (*x as f64).powi(2)).sum::<f64>();
                             sout += io[0].iter().map(|x| (*x as f64).powi(2)).sum::<f64>();
@@ -300,7 +300,7 @@ mod tests {
                 let mut peak = 0.0f32;
                 for b in 0..100 {
                     let mut io = vec![vec![0.0f32; 512], vec![0.0f32; 512]];
-                    m.process(&mut io, 512, |ch| {
+                    m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |ch| {
                         for data in ch.iter_mut() {
                             for (i, x) in data.iter_mut().enumerate() {
                                 *x = tone(30000.0, rate, b * 512 * factor + i);
@@ -323,7 +323,7 @@ mod tests {
             m.set(factor, true);
             let mut io = vec![vec![0.0f32; 512], vec![0.0f32; 512]];
             io[0][0] = 1.0;
-            m.process(&mut io, 512, |_| {});
+            m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |_| {});
             let at = io[0].iter().enumerate().fold((0, 0.0f32), |b, (i, x)| if x.abs() > b.1 { (i, x.abs()) } else { b }).0;
             assert!(at.abs_diff(m.latency_for(factor, true)) <= 1, "factor {factor}: peak at {at}, reported {}", m.latency_for(factor, true));
         }

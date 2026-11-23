@@ -954,8 +954,9 @@ mod tests {
     }
 
     fn params_touched(log: &Rc<RefCell<Vec<Gesture>>>) -> Vec<u32> {
-        let mut ids: Vec<u32> = log.borrow_mut().drain(..).map(|g| match g {
-            Gesture::Begin(i) | Gesture::Perform(i, _) | Gesture::End(i) => i,
+        let mut ids: Vec<u32> = log.borrow_mut().drain(..).filter_map(|g| match g {
+            Gesture::Begin(i) | Gesture::Perform(i, _) | Gesture::End(i) => Some(i),
+            _ => None,
         }).collect();
         ids.dedup();
         ids

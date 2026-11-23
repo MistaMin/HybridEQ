@@ -22,7 +22,7 @@ fn run(p: &mut HybridEq, seconds: f32, tail: f32, signal: impl Fn(usize) -> f32)
     for start in (0..n).step_by(512) {
         let block: Vec<f32> = (start..start + 512).map(&signal).collect();
         let mut io = vec![block.clone(), block.clone()];
-        p.process(&mut io, 512);
+        p.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512);
         if start >= keep {
             input.extend_from_slice(&block);
             output.extend_from_slice(&io[0]);
