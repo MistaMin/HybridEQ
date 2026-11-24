@@ -41,6 +41,12 @@ The manual's "What changed from 1.6" explains each, and why it is better:
 
 Every download has a `.sha256` file.
 
+**Updated 2026-11-24.** The Windows and Linux files were rebuilt with OpenPluginSDK `c5446e7`, which fixes
+the Linux editor: under heavy automation in a JUCE-based host, each redraw could take longer than the
+host's timer, and the host's interface stopped responding. If you downloaded a Linux archive on
+2026-11-23, download it again. The Windows installers behave the same as before (that code is not
+used on Windows); only their checksums changed. The macOS installer and the manual are unchanged.
+
 **Install.** macOS: run the installer (Developer ID signed and notarized). Windows: run the
 installer for your processor and choose the formats; it is not code-signed, so SmartScreen may ask
 first ("More info", "Run anyway"). Linux: copy `usr/lib/vst3`, `usr/lib/clap` and `usr/lib/lv2` from
@@ -48,8 +54,10 @@ the archive to `~/.vst3`, `~/.clap` and `~/.lv2`. Close the DAW first, remove ol
 
 ## Checks
 
-All five downloads were built from the same source (HybridEQ `f9e6307`, OpenPluginSDK `b01d07a`,
-GoodLookin DRI `333a952`): macOS on a Mac, Windows and Linux each on its own GitHub runner.
+All five downloads were built from HybridEQ `f9e6307` (later commits change only documents and CI) and
+GoodLookin DRI `333a952`. macOS was built on a Mac with OpenPluginSDK `b01d07a`. Windows and Linux were each
+built on their own GitHub runner with OpenPluginSDK `c5446e7`, which adds only the Linux editor's frame
+pacing (code macOS does not compile).
 
 | Check | macOS | Windows x64 | Windows ARM64 | Linux x86_64 | Linux aarch64 |
 |---|---|---|---|---|---|

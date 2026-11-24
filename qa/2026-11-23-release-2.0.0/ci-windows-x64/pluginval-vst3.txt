@@ -1,5 +1,5 @@
 Started validating: D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3
-Random seed: 0x1938dcb
+Random seed: 0x74f7175
 Validation started
 Strictness level: 10
 -----------------------------------------------------------------

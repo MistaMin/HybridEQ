@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # The commits 2.0.0 was built from (OpenPluginSDK PR #37, GoodLookin DRI semibold-text); move on deliberately.
-  SDK_REF: b01d07a155e91d138afd32e6f7c5ee195f99cc33
+  # The commits 2.0.0 was built from (on each repository's main); move on deliberately.
+  SDK_REF: c5446e761788217019fcf4aad6b8baf3988d5ad3
   GOODLOOKINDRI_REF: 333a952f43c978b86b2232678bc895c209b9806f
   VST3_SDK_REF: v3.8.0_build_66
   CLAP_VALIDATOR_REF: "0.4.1"

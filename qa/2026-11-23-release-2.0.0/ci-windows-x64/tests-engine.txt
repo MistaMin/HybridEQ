@@ -4,7 +4,7 @@ help: Check that the patched package version and available features are compatib
       what is locked in the Cargo.lock file, run `cargo update` to use the new
       version. This may also occur with an optional dependency that is not enabled.
    Compiling hybrideq-engine v2.0.0 (D:\a\HybridEQ\HybridEQ\HybridEQ\crates\engine)
-    Finished `release` profile [optimized] target(s) in 20.02s
+    Finished `release` profile [optimized] target(s) in 18.86s
      Running unittests src\lib.rs (target\release\build\hybrideq-engine/3c5cfbb686ab974b\out\hybrideq_engine-3c5cfbb686ab974b.exe)
 
 running 10 tests
@@ -19,7 +19,7 @@ test fit::tests::bell_above_nyquist_is_stable ... ok
 test params::tests::text_round_trip ... ok
 test adaa::tests::rail_integral_matches_quadrature ... ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
 
    Doc-tests hybrideq_engine
 

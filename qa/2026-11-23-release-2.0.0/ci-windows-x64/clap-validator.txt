@@ -1,36 +1,36 @@
-   41ms  INFO Test create-id-with-trailing-garbage completed clap_validator::validator
-   48ms  INFO Test query-nonexistent-factory completed clap_validator::validator
-   57ms  INFO Test scan-time completed clap_validator::validator
-  105ms  INFO Test descriptor-consistency completed clap_validator::validator
-  107ms  INFO Test features-categories completed clap_validator::validator
-  130ms  INFO Test features-duplicates completed clap_validator::validator
- 3249ms  INFO Test process-audio-basic-in-place completed clap_validator::validator
- 3280ms  INFO Test process-audio-basic-out-of-place completed clap_validator::validator
- 3424ms  INFO Test process-sleep-constant-mask completed clap_validator::validator
- 3504ms  INFO Test process-audio-denormals completed clap_validator::validator
- 6436ms  INFO Test process-sleep-process-status completed clap_validator::validator
- 6863ms  INFO Test process-random-block-sizes completed clap_validator::validator
- 8302ms  INFO Test process-varying-block-sizes completed clap_validator::validator
- 9255ms  INFO Test process-varying-sample-rates completed clap_validator::validator
- 9587ms  INFO Test process-reset-reactivate completed clap_validator::validator
- 9958ms  INFO Test layout-audio-ports-config completed clap_validator::validator
-11531ms  INFO Test param-set-events completed clap_validator::validator
-12377ms  INFO Test param-set-no-cookies completed clap_validator::validator
-12865ms  INFO Test param-set-wrong-namespace completed clap_validator::validator
-15797ms  INFO Test param-fuzz-modulation completed clap_validator::validator
-15865ms  INFO Test param-conversions completed clap_validator::validator
-15932ms  INFO Test param-default-values completed clap_validator::validator
-16024ms  INFO Test state-invalid-empty completed clap_validator::validator
-16160ms  INFO Test state-invalid-random completed clap_validator::validator
-16228ms  INFO Test state-reproducibility-basic completed clap_validator::validator
-16298ms  INFO Test state-reproducibility-binary completed clap_validator::validator
-16345ms  INFO Test state-reproducibility-buffered completed clap_validator::validator
-16361ms  INFO Test param-fuzz-sample-accurate completed clap_validator::validator
-19194ms  INFO Test transport-null completed clap_validator::validator
-19435ms  INFO Test transport-fuzz completed clap_validator::validator
-21885ms  INFO Test transport-fuzz-sample-accurate completed clap_validator::validator
-26843ms  INFO Test param-fuzz-bounds completed clap_validator::validator
-29768ms  INFO Test param-fuzz-basic completed clap_validator::validator
+   21ms  INFO Test query-nonexistent-factory completed clap_validator::validator
+   31ms  INFO Test scan-time completed clap_validator::validator
+   33ms  INFO Test create-id-with-trailing-garbage completed clap_validator::validator
+   59ms  INFO Test descriptor-consistency completed clap_validator::validator
+   61ms  INFO Test features-categories completed clap_validator::validator
+   76ms  INFO Test features-duplicates completed clap_validator::validator
+ 2151ms  INFO Test process-audio-basic-out-of-place completed clap_validator::validator
+ 2158ms  INFO Test process-audio-basic-in-place completed clap_validator::validator
+ 2218ms  INFO Test process-sleep-constant-mask completed clap_validator::validator
+ 2363ms  INFO Test process-audio-denormals completed clap_validator::validator
+ 4169ms  INFO Test process-sleep-process-status completed clap_validator::validator
+ 4406ms  INFO Test process-random-block-sizes completed clap_validator::validator
+ 5322ms  INFO Test process-varying-block-sizes completed clap_validator::validator
+ 5776ms  INFO Test process-varying-sample-rates completed clap_validator::validator
+ 6155ms  INFO Test process-reset-reactivate completed clap_validator::validator
+ 6308ms  INFO Test layout-audio-ports-config completed clap_validator::validator
+ 7223ms  INFO Test param-set-events completed clap_validator::validator
+ 7682ms  INFO Test param-set-no-cookies completed clap_validator::validator
+ 7969ms  INFO Test param-set-wrong-namespace completed clap_validator::validator
+ 9814ms  INFO Test param-fuzz-modulation completed clap_validator::validator
+ 9842ms  INFO Test param-conversions completed clap_validator::validator
+ 9879ms  INFO Test param-default-values completed clap_validator::validator
+ 9909ms  INFO Test state-invalid-empty completed clap_validator::validator
+ 9932ms  INFO Test state-invalid-random completed clap_validator::validator
+ 9950ms  INFO Test state-reproducibility-basic completed clap_validator::validator
+ 9969ms  INFO Test state-reproducibility-binary completed clap_validator::validator
+ 9989ms  INFO Test state-reproducibility-buffered completed clap_validator::validator
+10163ms  INFO Test param-fuzz-sample-accurate completed clap_validator::validator
+11847ms  INFO Test transport-null completed clap_validator::validator
+12060ms  INFO Test transport-fuzz completed clap_validator::validator
+13596ms  INFO Test transport-fuzz-sample-accurate completed clap_validator::validator
+18608ms  INFO Test param-fuzz-bounds completed clap_validator::validator
+20449ms  INFO Test param-fuzz-basic completed clap_validator::validator
 
 [2m┌[0m[2m─[0m [1mPlugin Library[0m
 [2m│[0m dist/HybridEQ.clap
@@ -44,7 +44,7 @@
 [2m│[0m [2m│[0m Attempts to create a plugin instance using an existing plugin ID
 [2m│[0m [2m│[0m with some extra text appended to the end. This should return a
 [2m│[0m [2m│[0m null pointer.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m11ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mscan-rtld-now[0m
 [2m│[0m [2m│[0m Checks whether the plugin loads correctly when loaded using
@@ -97,7 +97,7 @@
 [2m│[0m [2m│[0m [2m│[0m The plugin does not implement the 'clap.preset-discovery-
 [2m│[0m [2m│[0m [2m│[0m factory/2' factory.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m10ms[0m
 [2m└[0m[2m─[0m[2m─[0m 7 tests
 
 [2m┌[0m[2m─[0m [1mPlugin[0m
@@ -112,25 +112,25 @@
 [2m│[0m [2m┌[0m[2m─[0m [1mfeatures-categories[0m
 [2m│[0m [2m│[0m The plugin needs to have at least one of the main CLAP category
 [2m│[0m [2m│[0m features.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mfeatures-duplicates[0m
 [2m│[0m [2m│[0m The plugin's features array should not contain any duplicates.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-audio-basic-out-of-place[0m
 [2m│[0m [2m│[0m Processes random audio through the plugin with its default
 [2m│[0m [2m│[0m parameter values and tests whether the output does not contain
 [2m│[0m [2m│[0m any non-finite or subnormal values. Uses out-of-place audio
 [2m│[0m [2m│[0m processing.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3149ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2079ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-audio-basic-in-place[0m
 [2m│[0m [2m│[0m Processes random audio through the plugin with its default
 [2m│[0m [2m│[0m parameter values and tests whether the output does not contain any
 [2m│[0m [2m│[0m non-finite or subnormal values. Uses in-place audio processing for
 [2m│[0m [2m│[0m buses that support it.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3098ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2084ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-audio-double-out-of-place[0m
 [2m│[0m [2m│[0m Same as 'process-audio-basic-out-of-place', but uses 64-bit
@@ -140,7 +140,7 @@
 [2m│[0m [2m│[0m [2m┌[0m[2m─[0m [1m[0m
 [2m│[0m [2m│[0m [2m│[0m The plugin does not support 64-bit floating point audio.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m9ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-audio-double-in-place[0m
 [2m│[0m [2m│[0m Same as 'process-audio-basic-in-place', but uses 64-bit floating
@@ -150,14 +150,14 @@
 [2m│[0m [2m│[0m [2m┌[0m[2m─[0m [1m[0m
 [2m│[0m [2m│[0m [2m│[0m The plugin does not support 64-bit floating point audio.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-audio-denormals[0m
 [2m│[0m [2m│[0m Processes random audio through the plugin with its default
 [2m│[0m [2m│[0m parameter values two times: without and with denormals as
 [2m│[0m [2m│[0m the input. Emits a warning if processing denormals causes a
 [2m│[0m [2m│[0m significant slowdown.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3253ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2255ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-sleep-constant-mask[0m
 [2m│[0m [2m│[0m Processes random audio through the plugin with its default
@@ -169,7 +169,7 @@
 [2m│[0m [2m│[0m [2m┌[0m[2m─[0m [1m[0m
 [2m│[0m [2m│[0m [2m│[0m The plugin never set the constant flag on any output
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3167ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2101ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-sleep-process-status[0m
 [2m│[0m [2m│[0m Processes random audio through the plugin with its default
@@ -181,7 +181,7 @@
 [2m│[0m [2m│[0m [2m┌[0m[2m─[0m [1m[0m
 [2m│[0m [2m│[0m [2m│[0m The plugin never went to sleep during the test.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3125ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1994ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-note-out-of-place-basic[0m
 [2m│[0m [2m│[0m Sends audio and random note and MIDI events to the plugin with
@@ -203,7 +203,7 @@
 [2m│[0m [2m│[0m [2m│[0m The plugin implements the 'note-ports' extension but it does not
 [2m│[0m [2m│[0m [2m│[0m have any input note ports.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-note-wildcard[0m
 [2m│[0m [2m│[0m Same as process-note-out-of-place-basic, but this time some note
@@ -217,7 +217,7 @@
 [2m│[0m [2m│[0m [2m│[0m The plugin implements the 'note-ports' extension but it does not
 [2m│[0m [2m│[0m [2m│[0m have any input note ports.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-varying-sample-rates[0m
 [2m│[0m [2m│[0m Processes random audio and random note events through the plugin
@@ -225,7 +225,7 @@
 [2m│[0m [2m│[0m rates ranging from 1kHz to 768kHz, including fractional rates,
 [2m│[0m [2m│[0m and tests whether the output does not contain any non-finite or
 [2m│[0m [2m│[0m subnormal values. Uses out-of-place audio processing.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m5786ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3546ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-varying-block-sizes[0m
 [2m│[0m [2m│[0m Processes random audio and random note events through the plugin
@@ -233,7 +233,7 @@
 [2m│[0m [2m│[0m block sizes ranging from 1 to 16k, including non-power-of-two
 [2m│[0m [2m│[0m ones, and tests whether the output does not contain any non-finite
 [2m│[0m [2m│[0m or subnormal values. Uses out-of-place audio processing.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m4742ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3090ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-random-block-sizes[0m
 [2m│[0m [2m│[0m Processes random audio and random note events through the plugin
@@ -241,13 +241,13 @@
 [2m│[0m [2m│[0m each process call, and tests whether the output does not contain
 [2m│[0m [2m│[0m any non-finite or subnormal values. Uses out-of-place audio
 [2m│[0m [2m│[0m processing.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3224ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2029ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mprocess-reset-reactivate[0m
 [2m│[0m [2m│[0m Asserts that resetting the plugin via 'clap_plugin::reset()' and
 [2m│[0m [2m│[0m via re-activation does not cause any crashes, and that the plugin
 [2m│[0m [2m│[0m still produces valid (non-NaN and non-infinite) output
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3018ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1974ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mlayout-audio-ports-activation[0m
 [2m│[0m [2m│[0m Same as 'process-audio-basic-out-of-place', but this time it
@@ -258,13 +258,13 @@
 [2m│[0m [2m│[0m [2m│[0m The plugin does not implement the 'audio-ports-activation'
 [2m│[0m [2m│[0m [2m│[0m extension.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mlayout-audio-ports-config[0m
 [2m│[0m [2m│[0m Same as 'process-audio-basic-in-place', but this time it tries
 [2m│[0m [2m│[0m all available port configurations exposed via the 'audio-ports-
 [2m│[0m [2m│[0m config' extension.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2942ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1842ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mlayout-configurable-audio-ports[0m
 [2m│[0m [2m│[0m Same as 'process-audio-basic-out-of-place', but this time it tries
@@ -275,43 +275,43 @@
 [2m│[0m [2m│[0m [2m│[0m The plugin does not implement the 'configurable-audio-ports'
 [2m│[0m [2m│[0m [2m│[0m extension.
 [2m│[0m [2m│[0m [2m└[0m[2m─[0m[2m─[0m 
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [2mSKIPPED[0m [2m─[0m [2m11ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-set-events[0m
 [2m│[0m [2m│[0m Asserts that the resulting parameter values after a flush are the
 [2m│[0m [2m│[0m same as if the parameter changes were sent via a process call.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3086ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1869ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-set-no-cookies[0m
 [2m│[0m [2m│[0m Same as 'param-set-events', but this time the parameter change
 [2m│[0m [2m│[0m events are sent with null cookies. The plugin should behave
 [2m│[0m [2m│[0m identically to when the cookies are set to non-null values.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3051ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1889ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-set-wrong-namespace[0m
 [2m│[0m [2m│[0m Sends events to the plugin with the 'CLAP_EVENT_PARAM_VALUE'
 [2m│[0m [2m│[0m event type but with a mismatching namespace ID. Asserts that the
 [2m│[0m [2m│[0m plugin's parameter values don't change.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3211ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1801ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-fuzz-basic[0m
 [2m│[0m [2m│[0m Generates 50 sets of random parameter values, sets those on the
 [2m│[0m [2m│[0m plugin, and has the plugin process 5 buffers of random audio and
 [2m│[0m [2m│[0m note events. The plugin passes the test if it doesn't produce any
 [2m│[0m [2m│[0m infinite or NaN values, and doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m19707ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m14118ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-fuzz-bounds[0m
 [2m│[0m [2m│[0m The exact same test as 'param-fuzz-basic', but this time the
 [2m│[0m [2m│[0m parameter values are snapped to the minimum and maximum values.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m15282ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m11374ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-fuzz-sample-accurate[0m
 [2m│[0m [2m│[0m Sets parameter values in a sample-accurate fashion while
 [2m│[0m [2m│[0m processing audio, generating them at fixed intervals (10, 100,
 [2m│[0m [2m│[0m 1000 samples). The plugin passes the test if it doesn't produce
 [2m│[0m [2m│[0m any infinite or NaN values, and doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m3871ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2458ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-fuzz-modulation[0m
 [2m│[0m [2m│[0m Sends parameter change events, including monophonic modulation
@@ -319,29 +319,29 @@
 [2m│[0m [2m│[0m unsynchronized intervals, and have the plugin process them. The
 [2m│[0m [2m│[0m plugin passes the test if it doesn't produce any infinite or NaN
 [2m│[0m [2m│[0m values, and doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2868ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1822ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-conversions[0m
 [2m│[0m [2m│[0m Asserts that value to string and string to value conversions
 [2m│[0m [2m│[0m are supported for either all or none of the plugin's parameters,
 [2m│[0m [2m│[0m and that conversions between values and strings roundtrip
 [2m│[0m [2m│[0m consistently.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m20ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m13ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mparam-default-values[0m
 [2m│[0m [2m│[0m Asserts that the values for all parameters are set correctly to
 [2m│[0m [2m│[0m their default values when the plugin is initialized.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m10ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m9ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mstate-invalid-empty[0m
 [2m│[0m [2m│[0m The plugin should return false when 'clap_plugin_state::load()' is
 [2m│[0m [2m│[0m called with an empty state.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mstate-invalid-random[0m
 [2m│[0m [2m│[0m Loads 3x1MB chunks of random bytes via 'clap_plugin_state::load()'
 [2m│[0m [2m│[0m and asserts that the plugin doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m15ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m13ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mstate-reproducibility-basic[0m
 [2m│[0m [2m│[0m Randomizes a plugin's parameters, saves its state, recreates the
@@ -349,7 +349,7 @@
 [2m│[0m [2m│[0m parameter values are the same and whether saving the state once
 [2m│[0m [2m│[0m more results in the same parameters as before. The parameter
 [2m│[0m [2m│[0m values are updated using the process function.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m9ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mstate-reproducibility-binary[0m
 [2m│[0m [2m│[0m Performs the same parameter reproducibility check as in 'state-
@@ -358,27 +358,27 @@
 [2m│[0m [2m│[0m needs to save the state in a completely deterministic way, without
 [2m│[0m [2m│[0m any non-determinism coming from things like uninitialized memory
 [2m│[0m [2m│[0m or random bytes.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m11ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m10ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mstate-reproducibility-buffered[0m
 [2m│[0m [2m│[0m Performs the same parameter reproducibility check as in 'state-
 [2m│[0m [2m│[0m reproducibility-basic', but this time the plugin is only allowed
 [2m│[0m [2m│[0m to read a small prime number of bytes at a time when reloading and
 [2m│[0m [2m│[0m resaving the state.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m12ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m9ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mtransport-null[0m
 [2m│[0m [2m│[0m Performs audio processing with a 'null' transport pointer,
 [2m│[0m [2m│[0m simulating a free-running transport state. The plugin passes the
 [2m│[0m [2m│[0m test if it doesn't produce any infinite or NaN values, and doesn't
 [2m│[0m [2m│[0m crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2803ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1847ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mtransport-fuzz[0m
 [2m│[0m [2m│[0m Performs audio processing while randomly changing the transport
 [2m│[0m [2m│[0m state on every block. The plugin passes the test if it doesn't
 [2m│[0m [2m│[0m produce any infinite or NaN values, and doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2982ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1856ms[0m
 [2m│[0m 
 [2m│[0m [2m┌[0m[2m─[0m [1mtransport-fuzz-sample-accurate[0m
 [2m│[0m [2m│[0m Same as 'transport-fuzz', but this time the test sends
@@ -386,6 +386,6 @@
 [2m│[0m [2m│[0m processing audio, generating them at fixed intervals (1, 100, 1000
 [2m│[0m [2m│[0m samples). The plugin passes the test if it doesn't produce any
 [2m│[0m [2m│[0m infinite or NaN values, and doesn't crash.
-[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m2642ms[0m
+[2m│[0m [2m└[0m[2m─[0m[2m─[0m [32mPASSED[0m [2m─[0m [2m1738ms[0m
 [2m└[0m[2m─[0m[2m─[0m 37 tests
 44 tests run, [1;32m33[0m passed, [1;31m0[0m failed, [1;33m0[0m warnings, [1m11[0m skipped

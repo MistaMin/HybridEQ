@@ -1,13 +1,14 @@
-Random seed: 0x1938dcb
+Started validating: /home/runner/work/HybridEQ/HybridEQ/dist/HybridEQ.vst3
+Random seed: 0x6e07e7c
 Validation started
 Strictness level: 10
 -----------------------------------------------------------------
-Starting tests in: pluginval / Scan for plugins located in: D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3...
+Starting tests in: pluginval / Scan for plugins located in: /home/runner/work/HybridEQ/HybridEQ/dist/HybridEQ.vst3...
 Num plugins found: 1
 
-Testing plugin: VST3-HybridEQ-1108bfef-5d9442c9
+Testing plugin: VST3-HybridEQ-79c2d9d9-5d9442c9
 OpenGrid: HybridEQ v2.0.0
-Completed tests in pluginval / Scan for plugins located in: D:\a\HybridEQ\HybridEQ\dist\HybridEQ.vst3
+Completed tests in pluginval / Scan for plugins located in: /home/runner/work/HybridEQ/HybridEQ/dist/HybridEQ.vst3
 -----------------------------------------------------------------
 Starting tests in: pluginval / Open plugin (cold)...
 Completed tests in pluginval / Open plugin (cold)

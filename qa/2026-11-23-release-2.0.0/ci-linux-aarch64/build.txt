@@ -16,24 +16,26 @@
    Compiling once_cell v1.21.4
    Compiling rustix v1.1.6
    Compiling cfg-if v1.0.5
+   Compiling linux-raw-sys v0.12.1
    Compiling bitflags v2.13.2
    Compiling allocator-api2 v0.2.21
-   Compiling linux-raw-sys v0.12.1
-   Compiling num-integer v0.1.47
    Compiling serde_derive v1.0.229
+   Compiling num-integer v0.1.47
    Compiling ttf-parser v0.20.0
    Compiling hashbrown v0.14.5
    Compiling zmij v1.0.23
+   Compiling gethostname v1.1.0
    Compiling fontdue v0.8.0
+   Compiling openplugin-core v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-core)
    Compiling strength_reduce v0.2.4
    Compiling x11rb-protocol v0.13.2
-   Compiling openplugin-core v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-core)
-   Compiling gethostname v1.1.0
    Compiling serde_json v1.0.154
    Compiling goodlookindri v0.2.1 (/home/runner/work/HybridEQ/HybridEQ/GoodLookinDri)
    Compiling transpose v0.2.3
    Compiling primal-check v0.3.4
    Compiling num-complex v0.4.6
+   Compiling log v0.4.35
+   Compiling memchr v2.8.3
    Compiling goodlookindri-shell v0.2.1 (/home/runner/work/HybridEQ/HybridEQ/GoodLookinDri/shell)
 warning: multiple fields are never read
   --> home/work/HybridEQ/HybridEQ/GoodLookinDri/shell/src/core.rs:42:9
@@ -84,16 +86,14 @@ warning: methods `resize`, `event`, `tick`, `render`, and `smoke_result` are nev
 92 |     pub fn smoke_result(&self) -> Option<i32> {
    |            ^^^^^^^^^^^^
 
-warning: `goodlookindri-shell` (lib) generated 2 warnings
    Compiling x11rb v0.13.2
-   Compiling log v0.4.35
-   Compiling memchr v2.8.3
+warning: `goodlookindri-shell` (lib) generated 2 warnings
    Compiling itoa v1.0.19
    Compiling openplugin-dri v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-dri)
    Compiling rustfft v6.4.1
    Compiling openplugin-host v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-host)
-   Compiling openplugin-dsp v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-dsp)
    Compiling openplugin-targets v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-targets)
+   Compiling openplugin-dsp v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin-dsp)
    Compiling hybrideq-engine v2.0.0 (/home/runner/work/HybridEQ/HybridEQ/HybridEQ/crates/engine)
    Compiling openplugin v1.0.0-beta (/home/runner/work/HybridEQ/HybridEQ/OpenPluginSDK/crates/openplugin)
    Compiling hybrideq v2.0.0 (/home/runner/work/HybridEQ/HybridEQ/HybridEQ/plugin)
@@ -111,7 +111,7 @@ help: replace the use of the deprecated method
    |
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
-    Finished `release` profile [optimized] target(s) in 35.99s
+    Finished `release` profile [optimized] target(s) in 36.29s
 + cargo build --release --manifest-path /home/runner/work/HybridEQ/HybridEQ/HybridEQ/plugin/Cargo.toml -p hybrideq --bin hybrideq-lv2-ttl
 warning: multiple fields are never read
   --> home/work/HybridEQ/HybridEQ/GoodLookinDri/shell/src/core.rs:42:9
@@ -178,7 +178,7 @@ help: replace the use of the deprecated method
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
    Compiling hybrideq v2.0.0 (/home/runner/work/HybridEQ/HybridEQ/HybridEQ/plugin)
-    Finished `release` profile [optimized] target(s) in 4.71s
+    Finished `release` profile [optimized] target(s) in 4.90s
 == CLAP
 + rm -rf /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.clap
 + cp /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../build-linux/target/release/libhybrideq.so /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.clap
@@ -213,8 +213,8 @@ warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq`
 [  6%] Building CXX object vst3-sdk/CMakeFiles/pluginterfaces.dir/pluginterfaces/base/funknown.cpp.o
 [  9%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/baseiids.cpp.o
 [ 11%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fbuffer.cpp.o
-[ 13%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fdebug.cpp.o
-[ 15%] Building CXX object vst3-sdk/CMakeFiles/pluginterfaces.dir/pluginterfaces/base/ustring.cpp.o
+[ 13%] Building CXX object vst3-sdk/CMakeFiles/pluginterfaces.dir/pluginterfaces/base/ustring.cpp.o
+[ 15%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fdebug.cpp.o
 [ 18%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fdynlib.cpp.o
 [ 20%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fobject.cpp.o
 [ 22%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/fstreamer.cpp.o
@@ -235,8 +235,8 @@ warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq`
       |                                                        |   Steinberg::int64 {aka long int}
       |                                                        long long int
       |                                                     %ld
-[ 25%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/timer.cpp.o
 [ 27%] Linking CXX static library ../lib/Release/libpluginterfaces.a
+[ 27%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/timer.cpp.o
 [ 29%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/source/updatehandler.cpp.o
 [ 31%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/thread/source/fcondition.cpp.o
 [ 34%] Building CXX object vst3-sdk/CMakeFiles/base.dir/base/thread/source/flock.cpp.o
@@ -260,8 +260,8 @@ In file included from /home/runner/work/HybridEQ/HybridEQ/vst3sdk/base/source/fs
                  from /home/runner/work/HybridEQ/HybridEQ/vst3sdk/base/source/fstring.cpp:18:
 /home/runner/work/HybridEQ/HybridEQ/vst3sdk/pluginterfaces/base/fstrdefs.h:52:27: note: format string is defined here
    52 | #define FORMAT_UINT64A "llu"
-[ 34%] Built target pluginterfaces
 [ 36%] Linking CXX static library ../lib/Release/libbase.a
+[ 36%] Built target pluginterfaces
 [ 36%] Built target base
 [ 38%] Building CXX object vst3-sdk/CMakeFiles/sdk_common.dir/public.sdk/source/common/commoniids.cpp.o
 [ 40%] Building CXX object vst3-sdk/CMakeFiles/sdk_common.dir/public.sdk/source/common/commonstringconvert.cpp.o
@@ -302,19 +302,19 @@ In file included from /home/runner/work/HybridEQ/HybridEQ/vst3sdk/base/source/fs
 + cp -R /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../build-linux/native/HybridEQ.vst3 /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.vst3
 == checks
 -- /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.clap
-ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=8dbe28a6ea37f1df7a69b62fce3c08345ec7ed3f, not stripped
+ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=49efc291b3a2efcdf5ea913f3fee53e6a6d7a3b0, not stripped
 needs libgcc_s.so.1
 needs libm.so.6
 needs libc.so.6
 exports clap_entry
 -- /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.lv2/HybridEQ.so
-ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=8dbe28a6ea37f1df7a69b62fce3c08345ec7ed3f, not stripped
+ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=49efc291b3a2efcdf5ea913f3fee53e6a6d7a3b0, not stripped
 needs libgcc_s.so.1
 needs libm.so.6
 needs libc.so.6
 exports lv2_descriptor
 -- /home/runner/work/HybridEQ/HybridEQ/HybridEQ/../dist/HybridEQ.vst3/Contents/aarch64-linux/HybridEQ.so
-ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=5e5fde39930d7612c131452d280b9fc1b6f116a0, with debug_info, not stripped
+ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[sha1]=a0b40f7a0dba262a512f08ddc1eb4375adbc7341, with debug_info, not stripped
 needs libgcc_s.so.1
 needs libm.so.6
 needs libc.so.6

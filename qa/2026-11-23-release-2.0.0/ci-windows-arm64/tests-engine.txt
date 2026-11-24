@@ -4,16 +4,16 @@ help: Check that the patched package version and available features are compatib
       what is locked in the Cargo.lock file, run `cargo update` to use the new
       version. This may also occur with an optional dependency that is not enabled.
    Compiling hybrideq-engine v2.0.0 (C:\a\HybridEQ\HybridEQ\HybridEQ\crates\engine)
-    Finished `release` profile [optimized] target(s) in 22.76s
+    Finished `release` profile [optimized] target(s) in 18.42s
      Running unittests src\lib.rs (target\release\build\hybrideq-engine/e2147f149d0bba59\out\hybrideq_engine-e2147f149d0bba59.exe)
 
 running 10 tests
 test adaa::tests::residual_is_transparent_for_linear_stages ... ok
 test fit::tests::fitted_shelf_keeps_positive_polarity ... ok
-test fit::tests::high_shelf_near_nyquist_follows_the_analog_curve ... ok
 test fit::tests::flat_gain_is_bypass ... ok
-test params::tests::q_uses_square_root_skew ... ok
+test fit::tests::high_shelf_near_nyquist_follows_the_analog_curve ... ok
 test params::tests::normalised_round_trip ... ok
+test params::tests::q_uses_square_root_skew ... ok
 test params::tests::table_is_consistent ... ok
 test fit::tests::bell_above_nyquist_is_stable ... ok
 test params::tests::text_round_trip ... ok

@@ -2,8 +2,8 @@
 == Rust library
 + cargo build --release --manifest-path C:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --bin hybrideq-lv2-ttl
    Compiling proc-macro2 v1.0.107
-   Compiling unicode-ident v1.0.27
    Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
    Compiling serde_core v1.0.229
    Compiling autocfg v1.5.1
    Compiling num-traits v0.2.19
@@ -12,32 +12,32 @@
    Compiling ahash v0.8.12
    Compiling serde v1.0.229
    Compiling syn v3.0.10
-   Compiling cfg-if v1.0.5
    Compiling once_cell v1.21.4
+   Compiling cfg-if v1.0.5
    Compiling allocator-api2 v0.2.21
    Compiling num-integer v0.1.47
-   Compiling ttf-parser v0.20.0
    Compiling zmij v1.0.23
+   Compiling ttf-parser v0.20.0
    Compiling strength_reduce v0.2.4
-   Compiling serde_json v1.0.154
-   Compiling serde_derive v1.0.229
    Compiling goodlookindri v0.2.1 (C:\a\HybridEQ\HybridEQ\GoodLookinDri)
-   Compiling hashbrown v0.14.5
+   Compiling serde_derive v1.0.229
+   Compiling serde_json v1.0.154
    Compiling transpose v0.2.3
+   Compiling hashbrown v0.14.5
    Compiling primal-check v0.3.4
    Compiling num-complex v0.4.6
    Compiling fontdue v0.8.0
-   Compiling goodlookindri-shell v0.2.1 (C:\a\HybridEQ\HybridEQ\GoodLookinDri\shell)
    Compiling itoa v1.0.19
-   Compiling log v0.4.35
+   Compiling goodlookindri-shell v0.2.1 (C:\a\HybridEQ\HybridEQ\GoodLookinDri\shell)
    Compiling openplugin-core v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-core)
    Compiling memchr v2.8.3
-   Compiling rustfft v6.4.1
+   Compiling log v0.4.35
    Compiling openplugin-dri v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dri)
    Compiling openplugin-host v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-host)
+   Compiling rustfft v6.4.1
    Compiling openplugin-targets v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-targets)
-   Compiling openplugin-dsp v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dsp)
    Compiling hybrideq-engine v2.0.0 (C:\a\HybridEQ\HybridEQ\HybridEQ\crates\engine)
+   Compiling openplugin-dsp v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin-dsp)
    Compiling openplugin v1.0.0-beta (C:\a\HybridEQ\HybridEQ\OpenPluginSDK\crates\openplugin)
    Compiling hybrideq v2.0.0 (C:\a\HybridEQ\HybridEQ\HybridEQ\plugin)
 warning: use of deprecated method `std::sync::atomic::Atomic::<u32>::fetch_update`: renamed to `try_update` for consistency
@@ -54,7 +54,7 @@ help: replace the use of the deprecated method
    |
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
-    Finished `release` profile [optimized] target(s) in 1m 04s
+    Finished `release` profile [optimized] target(s) in 1m 06s
 + cargo rustc --release --manifest-path C:\a\HybridEQ\HybridEQ\HybridEQ\plugin\Cargo.toml -p hybrideq --lib -- -C link-arg=/PDBALTPATH:%_PDB% -C link-arg=C:\a\HybridEQ\HybridEQ\build-win\version\clap.res
    Compiling hybrideq v2.0.0 (C:\a\HybridEQ\HybridEQ\HybridEQ\plugin)
 warning: use of deprecated method `std::sync::atomic::Atomic::<u32>::fetch_update`: renamed to `try_update` for consistency
@@ -71,7 +71,7 @@ help: replace the use of the deprecated method
    |
 
 warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq` to apply 1 suggestion)
-    Finished `release` profile [optimized] target(s) in 2.54s
+    Finished `release` profile [optimized] target(s) in 2.61s
 == CLAP
 + replace C:\a\HybridEQ\HybridEQ\dist\HybridEQ.clap with C:\a\HybridEQ\HybridEQ\build-win\target\release\hybrideq.dll
 == LV2
@@ -100,7 +100,7 @@ warning: `hybrideq` (lib) generated 1 warning (run `cargo fix --lib -p hybrideq`
 -- Could NOT find LIBJACK (missing: LIBJACK_LIBRARIES LIBJACK_INCLUDE_DIR) 
 -- Performing Test SMTG_USE_STDATOMIC_H
 -- Performing Test SMTG_USE_STDATOMIC_H - Failed
--- Configuring done (24.4s)
+-- Configuring done (21.6s)
 -- Generating done (0.3s)
 -- Build files have been written to: C:/a/HybridEQ/HybridEQ/build-win/native
 + cmake --build C:\a\HybridEQ\HybridEQ\build-win\native --config Release -j 4 --target OpenPluginVST3
@@ -112,14 +112,14 @@ MSBuild version 18.12.2-1.26514.2+04f6ca984 for .NET Framework
   fbuffer.cpp
   fdebug.cpp
   fdynlib.cpp
+  fobject.cpp
+  fstreamer.cpp
+  fstring.cpp
   Building Custom Rule C:/a/HybridEQ/HybridEQ/vst3sdk/CMakeLists.txt
   conststringtable.cpp
   coreiids.cpp
   funknown.cpp
   ustring.cpp
-  fobject.cpp
-  fstreamer.cpp
-  fstring.cpp
   timer.cpp
   updatehandler.cpp
   fcondition.cpp
