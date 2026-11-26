@@ -207,9 +207,9 @@ impl Plugin for HybridEq {
             return;
         }
         let peak = |s: &[f32]| s.iter().fold(0.0f32, |m, x| m.max(x.abs()));
-        for ch in 0..channels {
-            self.dry[ch][..frames].copy_from_slice(&io[ch][..frames]);
-            Shared::raise(&self.shared.peaks[ch], peak(&io[ch][..frames]));
+        for (ch, x) in io[..channels].iter().enumerate() {
+            self.dry[ch][..frames].copy_from_slice(&x[..frames]);
+            Shared::raise(&self.shared.peaks[ch], peak(&x[..frames]));
         }
         self.engine.set_params(&self.p);
         let engine = &mut self.engine;
@@ -249,14 +249,14 @@ impl Plugin for HybridEq {
             2 => self.shared.ring.push(&[&io[0][..frames], &io[1][..frames]]),
             _ => self.shared.ring.push(&[&io[0][..frames]]),
         }
-        for ch in 0..channels {
+        for (ch, data) in io[..channels].iter_mut().enumerate() {
             // Filter state decays below f32 range on silence; nothing under -600 dBFS reaches the host.
-            for x in &mut io[ch][..frames] {
+            for x in &mut data[..frames] {
                 if x.abs() < 1e-30 {
                     *x = 0.0;
                 }
             }
-            let out = &io[ch][..frames];
+            let out = &data[..frames];
             Shared::raise(&self.shared.peaks[2 + ch], peak(out));
             Shared::add(&self.shared.energy[ch], out.iter().map(|x| x * x).sum::<f32>());
         }

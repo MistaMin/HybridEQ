@@ -83,12 +83,11 @@ Each flavour is inspired by a studio classic:
 ## Build from source
 
 HybridEQ is written in Rust. The engine (`crates/engine`) has no dependencies; the plug-in
-(`plugin`) uses [OpenPluginSDK](https://github.com/MistaMin/OpenPluginSDK) and
-[GoodLookin DRI](https://github.com/MistaMin/GoodLookinDri). Check them out side by side:
+(`plugin`) uses [OpenPluginSDK](https://github.com/MistaMin/OpenPluginSDK), which carries
+[GoodLookin DRI](https://github.com/MistaMin/GoodLookinDri) in its tree. Check it out beside HybridEQ:
 
 ```bash
 git clone https://github.com/MistaMin/OpenPluginSDK
-git clone https://github.com/MistaMin/GoodLookinDri
 git clone https://github.com/MistaMin/HybridEQ && cd HybridEQ
 OPENPLUGIN_SDK=../OpenPluginSDK . scripts/sdk_env.sh     # points cargo at the SDK
 cargo test --release --manifest-path crates/engine/Cargo.toml

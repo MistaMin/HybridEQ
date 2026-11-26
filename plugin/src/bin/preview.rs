@@ -5,6 +5,7 @@
 use hybrideq::editor::HybridEqEditor;
 use hybrideq_engine::params::idx;
 use openplugin::core::{Editor, EditorHost};
+use std::f32::consts::TAU;
 use openplugin::prelude::Plugin;
 
 fn main() {
@@ -37,14 +38,15 @@ fn main() {
         let mut seed = 1u32;
         let mut n = 0usize;
         for _ in 0..60 {
-            let mut io = vec![vec![0.0f32; 1600], vec![0.0f32; 1600]];
-            for i in 0..1600 {
+            let mut io = [vec![0.0f32; 1600], vec![0.0f32; 1600]];
+            let [l, r] = &mut io;
+            for (i, (a, b)) in l.iter_mut().zip(r.iter_mut()).enumerate() {
                 seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
                 let t = (n + i) as f32 / 48000.0;
                 let noise = ((seed >> 8) as f32 / (1 << 24) as f32 - 0.5) * 0.08;
-                let x = 0.25 * (6.283 * 110.0 * t).sin() + 0.12 * (6.283 * 880.0 * t).sin() + 0.06 * (6.283 * 5200.0 * t).sin() + noise;
-                io[0][i] = x;
-                io[1][i] = x * 0.9;
+                let x = 0.25 * (TAU * 110.0 * t).sin() + 0.12 * (TAU * 880.0 * t).sin() + 0.06 * (TAU * 5200.0 * t).sin() + noise;
+                *a = x;
+                *b = x * 0.9;
             }
             n += 1600;
             plugin.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 1600);

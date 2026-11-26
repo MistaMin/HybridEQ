@@ -276,7 +276,7 @@ mod tests {
                     let (mut sin, mut sout) = (0.0f64, 0.0f64);
                     for b in 0..60 {
                         let block: Vec<f32> = (0..512).map(|i| 0.5 * tone(f, 48000.0, b * 512 + i)).collect();
-                        let mut io = vec![block.clone(), block.clone()];
+                        let mut io = [block.clone(), block.clone()];
                         m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |_| {});
                         if b >= 20 {
                             sin += block.iter().map(|x| (*x as f64).powi(2)).sum::<f64>();
@@ -299,7 +299,7 @@ mod tests {
                 let rate = 48000.0 * factor as f64;
                 let mut peak = 0.0f32;
                 for b in 0..100 {
-                    let mut io = vec![vec![0.0f32; 512], vec![0.0f32; 512]];
+                    let mut io = [vec![0.0f32; 512], vec![0.0f32; 512]];
                     m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |ch| {
                         for data in ch.iter_mut() {
                             for (i, x) in data.iter_mut().enumerate() {
@@ -321,7 +321,7 @@ mod tests {
         for factor in [2, 4, 8] {
             let mut m = Multirate::new(48000.0, 512);
             m.set(factor, true);
-            let mut io = vec![vec![0.0f32; 512], vec![0.0f32; 512]];
+            let mut io = [vec![0.0f32; 512], vec![0.0f32; 512]];
             io[0][0] = 1.0;
             m.process(&mut io.iter_mut().map(Vec::as_mut_slice).collect::<Vec<_>>(), 512, |_| {});
             let at = io[0].iter().enumerate().fold((0, 0.0f32), |b, (i, x)| if x.abs() > b.1 { (i, x.abs()) } else { b }).0;

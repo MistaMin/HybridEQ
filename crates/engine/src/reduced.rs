@@ -199,7 +199,7 @@ impl Transformer {
 
     #[inline]
     fn process(&self, input: f64, state: &mut f64) -> f64 {
-        let inv = self.inverse.as_ref().expect("prepared");
+        let Some(inv) = self.inverse.as_ref() else { return input };
         let w = *state + self.b * input;
         let q = if w.abs() < inv.limit { inv.lookup(w) } else { (w - if w > 0.0 { self.positive } else { self.negative }) / self.tail_slope };
         let output = input - (self.a / self.b) * q;
@@ -326,7 +326,7 @@ impl Kernel {
         }
         let c = bank.get(self.kind, self.factor);
         let mut v = if c.spec.input_core { c.input.process(x, &mut self.input_state) } else { highpass(x, &mut self.input_state, c.input_g) };
-        v = if self.use_adaa { self.first_adaa.process(v, c.first.integrated.as_ref().unwrap()) } else { c.first.process(v) };
+        v = match (self.use_adaa, c.first.integrated.as_ref()) { (true, Some(t)) => self.first_adaa.process(v, t), _ => c.first.process(v) };
         if c.spec.coupling_charge_hz > 0.0 {
             // Reduced transistor input loading: a passive quadratic port with an explicit
             // trapezoidal solution, no runtime Newton solve.
@@ -345,7 +345,7 @@ impl Kernel {
         } else {
             v = highpass(v, &mut self.coupling_state, c.coupling_g);
         }
-        v = if self.use_adaa { self.second_adaa.process(v, c.second.integrated.as_ref().unwrap()) } else { c.second.process(v) };
+        v = match (self.use_adaa, c.second.integrated.as_ref()) { (true, Some(t)) => self.second_adaa.process(v, t), _ => c.second.process(v) };
         v = if c.spec.output_core { c.output.process(v, &mut self.output_state) } else { highpass(v, &mut self.output_state, c.output_g) };
         // fitted linear response: a weighted sum of one-pole high passes
         // summed in two lanes (even, odd) as the 1.6.x NEON path did, so the result is bit-identical
