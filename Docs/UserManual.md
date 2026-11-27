@@ -1,9 +1,9 @@
 # HybridEQ
-## User manual - version 2.0.0
+## User manual - version 2.0.1
 
 Six-band console equaliser with preamp character, harmonic saturation and mid/side processing.
 
-![HybridEQ interface](HybridEQ-2.0.0.png)
+![HybridEQ interface](HybridEQ-2.0.1.png)
 
 **Quick start**
 
@@ -13,7 +13,7 @@ Six-band console equaliser with preamp character, harmonic saturation and mid/si
 - Turn on AUTO GAIN, or match the level with OUTPUT, before comparing settings by ear.
 - Save your DAW project to store the parameters and the editor size.
 
-Version 2.0.0 is HybridEQ rewritten in Rust. The equaliser, preamp circuits, harmonics and oversampling are the same models as in 1.6, and projects saved with 1.6 open with every setting. It adds AUTO GAIN and DELTA, a resizable editor, sample-accurate automation, and Windows ARM64 and Linux aarch64 builds. Three details differ from 1.6 on purpose; they are explained under "What changed from 1.6".
+Version 2.0 is HybridEQ rewritten in Rust (2.0.1 fixes an occasional knock in VST3 hosts; the sound is unchanged). The equaliser, preamp circuits, harmonics and oversampling are the same models as in 1.6, and projects saved with 1.6 open with every setting. It adds AUTO GAIN and DELTA, a resizable editor, sample-accurate automation, and Windows ARM64 and Linux aarch64 builds. Three details differ from 1.6 on purpose; they are explained under "What changed from 1.6".
 
 <!-- pagebreak -->
 
@@ -46,13 +46,13 @@ In the response plot, drag a band's point sideways for frequency and up or down 
 
 Frequency controls reach 30 kHz; the analyser stops at the session's Nyquist frequency. The response plot shows gain, the analyser behind it shows signal level, on separate scales.
 
-![Band strips](HybridEQ-2.0.0-bands.png)
+![Band strips](HybridEQ-2.0.1-bands.png)
 
 <!-- pagebreak -->
 
 # Preamp, harmonics and global controls
 
-![Preamp, harmonics, global and level](HybridEQ-2.0.0-controls.png)
+![Preamp, harmonics, global and level](HybridEQ-2.0.1-controls.png)
 
 **Preamp type:** Off, Brit, N-Type, FSF and A-Type. Brit is the initial type. Off selects the clean preamp model.
 

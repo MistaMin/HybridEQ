@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.1
+
+Built on the current OpenPluginSDK. The sound, the plug-in and parameter IDs and saved projects are
+unchanged: renders are bit-identical to 2.0.0.
+
+- VST3: when a host starts processing from its main thread while audio already runs (REAPER does),
+  HybridEQ no longer passes one block through unprocessed and resets mid-stream. That could be heard
+  now and then as a short knock.
+- Linux VST3: in a host that embeds the editor in its own area (Ardour), the editor takes that
+  area's width and keeps its proportions, and follows a host window that is replaced while open.
+- Audio Unit: the component version is 2.0.1, so hosts take the build as an update.
+
 ## 2.0.0
 
 HybridEQ rewritten in Rust on OpenPluginSDK, with the GoodLookin DRI editor. A drop-in replacement

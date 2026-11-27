@@ -1,0 +1,60 @@
+PASS     loads AU: HybridEQ (OpenGrid), 50 parameters
+PASS     finite output peak -4.1 dBFS
+PASS     not silent rms -15.3 dBFS
+FAIL     deterministic render repeat differs by -8.0 dB
+PASS     editor opens 1062x845, 0.0% animates by itself
+  Oversample                       audio=skipped (render not deterministic) visual=ok
+  Oversample Filter                audio=skipped (render not deterministic) visual=ok
+  2nd Harmonic                     audio=skipped (render not deterministic) visual=ok
+  3rd Harmonic                     audio=skipped (render not deterministic) visual=ok
+  4th Harmonic                     audio=skipped (render not deterministic) visual=ok
+  5th Harmonic                     audio=skipped (render not deterministic) visual=ok
+  Low Cut Freq                     audio=skipped (render not deterministic) visual=ok
+  Low Cut Q                        audio=skipped (render not deterministic) visual=ok
+  Low Cut Slope                    audio=skipped (render not deterministic) visual=ok
+  Low Cut Mode                     audio=skipped (render not deterministic) visual=ok
+  Low Cut Bypass                   audio=skipped (render not deterministic) visual=ok
+  High Cut Freq                    audio=skipped (render not deterministic) visual=ok
+  High Cut Q                       audio=skipped (render not deterministic) visual=ok
+  High Cut Slope                   audio=skipped (render not deterministic) visual=ok
+  High Cut Mode                    audio=skipped (render not deterministic) visual=ok
+  High Cut Bypass                  audio=skipped (render not deterministic) visual=ok
+  Low Freq                         audio=skipped (render not deterministic) visual=ok
+  Low Gain                         audio=skipped (render not deterministic) visual=ok
+  Low Type                         audio=skipped (render not deterministic) visual=ok
+  Low Mode                         audio=skipped (render not deterministic) visual=ok
+  Low Band Bypass                  audio=skipped (render not deterministic) visual=ok
+  Mid 1 Freq                       audio=skipped (render not deterministic) visual=ok
+  Mid 1 Gain                       audio=skipped (render not deterministic) visual=ok
+  Mid 1 Q                          audio=skipped (render not deterministic) visual=ok
+  Mid 1 Type                       audio=skipped (render not deterministic) visual=ok
+  Mid 1 Mode                       audio=skipped (render not deterministic) visual=ok
+  Mid 1 Bypass                     audio=skipped (render not deterministic) visual=ok
+  Mid 2 Freq                       audio=skipped (render not deterministic) visual=ok
+  Mid 2 Gain                       audio=skipped (render not deterministic) visual=ok
+  Mid 2 Q                          audio=skipped (render not deterministic) visual=ok
+  Mid 2 Type                       audio=skipped (render not deterministic) visual=ok
+  Mid 2 Mode                       audio=skipped (render not deterministic) visual=ok
+  Mid 2 Bypass                     audio=skipped (render not deterministic) visual=ok
+  High Freq                        audio=skipped (render not deterministic) visual=ok
+  High Gain                        audio=skipped (render not deterministic) visual=ok
+  High Type                        audio=skipped (render not deterministic) visual=ok
+  High Mode                        audio=skipped (render not deterministic) visual=ok
+  High Band Bypass                 audio=skipped (render not deterministic) visual=ok
+  Preamp Type                      audio=skipped (render not deterministic) visual=ok
+  Preamp Pad                       audio=skipped (render not deterministic) visual=ok
+  Preamp Gain                      audio=skipped (render not deterministic) visual=ok
+  Preamp Bypass                    audio=skipped (render not deterministic) visual=ok
+  Preamp Circuit                   audio=skipped (render not deterministic) visual=ok
+  Preamp HQ                        audio=skipped (render not deterministic) visual=ok
+  Output Gain                      audio=skipped (render not deterministic) visual=ok
+  Auto Gain                        audio=skipped (render not deterministic) visual=ok
+  Delta                            audio=skipped (render not deterministic) visual=ok
+  Bypass                           audio=skipped (render not deterministic) visual=ok
+  Wet                              audio=skipped (render not deterministic) visual=ok
+  Delta                            audio=skipped (render not deterministic) visual=ok
+PASS     every parameter changes the sound 
+PASS     every parameter is shown in the GUI 
+PASS     state survives save and reopen 
+PASS     editor reopens 5 close/open cycles
+report: /Volumes/Developer/OpenGrid/HybridEQ/qa/2026-11-27-release-2.0.1/reaper/report.md

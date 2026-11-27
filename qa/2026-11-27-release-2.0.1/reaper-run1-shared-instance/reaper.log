@@ -1,0 +1,11 @@
+2026-11-27 01:13:46.443 REAPER[41861:14509746] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/ws/dc4h6lrj7j18p3kv5ydd62040000gn/T/com.cockos.reaper.savedState
+Server started listening on port 3009
+2026-11-27 01:13:49.720 REAPER[41861:14509746] swell-cocoa: creating metal device context for 0x14914d200 Apple M1 Max
+2026-11-27 01:16:02.274 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:48.712 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:49.522 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:49.842 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:50.160 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:50.536 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:17:50.843 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again
+2026-11-27 01:20:16.188 REAPER[41861:14509746] OpenPluginAUViewFactory_HybridEQ_2_0_1: the Audio Unit has an engine again

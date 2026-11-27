@@ -184,8 +184,8 @@ impl Engine {
         if channels.is_empty() {
             return;
         }
-        if self.reduced_active {
-            let bank = self.bank.as_ref().unwrap();
+        // No bank (never prepared for the reduced model): fall back to the full preamp.
+        if let (true, Some(bank)) = (self.reduced_active, self.bank.as_ref()) {
             let n = channels[0].len();
             for i in 0..n {
                 let g = self.reduced_drive.next();

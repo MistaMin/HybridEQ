@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["crates/engine"]
-# The plugin crate needs OpenPluginSDK and GoodLookin DRI, which are located at
+# The plugin crate needs OpenPluginSDK (with GoodLookin DRI in it), which is located at
 # build time (scripts/sdk_env.sh), so it is a workspace of its own.
 exclude = ["plugin"]
 

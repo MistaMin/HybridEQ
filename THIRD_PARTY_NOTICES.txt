@@ -5,7 +5,7 @@ Copyright (c) 2026 Marcos Quirino Deida. MIT License; see LICENSE.
 The official complete binaries are proprietary freeware; see BINARY_LICENSE.txt.
 The MIT permissions for the corresponding source remain available.
 
-Components in HybridEQ 2.0.0
+Components in HybridEQ 2.0.1
 The full license text of each component below is in the Licenses/third-party folder of the source
 repository, and is installed with the binaries (see "Where the licenses are" at the end).
 

@@ -1,8 +1,8 @@
 # Builds, tests and packages HybridEQ for Windows (x64, ARM64) and Linux (x86_64, aarch64), each on
 # its own runner, in CLAP, LV2 and VST3: the release's PC and Linux archives. macOS is built, signed and notarised on a Mac.
 #
-# The plugin is built with OpenPluginSDK and GoodLookin DRI checked out next to it at the refs below;
-# scripts/sdk_env.sh points cargo at the SDK. Every job uploads its archive, its checksum and its
+# The plugin is built with OpenPluginSDK (which carries GoodLookin DRI) checked out next to it at the
+# ref below; scripts/sdk_env.sh points cargo at the SDK. Every job uploads its archive, its checksum and its
 # QA logs (tests, clap-validator, the VST3 SDK validator, and pluginval on x64, where it ships).
 name: Windows and Linux
 
@@ -17,9 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # The commits 2.0.0 was built from (on each repository's main); move on deliberately.
-  SDK_REF: c5446e761788217019fcf4aad6b8baf3988d5ad3
-  GOODLOOKINDRI_REF: 333a952f43c978b86b2232678bc895c209b9806f
+  # The SDK commit on its main that the build uses; move on deliberately (2.0.0 was built from c5446e7).
+  SDK_REF: 19fac892df45210d0967229cf3799181a0489464
   VST3_SDK_REF: v3.8.0_build_66
   CLAP_VALIDATOR_REF: "0.4.1"
   PLUGINVAL_VERSION: v1.0.4
@@ -44,8 +43,6 @@ jobs:
         with: { path: HybridEQ }
       - uses: actions/checkout@v4
         with: { repository: MistaMin/OpenPluginSDK, ref: "${{ env.SDK_REF }}", path: OpenPluginSDK }
-      - uses: actions/checkout@v4
-        with: { repository: MistaMin/GoodLookinDri, ref: "${{ env.GOODLOOKINDRI_REF }}", path: GoodLookinDri }
       - uses: actions/checkout@v4
         with: { repository: steinbergmedia/vst3sdk, ref: "${{ env.VST3_SDK_REF }}", submodules: recursive, path: vst3sdk }
       - uses: dtolnay/rust-toolchain@stable
@@ -145,8 +142,6 @@ jobs:
         with: { path: HybridEQ }
       - uses: actions/checkout@v4
         with: { repository: MistaMin/OpenPluginSDK, ref: "${{ env.SDK_REF }}", path: OpenPluginSDK }
-      - uses: actions/checkout@v4
-        with: { repository: MistaMin/GoodLookinDri, ref: "${{ env.GOODLOOKINDRI_REF }}", path: GoodLookinDri }
       - uses: actions/checkout@v4
         with: { repository: steinbergmedia/vst3sdk, ref: "${{ env.VST3_SDK_REF }}", submodules: recursive, path: vst3sdk }
       - uses: dtolnay/rust-toolchain@stable

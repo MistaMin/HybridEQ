@@ -89,6 +89,7 @@ const STRIPS: [Strip; 6] = [
 ];
 
 /// Response-display nodes: label, frequency, gain (or none: the node sits on the curve), Q, strip.
+#[allow(clippy::type_complexity)] // a const table read by position, not worth a struct
 const NODES: [(&str, usize, Option<usize>, Option<usize>, usize); 6] = [
     ("LC", idx::LC_FREQ, None, Some(idx::LC_Q), 0),
     ("LOW", idx::LOW_FREQ, Some(idx::LOW_GAIN), None, 1),
@@ -465,9 +466,7 @@ impl HybridEqEditor {
         // response display
         legend_text(sc, Legend::Silk(mid), Point::new(40.0, 82.0), "FREQUENCY RESPONSE", 8.5, false);
         legend_text(sc, Legend::Silk(mid), Point::new(1004.0, 82.0), "20 Hz - 30 kHz   /   +/-24 dB", 8.5, false);
-        let mut screen = SpectrumSettings::default();
-        screen.frame = true;
-        screen.grid = false;
+        let screen = SpectrumSettings { frame: true, grid: false, ..Default::default() };
         SpectrumView::paint_screen_back(sc, SCREEN, &screen, F_MIN, F_MAX);
         Self::paint_scale(sc, SCREEN.reduced(6.0, 6.0), mid, false);
 
@@ -571,6 +570,7 @@ impl HybridEqEditor {
         }
     }
 
+    #[allow(clippy::too_many_arguments)] // each is a distinct drawing input
     fn paint_knob(&self, sc: &mut Scene, c: Point, r: f32, param: usize, look: Look, active: bool, readout: bool) {
         let t = TABLE[param].to_normalized(self.v[param]);
         let angle = (t * 1.6 - 0.8) * PI;
@@ -612,8 +612,7 @@ impl HybridEqEditor {
         let plot = SCREEN.reduced(6.0, 6.0);
         self.spectrum.paint(sc, plot, F_MIN, F_MAX);
         self.paint_curve(sc, plot, true);
-        let mut glass = SpectrumSettings::default();
-        glass.frame = true;
+        let glass = SpectrumSettings { frame: true, ..Default::default() };
         SpectrumView::paint_screen_front(sc, SCREEN, &glass);
         meters::draw_lit_key(sc, SPECTRUM_KEY, "SPECTRUM", false, Color(0xff35e0d0), false);
 
@@ -690,8 +689,7 @@ impl HybridEqEditor {
         }
         sc.stroke_poly(pts.clone(), Color(0x70000000), 3.5, false);
         sc.stroke_poly(pts, Color(0xffc8f3e0), 1.6, false);
-        for node in 0..NODES.len() {
-            let (label, _, _, _, strip) = NODES[node];
+        for (node, &(label, _, _, _, strip)) in NODES.iter().enumerate() {
             let lk = section_look(STRIPS[strip].look, self.choice(STRIPS[strip].look));
             let c = self.node_point(plot, node);
             let active = !self.on(STRIPS[strip].bypass);
