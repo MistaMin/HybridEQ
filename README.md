@@ -3,32 +3,32 @@
 **A console-style channel strip: six-band EQ, four analogue-modelled preamp circuits, harmonics and
 mid/side, by OpenGrid.**
 
-![HybridEQ 2.0.0](Docs/HybridEQ-2.0.0.png)
+![HybridEQ 2.0.1](Docs/HybridEQ-2.0.1.png)
 
 | Band strips | Preamp, harmonics, global and level |
 |---|---|
-| ![Band strips](Docs/HybridEQ-2.0.0-bands.png) | ![Preamp, harmonics, global and level](Docs/HybridEQ-2.0.0-controls.png) |
+| ![Band strips](Docs/HybridEQ-2.0.1-bands.png) | ![Preamp, harmonics, global and level](Docs/HybridEQ-2.0.1-controls.png) |
 
-## Version 2.0.0
+## Version 2.0.1
 
-- HybridEQ rewritten in Rust: the same EQ, preamp circuits, harmonics and oversampling, and 1.6
-  projects open with every setting.
-- New AUTO GAIN (loudness-matched comparisons) and DELTA (hear only what changes).
-- A resizable editor with crisper text on every screen, and sample-accurate automation.
-- Windows (x64 and ARM64) and Linux (x86_64 and aarch64) builds alongside macOS.
-- Three deliberate differences from 1.6 are explained in the manual's "What changed from 1.6".
+- Fixes an occasional short knock in VST3 when the host starts audio from its main thread
+  (REAPER does); on Linux the VST3 editor also fits hosts that embed it in their own area (Ardour).
+- The same sound, plug-in IDs and projects as 2.0.0: renders are bit-identical.
+- Version 2.0 is HybridEQ rewritten in Rust: the same EQ, preamp circuits, harmonics and
+  oversampling as 1.6, AUTO GAIN and DELTA, a resizable editor, and Windows and Linux builds. Three
+  deliberate differences from 1.6 are explained in the manual's "What changed from 1.6".
 
 ## Download
 
 | System | Download | Formats |
 |---|---|---|
-| macOS 11+, Apple silicon and Intel | [HybridEQ-2.0.0-macos.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-macos.pkg) | VST3, AU, AAX, CLAP, LV2 |
-| Windows 10+, x64 | [HybridEQ-2.0.0-windows-x64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-windows-x64-setup.exe) | VST3, CLAP, LV2 |
-| Windows 10+, ARM64 | [HybridEQ-2.0.0-windows-arm64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-windows-arm64-setup.exe) | VST3, CLAP, LV2 |
-| Linux x86_64, glibc 2.35+ | [HybridEQ-2.0.0-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-linux-x86_64.tar.gz) | VST3, CLAP, LV2 |
-| Linux aarch64, glibc 2.35+ | [HybridEQ-2.0.0-linux-aarch64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.0/HybridEQ-2.0.0-linux-aarch64.tar.gz) | VST3, CLAP, LV2 |
+| macOS 11+, Apple silicon and Intel | [HybridEQ-2.0.1-macos.pkg](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.1/HybridEQ-2.0.1-macos.pkg) | VST3, AU, AAX, CLAP, LV2 |
+| Windows 10+, x64 | [HybridEQ-2.0.1-windows-x64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.1/HybridEQ-2.0.1-windows-x64-setup.exe) | VST3, CLAP, LV2 |
+| Windows 10+, ARM64 | [HybridEQ-2.0.1-windows-arm64-setup.exe](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.1/HybridEQ-2.0.1-windows-arm64-setup.exe) | VST3, CLAP, LV2 |
+| Linux x86_64, glibc 2.35+ | [HybridEQ-2.0.1-linux-x86_64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.1/HybridEQ-2.0.1-linux-x86_64.tar.gz) | VST3, CLAP, LV2 |
+| Linux aarch64, glibc 2.35+ | [HybridEQ-2.0.1-linux-aarch64.tar.gz](https://github.com/MistaMin/HybridEQ/releases/download/v2.0.1/HybridEQ-2.0.1-linux-aarch64.tar.gz) | VST3, CLAP, LV2 |
 
-Each download has a `.sha256` file beside it on the [release page](https://github.com/MistaMin/HybridEQ/releases/tag/v2.0.0).
+Each download has a `.sha256` file beside it on the [release page](https://github.com/MistaMin/HybridEQ/releases/tag/v2.0.1).
 
 - **macOS:** a Developer ID signed and notarized installer; the AAX is PACE-signed for Pro Tools. It
   installs every format to the system plug-in folders. The OpenGrid Plugin Manager offers the same installer.

@@ -1,4 +1,4 @@
-Licences of the Rust crates linked into HybridEQ 2.0.0 (cargo tree -e normal, macOS, Windows and Linux).
+Licences of the Rust crates linked into HybridEQ 2.0.1 (cargo tree -e normal, macOS, Windows and Linux).
 Each crate is offered under the licences named; the texts below are the ones each crate ships.
 
 ==============================================================================
