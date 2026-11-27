@@ -1,0 +1,19 @@
+   Compiling goodlookindri v0.2.1 (OpenPluginSDK 19fac89: crates/goodlookindri)
+   Compiling openplugin-testing v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-testing)
+   Compiling openplugin-core v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-core)
+   Compiling openplugin-host v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-host)
+   Compiling openplugin-dsp v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-dsp)
+   Compiling goodlookindri-shell v0.2.1 (OpenPluginSDK 19fac89: crates/goodlookindri/shell)
+   Compiling openplugin-dri v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-dri)
+   Compiling openplugin-targets v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin-targets)
+   Compiling openplugin v1.0.0-beta (OpenPluginSDK 19fac89: crates/openplugin)
+   Compiling hybrideq v2.0.1 (/Volumes/Developer/OpenGrid/HybridEQ/plugin)
+    Finished `release` profile [optimized] target(s) in 57.12s
+     Running tests/soak.rs (target/release/deps/soak-71e0fe2cf25a4b49)
+
+running 1 test
+test soak_many_seeds has been running for over 60 seconds
+test soak_many_seeds ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 11262.82s
+

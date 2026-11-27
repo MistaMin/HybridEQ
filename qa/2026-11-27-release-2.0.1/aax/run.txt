@@ -1,0 +1,19 @@
+bundle: /Volumes/Developer/OpenGrid/HybridEQ/dist-release/macos-2.0.1/HybridEQ.aaxplugin
+running dsh (timeout 1800s), raw output in /Volumes/Developer/OpenGrid/HybridEQ/build-release/aaxval-out/aax_validate.raw.log
+
+AAX Validator: 14 results, 10 passed, 3 failed, 1 skipped
+  info.productids                               E_ABORTED
+  info.support.audiosuite                       E_COMPLETED_PASS
+  info.support.general                          E_ABORTED
+  info.support.s6_feature                       E_COMPLETED_PASS
+  test.cycle_counts                             SKIPPED_NEEDS_DSP_HARDWARE
+  test.data_model                               E_ABORTED
+  test.describe_validation                      E_COMPLETED_PASS
+  test.load_unload                              E_COMPLETED_PASS
+  test.page_table.automation_list               E_COMPLETED_PASS
+  test.page_table.load                          E_COMPLETED_PASS
+  test.parameter_traversal.linear               E_COMPLETED_PASS
+  test.parameter_traversal.random               E_COMPLETED_PASS
+  test.parameter_traversal.random.fast          E_COMPLETED_PASS
+  test.parameters                               E_COMPLETED_PASS
+full log: /Volumes/Developer/OpenGrid/HybridEQ/build-release/aaxval-out/aax_validate.log

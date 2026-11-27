@@ -37,9 +37,9 @@ Each download has a `.sha256` file beside it on the [release page](https://githu
 - **Linux:** an archive with `usr/lib/vst3`, `usr/lib/clap` and `usr/lib/lv2`; copy the plug-ins to
   `~/.vst3`, `~/.clap` and `~/.lv2`, or to `/usr/lib` for every user.
 - **Not included:** AAX for Windows, and a standalone application.
-- **Tested:** the macOS build in REAPER (VST3, AU and CLAP), with auval and the AAX Validator. The
-  Windows and Linux builds pass the CLAP and VST3 validators on each processor, and on x64 pluginval,
-  which opens the editor; they have not yet been tried in a DAW by hand.
+- **Tested:** the macOS build in REAPER (VST3, AU and CLAP), with auval, pluginval and the AAX
+  Validator. The Windows and Linux builds pass the CLAP and VST3 validators on each processor, and on
+  x64 pluginval, which opens the editor; they have not yet been tried in a DAW by hand.
 
 ## User guide
 

@@ -36,10 +36,33 @@ older copies, rescan.
 
 ## Checks
 
-PENDING: filled in from the release build and tests.
+All five downloads were built from HybridEQ `02dddcd` with OpenPluginSDK `19fac89`: macOS on a Mac,
+Windows and Linux each on its own GitHub runner. Renders of 2.0.1 and 2.0.0 are bit-identical in 17
+settings that cover every preamp circuit, the HQ and reduced models, 2x to 8x oversampling with both
+filters, mid/side, harmonics, AUTO GAIN, DELTA and mono.
+
+| Check | macOS | Windows x64 | Windows ARM64 | Linux x86_64 | Linux aarch64 |
+|---|---|---|---|---|---|
+| Engine and plug-in tests (including the null tests against 1.6.16 renders) | pass | pass | pass | pass | pass |
+| Conformance soak, 200 seeds | pass | | | | |
+| VST3 SDK validator | 47 / 47 | 47 / 47 | 47 / 47 | 47 / 47 | 47 / 47 |
+| clap-validator 0.4.1 | 34 pass, 0 fail | 33 pass, 0 fail | 33 pass, 0 fail | 34 pass, 0 fail | 34 pass, 0 fail |
+| pluginval, strictness 10 (VST3) | pass (no editor tests) | pass, with the editor | not available | pass, with the editor | not available |
+| auval | pass (2.0.1) | | | | |
+| AAX Validator (signed AAX) | every test that loads the plug-in passes | | | | |
+| REAPER: VST3, AU and CLAP | pass | | | | |
+| Signing | Developer ID, notarized, PACE | none | none | | |
+
+In REAPER, each format loads, renders the same audio twice, has every parameter act on the sound and
+appear in the editor, keeps its settings through saving and reopening the project, and reopens its
+editor five times. Three AAX Validator tests (product IDs, general support, data model) stop inside the
+validator before the plug-in loads, on this Mac and for 2.0.0 alike.
 
 ## Known limits
 
 - The Windows and Linux builds pass the validators but have not been tried in a DAW by hand. The ARM
   builds are validated without pluginval, which ships for x64 only.
 - AAX is macOS only. There is no standalone application.
+- In one of several REAPER test runs, on a heavily loaded machine, two VST3 renders of the same input
+  differed for about 0.4 s. It did not happen again in more than 40 later renders. The likely cause is the host
+  restarting processing between two blocks of a render; 2.0.0 behaves the same there.
